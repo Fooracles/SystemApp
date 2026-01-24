@@ -1,0 +1,1024 @@
+/* ========================================
+   TABLE STYLES FOR ALL PROJECT TABLES
+   ======================================== */
+
+/* Base Table Styles */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    text-align: left;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #007bff;
+}
+
+/* Ensure table headers are always visible with blue background */
+.table thead th,
+.table thead td {
+    color: #ffffff !important;
+    background-color: #007bff !important;
+    font-weight: 600 !important;
+}
+
+/* Override any conflicting styles for table headers */
+.table thead th * {
+    color: #ffffff !important;
+}
+
+/* Specific fix for table header styling */
+.table thead th {
+    color: #ffffff !important;
+    background-color: #007bff !important;
+    text-shadow: none !important;
+}
+
+/* Universal table header override for all tables in the project */
+table thead th,
+.table thead th,
+thead th,
+table thead td,
+.table thead td,
+thead td {
+    color: #ffffff !important;
+    background-color: #007bff !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    font-size: 0.85rem !important;
+}
+
+/* Prevent wrapping in sortable headers and links */
+table thead th a,
+.table thead th a,
+thead th a {
+    display: inline-flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    max-width: none !important;
+    font-size: 0.85rem !important;
+}
+
+/* Override any Bootstrap or other framework table header styles */
+.table-striped thead th,
+.table-hover thead th,
+.table-bordered thead th,
+.table-borderless thead th,
+.table-sm thead th,
+.table-lg thead th {
+    color: #ffffff !important;
+    background-color: #007bff !important;
+}
+
+/* Table Variants */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table-borderless th,
+.table-borderless td,
+.table-borderless thead th,
+.table-borderless tbody + tbody {
+    border: 0;
+}
+
+/* Dark Table Variant */
+.table-dark {
+    color: #fff;
+    background-color: #343a40;
+}
+
+.table-dark th,
+.table-dark td,
+.table-dark thead th {
+    border-color: #454d55;
+}
+
+.table-dark.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-dark.table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+/* Table Head Variants */
+.thead-light th {
+    color: #ffffff !important;
+    background-color: #007bff !important;
+    border-color: #dee2e6;
+}
+
+.thead-dark th {
+    color: #ffffff !important;
+    background-color: #007bff !important;
+    border-color: #454d55;
+}
+
+/* Override any other header variants to use blue background */
+.thead-primary th {
+    color: #ffffff !important;
+    background-color: #007bff !important;
+    border-color: #dee2e6;
+}
+
+/* Table Responsive */
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive-sm {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 575.98px) {
+    .table-responsive-sm {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.table-responsive-md {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 767.98px) {
+    .table-responsive-md {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.table-responsive-lg {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 991.98px) {
+    .table-responsive-lg {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.table-responsive-xl {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1199.98px) {
+    .table-responsive-xl {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Table Sizing */
+.table-sm th,
+.table-sm td {
+    padding: 0.3rem;
+}
+
+.table-lg th,
+.table-lg td {
+    padding: 1rem;
+}
+
+/* Table Actions Column */
+.table-actions {
+    width: 120px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.table-actions .btn {
+    margin: 0 2px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.table-actions .btn i {
+    font-size: 0.9rem;
+}
+
+/* Table Status Badges */
+.table .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Table Row States */
+.table tbody tr.success {
+    background-color: #d4edda;
+}
+
+.table tbody tr.danger {
+    background-color: #f8d7da;
+}
+
+.table tbody tr.warning {
+    background-color: #fff3cd;
+}
+
+.table tbody tr.info {
+    background-color: #d1ecf1;
+}
+
+/* Table Sorting */
+.table-sortable th {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+/* Remove hover effect from table headers - Keep blue background */
+.table-sortable th:hover,
+.table th:hover,
+thead th:hover,
+.sortable-table th:hover,
+.sortable-table th.sortable:hover,
+.sortable-table th.sortable.sort-asc:hover,
+.sortable-table th.sortable.sort-desc:hover {
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+/* Ensure all table header states maintain blue background */
+.sortable-table th.sortable,
+.sortable-table th.sortable.sort-asc,
+.sortable-table th.sortable.sort-desc {
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+.table-sortable th.sort-asc::after {
+    content: ' ↑';
+    color: #007bff;
+}
+
+.table-sortable th.sort-desc::after {
+    content: ' ↓';
+    color: #007bff;
+}
+
+/* Table Pagination */
+.table-pagination {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.5rem 0;
+}
+
+.table-pagination .pagination-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.table-pagination .pagination-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Table Search/Filter */
+.table-search {
+    margin-bottom: 1rem;
+}
+
+.table-search .form-control {
+    max-width: 300px;
+}
+
+/* Table Loading State */
+.table-loading {
+    position: relative;
+}
+
+.table-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.table-loading::before {
+    content: 'Loading...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* Table Empty State */
+.table-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+.table-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #dee2e6;
+}
+
+.table-empty h5 {
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.table-empty p {
+    margin-bottom: 0;
+}
+
+/* Table Card Integration */
+.card .table {
+    margin-bottom: 0;
+}
+
+.card .table thead th {
+    border-top: 0;
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+.card .table:first-child thead th {
+    border-top: 0;
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+/* Table Fixed Headers */
+.table-fixed-header {
+    position: relative;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.table-fixed-header thead th {
+    position: sticky;
+    top: 0;
+    background-color: #007bff !important;
+    color: #ffffff !important;
+    z-index: 10;
+}
+
+/* Table Column Widths */
+.table .col-1 { width: 8.333333%; }
+.table .col-2 { width: 16.666667%; }
+.table .col-3 { width: 25%; }
+.table .col-4 { width: 33.333333%; }
+.table .col-5 { width: 41.666667%; }
+.table .col-6 { width: 50%; }
+.table .col-7 { width: 58.333333%; }
+.table .col-8 { width: 66.666667%; }
+.table .col-9 { width: 75%; }
+.table .col-10 { width: 83.333333%; }
+.table .col-11 { width: 91.666667%; }
+.table .col-12 { width: 100%; }
+
+/* Table Text Alignment */
+.table .text-left { text-align: left; }
+.table .text-center { text-align: center; }
+.table .text-right { text-align: right; }
+
+/* Table Font Sizes */
+.table .text-sm { font-size: 0.8rem; }
+.table .text-lg { font-size: 1.1rem; }
+
+/* Table Hover Effects */
+.table-hover tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Table Selection */
+.table tbody tr.selected {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.table tbody tr.selected td {
+    border-color: #007bff;
+}
+
+/* Table Actions Hover */
+.table-actions .btn {
+    transition: all 0.15s ease-in-out;
+}
+
+.table-actions .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* FMS Tasks Table Specific Styling */
+.fms-tasks-table {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+
+.fms-tasks-table thead th {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 1.2rem 0.75rem;
+    text-align: center;
+    border: none;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.fms-tasks-table thead th:first-child {
+    text-align: left;
+    padding-left: 1.5rem;
+    border-top-left-radius: 12px;
+}
+
+.fms-tasks-table thead th:last-child {
+    text-align: center;
+    padding-right: 1.5rem;
+    border-top-right-radius: 12px;
+}
+
+.fms-tasks-table tbody td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-top: 1px solid #f1f3f4;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.fms-tasks-table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.fms-tasks-table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Status column styling */
+.fms-tasks-table tbody td:nth-child(4) {
+    text-align: center;
+}
+
+.fms-tasks-table tbody td:nth-child(4) .badge {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Delay column styling */
+.fms-tasks-table tbody td:nth-child(6) {
+    text-align: center;
+}
+
+.fms-tasks-table tbody td:nth-child(6) .badge {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 600;
+}
+
+/* Actions column styling */
+.fms-tasks-table tbody td:last-child {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.fms-tasks-table tbody td:last-child .btn {
+    margin: 0 3px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fms-tasks-table tbody td:last-child .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Department and Doer columns */
+.fms-tasks-table tbody td:nth-child(7),
+.fms-tasks-table tbody td:nth-child(8) {
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Sheet Label column */
+.fms-tasks-table tbody td:nth-child(9) {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.6rem;
+    text-align: center;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+/* Step Name column */
+.fms-tasks-table tbody td:first-child {
+    font-weight: 700;
+    color: #2c3e50;
+    max-width: 250px;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+/* Date columns */
+.fms-tasks-table tbody td:nth-child(2),
+.fms-tasks-table tbody td:nth-child(3) {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    text-align: center;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+/* Duration column */
+.fms-tasks-table tbody td:nth-child(5) {
+    text-align: center;
+    font-weight: 700;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+/* Responsive Table Improvements */
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.8rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem;
+    }
+    
+    .table-actions {
+        width: 80px;
+    }
+    
+    .table-actions .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+    }
+    
+    .fms-tasks-table thead th {
+        font-size: 0.8rem;
+        padding: 0.8rem 0.5rem;
+    }
+    
+    .fms-tasks-table tbody td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .table {
+        font-size: 0.75rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.3rem;
+    }
+    
+    .table-actions {
+        width: 60px;
+    }
+    
+    .table-actions .btn {
+        padding: 0.1rem 0.3rem;
+        font-size: 0.65rem;
+    }
+}
+
+/* Additional optimizations for manage tasks page */
+.manage-tasks-page {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.manage-tasks-page .container-fluid {
+    max-width: 100%;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    margin: 0;
+    width: 100%;
+}
+
+.manage-tasks-page .main-content {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+}
+
+.manage-tasks-page .card {
+    border-left: none;
+    border-right: none;
+    margin-left: 0;
+    margin-right: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.manage-tasks-page .card-body {
+    padding: 0.75rem 0.5rem;
+}
+
+.manage-tasks-page .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border-radius: 6px;
+}
+
+.manage-tasks-page .table-ultra-compact {
+    width: 100% !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* Enhanced ultra-compact styling for manage tasks */
+.manage-tasks-page .table-ultra-compact th {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: #ffffff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.manage-tasks-page .table-ultra-compact tbody tr {
+    height: 36px;
+    transition: all 0.2s ease;
+}
+
+.manage-tasks-page .table-ultra-compact tbody tr:hover {
+    background-color: #e3f2fd;
+    transform: scale(1.002);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.manage-tasks-page .table-ultra-compact tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.manage-tasks-page .table-ultra-compact tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.manage-tasks-page .table-ultra-compact tbody td {
+    padding: 0.4rem 0.25rem;
+    vertical-align: middle;
+    border-top: 1px solid #e9ecef;
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+/* Ultra-compact action buttons for manage tasks */
+.manage-tasks-page .table-ultra-compact .btn {
+    padding: 0.15rem 0.3rem;
+    font-size: 0.65rem;
+    border-radius: 4px;
+    margin: 0 1px;
+    transition: all 0.2s ease;
+    min-width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.manage-tasks-page .table-ultra-compact .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.manage-tasks-page .table-ultra-compact .btn i {
+    font-size: 0.7rem;
+}
+
+.manage-tasks-page .table-ultra-compact .btn-group {
+    display: flex;
+    gap: 2px;
+}
+
+/* Ultra-compact badges for manage tasks */
+.manage-tasks-page .table-ultra-compact .badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.manage-tasks-page .table-ultra-compact .badge-sm {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.3rem;
+}
+
+/* Ultra-compact sort indicators for manage tasks */
+.manage-tasks-page .table-ultra-compact .sort-indicator {
+    font-size: 0.5rem;
+    margin-left: 2px;
+}
+
+.manage-tasks-page .table-ultra-compact .sort-arrow {
+    font-size: 0.5rem;
+}
+
+/* Ensure maximum width utilization for manage tasks */
+.manage-tasks-page .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.manage-tasks-page .col-12 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Additional width optimizations for manage tasks page */
+.manage-tasks-page .content-area {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Ultra-compact table with maximum width utilization */
+.manage-tasks-page .table-ultra-compact {
+    margin-left: 0;
+    margin-right: 0;
+    border-left: none;
+    border-right: none;
+    min-width: 100%;
+}
+
+/* Task description styling for better text handling */
+.manage-tasks-page .task-description {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+/* Filter form optimizations */
+.manage-tasks-page .card-header .d-flex {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.manage-tasks-page .form-control-sm {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Pagination optimizations */
+.manage-tasks-page .pagination {
+    margin-bottom: 0;
+}
+
+.manage-tasks-page .pagination .page-link {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* Responsive optimizations for manage tasks */
+@media (max-width: 1200px) {
+    .manage-tasks-page .table-ultra-compact th,
+    .manage-tasks-page .table-ultra-compact td {
+        padding: 0.3rem 0.15rem;
+        font-size: 0.75rem;
+    }
+    
+    .manage-tasks-page .table-ultra-compact th {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .manage-tasks-page .container-fluid {
+        padding-left: 0.15rem;
+        padding-right: 0.15rem;
+    }
+    
+    .manage-tasks-page .card-body {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .manage-tasks-page .table-ultra-compact th,
+    .manage-tasks-page .table-ultra-compact td {
+        padding: 0.25rem 0.1rem;
+        font-size: 0.7rem;
+    }
+    
+    .manage-tasks-page .table-ultra-compact .btn {
+        padding: 0.1rem 0.2rem;
+        font-size: 0.6rem;
+        min-width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .manage-tasks-page .table-ultra-compact {
+        font-size: 0.65rem;
+    }
+    
+    .manage-tasks-page .table-ultra-compact th,
+    .manage-tasks-page .table-ultra-compact td {
+        padding: 0.2rem 0.05rem;
+        font-size: 0.65rem;
+    }
+    
+    .manage-tasks-page .table-ultra-compact .btn {
+        padding: 0.05rem 0.15rem;
+        font-size: 0.55rem;
+        min-width: 18px;
+        height: 18px;
+    }
+    
+    .manage-tasks-page .table-ultra-compact .badge {
+        font-size: 0.55rem;
+        padding: 0.1rem 0.2rem;
+    }
+}
+
+/* Summary Cards Styling for Manage Tasks */
+.manage-tasks-page .summary-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: none;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.manage-tasks-page .summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.manage-tasks-page .summary-card .card-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.manage-tasks-page .summary-card .card-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.manage-tasks-page .summary-card .card-text {
+    font-size: 1rem;
+    font-weight: 600;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Specific card color enhancements */
+.manage-tasks-page .summary-card.bg-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+}
+
+.manage-tasks-page .summary-card.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+}
+
+.manage-tasks-page .summary-card.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+}
+
+.manage-tasks-page .summary-card.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+}

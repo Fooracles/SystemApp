@@ -1,0 +1,1375 @@
+/* Leave Request Page Styles */
+
+/* Table Header Styling - Restored to default */
+.table thead th {
+    color: #f8f9fa !important;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.table thead th a {
+    color: #f8f9fa !important;
+    text-decoration: none;
+}
+
+.table thead th a:hover {
+    color: #f8f9fa !important;
+    text-decoration: underline;
+}
+
+/* Tabs Container Styling - Matching URLs page design */
+.tabs-container {
+    margin-bottom: 2rem;
+}
+
+.tabs {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 0.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 32px rgba(47, 60, 126, 0.1);
+}
+
+.tab {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    color: #898d91;
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.tab:hover::before {
+    left: 100%;
+}
+
+.tab:hover {
+    color: #2f3c7e;
+    transform: translateY(-1px);
+}
+
+.tab.active {
+    background: rgba(255, 255, 255, 0.9);
+    color: #2f3c7e;
+    box-shadow: 0 4px 15px rgba(47, 60, 126, 0.2);
+    transform: translateY(-2px);
+}
+
+.tab i {
+    margin-right: 0.5rem;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Collapsible Filter Section - Matching checklist_task.php */
+.total-filter-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.total-filter-content.collapsed {
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* Filter Toggle Button Styling */
+.filter-toggle-btn {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.filter-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: white !important;
+}
+
+/* Number of Leaves Column Styling - Matching other badges */
+.leaves-count {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 0.375rem !important;
+    display: inline-block !important;
+}
+
+.badge.bg-secondary.leaves-count {
+    color: #ffffff !important;
+    background-color: #6c757d !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.75rem !important;
+}
+
+/* Select2 Styling to match Bootstrap Dark Theme */
+.select2-container .select2-selection--single {
+    height: calc(1.5em + .75rem + 2px) !important;
+    padding: .375rem .75rem !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    background: var(--dark-bg-glass) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: .25rem !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    line-height: 1.5 !important;
+    padding-left: 0 !important;
+    padding-right: 20px !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__placeholder {
+    color: var(--dark-text-muted) !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__arrow b {
+    border-color: var(--dark-text-primary) transparent transparent transparent !important;
+}
+
+.select2-dropdown {
+    background: var(--dark-bg-card) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: .25rem !important;
+}
+
+.select2-container--default .select2-selection--single:focus {
+    background: var(--dark-bg-glass-hover) !important;
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: var(--brand-primary) !important;
+}
+
+.select2-results__option {
+    background: var(--dark-bg-card) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.select2-results__option--highlighted {
+    background: var(--brand-primary) !important;
+    color: white !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+    background: var(--dark-bg-glass) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--dark-text-primary) !important;
+    border-radius: .25rem !important;
+}
+
+.select2-search--dropdown .select2-search__field:focus {
+    background: var(--dark-bg-glass-hover) !important;
+    border-color: var(--brand-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Icon-only Approve/Reject Button Styling - Small and Minimal */
+.action-icon-buttons {
+    display: inline-flex;
+    gap: 0.25rem;
+}
+
+.btn-icon-approve,
+.btn-icon-reject {
+    width: 28px;
+    height: 28px;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.btn-icon-approve {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-color: rgba(16, 185, 129, 0.5) !important;
+    color: white !important;
+}
+
+.btn-icon-approve:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    border-color: #10b981 !important;
+    color: white !important;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+}
+
+.btn-icon-approve:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.btn-icon-approve:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-icon-reject {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    color: white !important;
+}
+
+.btn-icon-reject:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    border-color: #ef4444 !important;
+    color: white !important;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+.btn-icon-reject:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.btn-icon-reject:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-icon-approve i,
+.btn-icon-reject i {
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+/* Legacy button styles for backward compatibility */
+.btn-success.btn-sm {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.5) !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-success.btn-sm:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    border-color: #10b981 !important;
+    color: white !important;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.6), 0 0 15px rgba(16, 185, 129, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+.btn-success.btn-sm:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5) !important;
+}
+
+.btn-danger.btn-sm {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    border: 1px solid rgba(239, 68, 68, 0.5) !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-danger.btn-sm:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    border-color: #ef4444 !important;
+    color: white !important;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.6), 0 0 15px rgba(239, 68, 68, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+.btn-danger.btn-sm:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* Date Picker Enhancement */
+.date-picker-clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-picker-clickable:hover {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.date-picker-clickable::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 1;
+    filter: invert(0.5);
+    transition: all 0.2s ease;
+}
+
+.date-picker-clickable::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    filter: invert(0.8);
+    transform: scale(1.1);
+}
+
+/* Metrics Cards - Matching manage_tasks.php style */
+#metricsSection .card {
+    border: 2px solid #e9ecef;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+#metricsSection .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-color: #007bff;
+}
+
+/* Different color schemes for each metric card */
+#metricsSection .card.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+    border-color: #ffc107;
+}
+
+#metricsSection .card.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+    border-color: #28a745;
+}
+
+#metricsSection .card.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+    border-color: #dc3545;
+}
+
+#metricsSection .card.bg-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #545b62 100%) !important;
+    border-color: #6c757d;
+}
+
+/* Subtle animation for metrics cards */
+#metricsSection .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+#metricsSection .card:hover::before {
+    left: 100%;
+}
+
+/* Enhanced Typography for metrics cards */
+#metricsSection .card h3 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0;
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#metricsSection .card small {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff !important;
+    opacity: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Enhanced icon styling */
+#metricsSection .fa-2x {
+    font-size: 2.8rem !important;
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Card content layout improvements */
+#metricsSection .card-body .d-flex {
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+}
+
+#metricsSection .card-body .d-flex > div {
+    text-align: center;
+    flex: 1;
+}
+
+/* Number formatting - solid white text */
+#metricsSection .card h3 {
+    color: #ffffff !important;
+}
+
+/* Enhanced hover typography */
+#metricsSection .card:hover h3 {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+#metricsSection .card:hover small {
+    opacity: 1;
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+}
+
+/* Card title enhancement */
+#metricsSection .card-body {
+    position: relative;
+    z-index: 2;
+}
+
+/* Number animation on load */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#metricsSection .card h3 {
+    animation: countUp 0.6s ease-out;
+}
+
+/* Responsive typography improvements */
+@media (max-width: 768px) {
+    #metricsSection .card h3 {
+        font-size: 2rem;
+        letter-spacing: -0.3px;
+    }
+    
+    #metricsSection .card small {
+        font-size: 0.85rem;
+        letter-spacing: 0.8px;
+    }
+    
+    #metricsSection .fa-2x {
+        font-size: 2.2rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    #metricsSection .card h3 {
+        font-size: 1.8rem;
+    }
+    
+    #metricsSection .card small {
+        font-size: 0.8rem;
+    }
+    
+    #metricsSection .fa-2x {
+        font-size: 2rem !important;
+    }
+}
+
+#metricsSection .card-body {
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+#metricsSection .fa-2x {
+    font-size: 2.5rem !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments for metrics cards */
+@media (max-width: 768px) {
+    #metricsSection .card h3 {
+        font-size: 1.8rem;
+    }
+    
+    #metricsSection .card {
+        margin-bottom: 1rem;
+    }
+    
+    #metricsSection .card-body {
+        padding: 1rem;
+    }
+}
+
+.page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+}
+
+.page-header h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.page-header p {
+    margin: 0.5rem 0 0 0;
+    opacity: 0.9;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+}
+
+/* Table Styles - Consistent for both tables */
+.table {
+    margin-bottom: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.85rem !important;
+}
+
+.table td {
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+    padding: 0.75rem 0.5rem !important;
+    white-space: normal;
+    word-wrap: break-word;
+    font-size: 0.85rem !important;
+}
+
+/* Ensure both tables have identical styling */
+#pendingRequestsTable th,
+#totalLeavesTable th {
+    font-size: 0.85rem !important;
+    padding: 0.75rem 0.5rem !important;
+    font-weight: 600 !important;
+}
+
+#pendingRequestsTable td,
+#totalLeavesTable td {
+    font-size: 0.85rem !important;
+    padding: 0.75rem 0.5rem !important;
+}
+
+/* Employee name display - consistent in both tables */
+#pendingRequestsTable .fw-bold,
+#totalLeavesTable .fw-bold {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+}
+
+#pendingRequestsTable small.text-muted,
+#totalLeavesTable small.text-muted {
+    font-size: 0.75rem !important;
+    display: block !important;
+    margin-top: 0.125rem !important;
+}
+
+/* Ensure table container allows full width without horizontal scroll */
+.table-container {
+    width: 100%;
+    overflow-x: visible;
+    overflow-y: visible;
+    max-width: 100%;
+}
+
+/* Specific fixes for leave request tables */
+#pendingRequestsTab .table-container,
+#totalLeaveRequestsTab .table-container {
+    width: 100% !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    max-width: 100% !important;
+}
+
+/* Adjust table font size if needed to fit all columns - Matching sizes */
+#pendingRequestsTable,
+#totalLeavesTable {
+    font-size: 0.85rem !important;
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+#pendingRequestsTable th,
+#totalLeavesTable th {
+    font-size: 0.85rem !important;
+    padding: 0.75rem 0.5rem !important;
+}
+
+#pendingRequestsTable td,
+#totalLeavesTable td {
+    font-size: 0.85rem !important;
+    padding: 0.75rem 0.5rem !important;
+}
+
+/* Total Leaves Table - Column Width Management (Admin/Manager - 8 columns) */
+#totalLeavesTable {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+/* Column widths for Total Leaves Table (Admin/Manager view - 8 columns) - Matching Pending */
+#totalLeavesTable th:nth-child(1),
+#totalLeavesTable td:nth-child(1) { /* Employee Name */
+    width: 12% !important;
+    min-width: 120px;
+}
+
+#totalLeavesTable th:nth-child(2),
+#totalLeavesTable td:nth-child(2) { /* Leave Type */
+    width: 10% !important;
+    min-width: 90px;
+}
+
+#totalLeavesTable th:nth-child(3),
+#totalLeavesTable td:nth-child(3) { /* Duration */
+    width: 10% !important;
+    min-width: 90px;
+}
+
+#totalLeavesTable th:nth-child(4),
+#totalLeavesTable td:nth-child(4) { /* Start Date */
+    width: 10% !important;
+    min-width: 100px;
+}
+
+#totalLeavesTable th:nth-child(5),
+#totalLeavesTable td:nth-child(5) { /* End Date */
+    width: 10% !important;
+    min-width: 100px;
+}
+
+#totalLeavesTable th:nth-child(6),
+#totalLeavesTable td:nth-child(6) { /* Reason - Matching Pending (20%) */
+    width: 20% !important;
+    min-width: 150px;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow: visible !important;
+}
+
+#totalLeavesTable th:nth-child(7),
+#totalLeavesTable td:nth-child(7) { /* No. of Leaves */
+    width: 14% !important;
+    min-width: 100px;
+    text-align: center;
+}
+
+#totalLeavesTable th:nth-child(8),
+#totalLeavesTable td:nth-child(8) { /* Status */
+    width: 14% !important;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Column widths for Total Leaves Table (Doer view - 7 columns, no Employee Name) */
+#totalLeavesTable:not(:has(th:nth-child(1))) th:nth-child(1),
+#totalLeavesTable:not(:has(th:nth-child(1))) td:nth-child(1) { /* Leave Type */
+    width: 12% !important;
+}
+
+#totalLeavesTable:not(:has(th:nth-child(1))) th:nth-child(2),
+#totalLeavesTable:not(:has(th:nth-child(2))) td:nth-child(2) { /* Duration */
+    width: 12% !important;
+}
+
+#totalLeavesTable:not(:has(th:nth-child(1))) th:nth-child(3),
+#totalLeavesTable:not(:has(th:nth-child(3))) td:nth-child(3) { /* Start Date */
+    width: 12% !important;
+}
+
+#totalLeavesTable:not(:has(th:nth-child(1))) th:nth-child(4),
+#totalLeavesTable:not(:has(th:nth-child(4))) td:nth-child(4) { /* End Date */
+    width: 12% !important;
+}
+
+#totalLeavesTable:not(:has(th:nth-child(1))) th:nth-child(5),
+#totalLeavesTable:not(:has(th:nth-child(5))) td:nth-child(5) { /* Reason */
+    width: 32% !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+}
+
+#totalLeavesTable:not(:has(th:nth-child(1))) th:nth-child(6),
+#totalLeavesTable:not(:has(th:nth-child(6))) td:nth-child(6) { /* No. of Leaves */
+    width: 12% !important;
+    text-align: center;
+}
+
+#totalLeavesTable:not(:has(th:nth-child(1))) th:nth-child(7),
+#totalLeavesTable:not(:has(th:nth-child(7))) td:nth-child(7) { /* Status */
+    width: 12% !important;
+    text-align: center;
+}
+
+/* Alternative approach: Use attribute selector for doer view */
+body:has(.user-role-doer) #totalLeavesTable th:nth-child(1),
+body:has(.user-role-doer) #totalLeavesTable td:nth-child(1) { /* Leave Type */
+    width: 12% !important;
+}
+
+body:has(.user-role-doer) #totalLeavesTable th:nth-child(2),
+body:has(.user-role-doer) #totalLeavesTable td:nth-child(2) { /* Duration */
+    width: 12% !important;
+}
+
+body:has(.user-role-doer) #totalLeavesTable th:nth-child(3),
+body:has(.user-role-doer) #totalLeavesTable td:nth-child(3) { /* Start Date */
+    width: 12% !important;
+}
+
+body:has(.user-role-doer) #totalLeavesTable th:nth-child(4),
+body:has(.user-role-doer) #totalLeavesTable td:nth-child(4) { /* End Date */
+    width: 12% !important;
+}
+
+body:has(.user-role-doer) #totalLeavesTable th:nth-child(5),
+body:has(.user-role-doer) #totalLeavesTable td:nth-child(5) { /* Reason */
+    width: 32% !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+}
+
+body:has(.user-role-doer) #totalLeavesTable th:nth-child(6),
+body:has(.user-role-doer) #totalLeavesTable td:nth-child(6) { /* No. of Leaves */
+    width: 12% !important;
+    text-align: center;
+}
+
+body:has(.user-role-doer) #totalLeavesTable th:nth-child(7),
+body:has(.user-role-doer) #totalLeavesTable td:nth-child(7) { /* Status */
+    width: 12% !important;
+    text-align: center;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    transition: background-color 0.15s ease-in-out;
+}
+
+/* Avatar Circle */
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+/* Status Badges - Consistent sizing for both tables */
+.status-badge {
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.375rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.025em !important;
+    display: inline-block !important;
+}
+
+/* Ensure status badges in both tables have same size */
+#pendingRequestsTable .status-badge,
+#totalLeavesTable .status-badge {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.75rem !important;
+}
+
+/* Leave Type Badges - Consistent sizing for both tables */
+.leave-type-badge {
+    background-color: #17a2b8 !important;
+    color: white !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.375rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    text-transform: capitalize !important;
+    display: inline-block !important;
+}
+
+/* Ensure badges in both tables have same size */
+#pendingRequestsTable .leave-type-badge,
+#totalLeavesTable .leave-type-badge {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.75rem !important;
+}
+
+/* Sick Leave Badge - Different Color */
+.leave-type-badge.sick-badge {
+    background-color: #dc3545 !important; /* Red color for sick leave */
+    color: white !important;
+}
+
+.status-approved {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-cancelled {
+    background-color: #d3d3d3;
+    color: #495057;
+}
+
+/* Action Buttons */
+.action-buttons .btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    margin: 0 0.125rem;
+    transition: all 0.3s ease !important;
+}
+
+.action-buttons .btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.5) !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+}
+
+.action-buttons .btn-success:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    border-color: #10b981 !important;
+    color: white !important;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.6), 0 0 15px rgba(16, 185, 129, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+.action-buttons .btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    border: 1px solid rgba(239, 68, 68, 0.5) !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
+}
+
+.action-buttons .btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    border-color: #ef4444 !important;
+    color: white !important;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.6), 0 0 15px rgba(239, 68, 68, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Reason Text - Consistent styling for both tables */
+.reason-text {
+    max-width: 100%;
+    white-space: normal;
+    overflow: visible;
+    word-wrap: break-word;
+    cursor: help;
+    font-size: 0.85rem !important;
+}
+
+/* Ensure reason text in both tables matches */
+#pendingRequestsTable .reason-text,
+#totalLeavesTable .reason-text {
+    font-size: 0.85rem !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h5 {
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.empty-state p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+/* Filter Styles */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Total Leave Requests Filter Labels - White Color */
+.total-filter-content .form-label,
+.total-filter-content .filter-form .form-label {
+    color: #ffffff !important;
+}
+
+/* Total Leave Requests Date Picker Styling - White Icon */
+.total-filter-content input[type="date"],
+.total-filter-content .filter-form input[type="date"] {
+    position: relative;
+    cursor: pointer;
+    padding-right: 2.5rem; /* Ensure space for icon */
+}
+
+.total-filter-content input[type="date"]::-webkit-calendar-picker-indicator,
+.total-filter-content .filter-form input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 1;
+    filter: brightness(0) invert(1); /* Makes icon white */
+    transition: all 0.2s ease;
+    position: absolute;
+    right: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-size: contain;
+}
+
+.total-filter-content input[type="date"]::-webkit-calendar-picker-indicator:hover,
+.total-filter-content .filter-form input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+    transform: scale(1.1);
+}
+
+.form-select,
+.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Modal Styles - Fixed z-index hierarchy */
+.modal {
+    z-index: 1055 !important;
+    position: fixed !important;
+}
+
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+
+.modal-dialog {
+    z-index: 1056 !important;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 1057 !important;
+}
+
+/* Ensure modal appears above sticky header */
+.sticky-header {
+    z-index: 1030 !important;
+}
+
+/* Ensure modal backdrop is properly dimmed */
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+/* Toast Styles */
+.toast {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.toast-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Loading Spinner */
+.spinner-border {
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1.5rem 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .page-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .action-buttons .btn {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .reason-text {
+        max-width: 150px;
+    }
+    
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+    
+    .empty-state i {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header h2 {
+        font-size: 1.25rem;
+    }
+    
+    .card-header h5 {
+        font-size: 1rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .avatar-circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+    
+    .status-badge {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .action-buttons .btn {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.3rem;
+    }
+}
+
+/* Animation for row removal */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+.table-row-removing {
+    animation: fadeOut 0.3s ease-in-out forwards;
+}
+
+/* Fix double scrollbar issue - remove inner scrollbar completely */
+.table-responsive {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* Prevent double scrollbars by ensuring containers don't create their own */
+.container-fluid {
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+.card-body {
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+/* Remove any height constraints that might cause inner scrolling */
+.card {
+    height: auto;
+    overflow: visible;
+}
+
+/* Ensure tables don't create their own scroll areas */
+.table-responsive {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* Fix any card containers that might be causing scroll issues */
+.card-body .table-responsive {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* Specific fix for leave request page containers */
+#pendingRequestsTab .table-responsive,
+#totalLeaveRequestsTab .table-responsive {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* Ensure card containers don't create scroll areas */
+#pendingRequestsTab .card,
+#totalLeaveRequestsTab .card {
+    height: auto;
+    overflow: visible;
+}
+
+#pendingRequestsTab .card-body,
+#totalLeaveRequestsTab .card-body {
+    overflow: visible;
+    height: auto;
+}
+
+/* Remove any potential height constraints on the main containers */
+.tabs-container {
+    overflow: visible;
+}
+
+.tab-content {
+    overflow: visible;
+}
+
+/* ULTRA AGGRESSIVE FIX - Remove ALL inner scrollbars with maximum specificity */
+html body .app-frame .main-content .container-fluid .card .card-body .table-responsive,
+html body .app-frame .main-content .container-fluid .table-responsive,
+html body .app-frame .main-content .card-body .table-responsive,
+html body .app-frame .main-content .table-responsive,
+.table-responsive,
+.card-body,
+.card,
+.container-fluid {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+/* Hide ALL inner scrollbars with maximum specificity */
+html body .app-frame .main-content .container-fluid .card .card-body .table-responsive::-webkit-scrollbar,
+html body .app-frame .main-content .container-fluid .table-responsive::-webkit-scrollbar,
+html body .app-frame .main-content .card-body .table-responsive::-webkit-scrollbar,
+html body .app-frame .main-content .table-responsive::-webkit-scrollbar,
+.table-responsive::-webkit-scrollbar,
+.card-body::-webkit-scrollbar,
+.card::-webkit-scrollbar,
+.container-fluid::-webkit-scrollbar {
+    display: none !important; /* Chrome, Safari, Opera */
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Force remove any potential scroll areas */
+html body .app-frame .main-content .container-fluid,
+html body .app-frame .main-content .card,
+html body .app-frame .main-content .card-body {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* But allow ONLY main page scrollbar */
+html, body {
+    scrollbar-width: auto !important;
+    -ms-overflow-style: auto !important;
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: block !important;
+}
+
+/* Ensure ONLY main content area can scroll */
+html body .app-frame .main-content {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Fix content-area scrollbar issue specifically for leave request page */
+.content-area {
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* Remove any potential scrollbars from content-area */
+.content-area::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.content-area {
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+/* Last Refresh Timestamp Styling */
+.last-refresh-text {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 400;
+    white-space: nowrap;
+    margin-right: 0.5rem;
+}
+
+.last-refresh-text span {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Responsive adjustments for last refresh text */
+@media (max-width: 768px) {
+    .last-refresh-text {
+        font-size: 0.7rem;
+        margin-right: 0.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .last-refresh-text {
+        display: none !important; /* Hide on very small screens to save space */
+    }
+}
+
+/* Clear Leave Data Button Styling */
+#clearLeaveDataBtn {
+    background-color: #e74c3c !important;
+    border-color: #e74c3c !important;
+    color: white !important;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
+
+#clearLeaveDataBtn:hover {
+    background-color: #c0392b !important;
+    border-color: #c0392b !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+}
+
+#clearLeaveDataBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(231, 76, 60, 0.3);
+}
+
+#clearLeaveDataBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#clearLeaveDataBtn i {
+    margin-right: 0.5rem;
+}

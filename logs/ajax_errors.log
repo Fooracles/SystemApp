@@ -1,0 +1,247 @@
+[10-Nov-2025 16:22:36 Asia/Kolkata] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/u155861787/domains/teamfooracles.in/public_html/test/pages/action_update_checklist_status.php on line 11
+[10-Nov-2025 16:22:36 Asia/Kolkata] action_update_checklist_status.php called with POST data: {"task_id":"64","status":"completed"}
+[10-Nov-2025 16:22:36 Asia/Kolkata] User session info - ID: 2, Username: Ujjwal, User Type: manager
+[10-Nov-2025 16:22:36 Asia/Kolkata] Processing checklist task update - Task ID: 64, New Status: completed
+[10-Nov-2025 16:22:52 Asia/Kolkata] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/u155861787/domains/teamfooracles.in/public_html/test/pages/action_update_checklist_status.php on line 11
+[10-Nov-2025 16:22:52 Asia/Kolkata] action_update_checklist_status.php called with POST data: {"task_id":"5","status":"completed"}
+[10-Nov-2025 16:22:52 Asia/Kolkata] User session info - ID: 2, Username: Ujjwal, User Type: manager
+[10-Nov-2025 16:22:52 Asia/Kolkata] Processing checklist task update - Task ID: 5, New Status: completed
+[10-Nov-2025 16:23:12 Asia/Kolkata] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/u155861787/domains/teamfooracles.in/public_html/test/pages/action_update_checklist_status.php on line 11
+[10-Nov-2025 16:23:12 Asia/Kolkata] action_update_checklist_status.php called with POST data: {"task_id":"76","status":"completed"}
+[10-Nov-2025 16:23:12 Asia/Kolkata] User session info - ID: 2, Username: Ujjwal, User Type: manager
+[10-Nov-2025 16:23:12 Asia/Kolkata] Processing checklist task update - Task ID: 76, New Status: completed
+[10-Nov-2025 16:27:23 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"64","status":"completed"}
+[10-Nov-2025 16:27:23 Asia/Kolkata] User session info - ID: 2, Username: Ujjwal, User Type: manager
+[10-Nov-2025 16:27:23 Asia/Kolkata] Processing task update - Task ID: 64, New Status: completed, Task Type: delegation
+[10-Nov-2025 16:27:23 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"10-Nov-2025 04:27 PM","updated_delay_display_html":"<span class=\"text-danger\">1 D 21:27:23<\/span>"}
+[10-Nov-2025 16:27:35 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"65","status":"completed"}
+[10-Nov-2025 16:27:35 Asia/Kolkata] User session info - ID: 2, Username: Ujjwal, User Type: manager
+[10-Nov-2025 16:27:35 Asia/Kolkata] Processing task update - Task ID: 65, New Status: completed, Task Type: delegation
+[10-Nov-2025 16:27:35 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"10-Nov-2025 04:27 PM","updated_delay_display_html":"<span class=\"text-danger\">02:27:35<\/span>"}
+[10-Nov-2025 16:28:00 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"61","status":"completed"}
+[10-Nov-2025 16:28:00 Asia/Kolkata] User session info - ID: 2, Username: Ujjwal, User Type: manager
+[10-Nov-2025 16:28:00 Asia/Kolkata] Processing task update - Task ID: 61, New Status: completed, Task Type: delegation
+[10-Nov-2025 16:28:00 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"10-Nov-2025 04:28 PM","updated_delay_display_html":"<span class=\"text-danger\">16 D 02:28:00<\/span>"}
+[10-Nov-2025 16:43:37 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"17","status":"completed"}
+[10-Nov-2025 16:43:37 Asia/Kolkata] User session info - ID: 7, Username: Tanzeem, User Type: doer
+[10-Nov-2025 16:43:37 Asia/Kolkata] Processing task update - Task ID: 17, New Status: completed, Task Type: delegation
+[10-Nov-2025 16:43:37 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"10-Nov-2025 04:43 PM","updated_delay_display_html":"<span class=\"text-danger\">65 D 02:43:37<\/span>"}
+[11-Nov-2025 12:06:32 Asia/Kolkata] Processing priority toggle - Task ID: 187935, Task Type: fms
+[11-Nov-2025 12:06:32 Asia/Kolkata] FMS Priority Toggle - Task ID: 187935, Current Priority (raw): 0, Normalized: 0, Attempting to set: 1
+[11-Nov-2025 12:06:32 Asia/Kolkata] FMS Priority Toggle - Task ID: 187935, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[11-Nov-2025 12:06:32 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 187935, New Priority: 1 (verified)
+[11-Nov-2025 12:06:32 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task marked as priority!","priority":1}
+[11-Nov-2025 12:06:40 Asia/Kolkata] Processing priority toggle - Task ID: 187936, Task Type: fms
+[11-Nov-2025 12:06:40 Asia/Kolkata] FMS Priority Toggle - Task ID: 187936, Current Priority (raw): 1, Normalized: 1, Attempting to set: 0
+[11-Nov-2025 12:06:40 Asia/Kolkata] FMS Priority Toggle - Task ID: 187936, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[11-Nov-2025 12:06:40 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 187936, New Priority: 0 (verified)
+[11-Nov-2025 12:06:40 Asia/Kolkata] AJAX Response: {"status":"success","message":"Priority removed from task.","priority":0}
+[11-Nov-2025 12:08:49 Asia/Kolkata] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/u155861787/domains/teamfooracles.in/public_html/test/pages/action_update_checklist_status.php on line 11
+[11-Nov-2025 12:08:49 Asia/Kolkata] action_update_checklist_status.php called with POST data: {"task_id":"75","status":"completed"}
+[11-Nov-2025 12:08:49 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[11-Nov-2025 12:08:49 Asia/Kolkata] Processing checklist task update - Task ID: 75, New Status: completed
+[11-Nov-2025 12:12:27 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"66","status":"completed"}
+[11-Nov-2025 12:12:27 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[11-Nov-2025 12:12:27 Asia/Kolkata] Processing task update - Task ID: 66, New Status: completed, Task Type: delegation
+[11-Nov-2025 12:12:27 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"11-Nov-2025 12:12 PM","updated_delay_display_html":"<span class=\"text-danger\">22:42:27<\/span>"}
+[12-Nov-2025 10:56:32 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"1089","status":"pending"}
+[12-Nov-2025 10:56:32 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[12-Nov-2025 10:56:32 Asia/Kolkata] Processing task update - Task ID: 1089, New Status: pending, Task Type: delegation
+[12-Nov-2025 10:56:32 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"<span class=\"text-danger\">6 D 10:57:32<\/span>"}
+[12-Nov-2025 11:07:49 Asia/Kolkata] Processing priority toggle - Task ID: 57, Task Type: delegation
+[12-Nov-2025 11:07:49 Asia/Kolkata] Delegation Priority Toggle - Task ID: 57, Current Priority (raw): NULL, Normalized: 0, Attempting to set: 1
+[12-Nov-2025 11:07:49 Asia/Kolkata] Delegation Priority Toggle - Task ID: 57, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[12-Nov-2025 11:07:49 Asia/Kolkata] Delegation Priority Toggle - Verification - Task ID: 57 exists, Actual Priority (raw): 1, Normalized: 1, Expected: 1
+[12-Nov-2025 11:07:49 Asia/Kolkata] Delegation Priority Toggle Success - Task ID: 57, New Priority: 1 (verified)
+[12-Nov-2025 11:07:49 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task marked as priority!","priority":1}
+[12-Nov-2025 16:27:33 Asia/Kolkata] Processing priority toggle - Task ID: 964, Task Type: delegation
+[12-Nov-2025 16:27:33 Asia/Kolkata] Delegation Priority Toggle - Task ID: 964, Current Priority (raw): NULL, Normalized: 0, Attempting to set: 1
+[12-Nov-2025 16:27:33 Asia/Kolkata] Delegation Priority Toggle - Task ID: 964, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[12-Nov-2025 16:27:33 Asia/Kolkata] Delegation Priority Toggle - Verification - Task ID: 964 exists, Actual Priority (raw): 1, Normalized: 1, Expected: 1
+[12-Nov-2025 16:27:33 Asia/Kolkata] Delegation Priority Toggle Success - Task ID: 964, New Priority: 1 (verified)
+[12-Nov-2025 16:27:33 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task marked as priority!","priority":1}
+[12-Nov-2025 16:28:17 Asia/Kolkata] Processing priority toggle - Task ID: 57, Task Type: delegation
+[12-Nov-2025 16:28:17 Asia/Kolkata] Delegation Priority Toggle - Task ID: 57, Current Priority (raw): 1, Normalized: 1, Attempting to set: 0
+[12-Nov-2025 16:28:17 Asia/Kolkata] Delegation Priority Toggle - Task ID: 57, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[12-Nov-2025 16:28:17 Asia/Kolkata] Delegation Priority Toggle - Verification - Task ID: 57 exists, Actual Priority (raw): 0, Normalized: 0, Expected: 0
+[12-Nov-2025 16:28:17 Asia/Kolkata] Delegation Priority Toggle Success - Task ID: 57, New Priority: 0 (verified)
+[12-Nov-2025 16:28:17 Asia/Kolkata] AJAX Response: {"status":"success","message":"Priority removed from task.","priority":0}
+[12-Nov-2025 16:36:58 Asia/Kolkata] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/u155861787/domains/teamfooracles.in/public_html/app-v2/pages/action_update_checklist_status.php on line 11
+[12-Nov-2025 16:36:58 Asia/Kolkata] action_update_checklist_status.php called with POST data: {"task_id":"926","status":"not_done"}
+[12-Nov-2025 16:36:58 Asia/Kolkata] User session info - ID: 4, Username: Ujjwal, User Type: manager
+[12-Nov-2025 16:36:58 Asia/Kolkata] Processing checklist task update - Task ID: 926, New Status: not_done
+[12-Nov-2025 16:37:21 Asia/Kolkata] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/u155861787/domains/teamfooracles.in/public_html/app-v2/pages/action_update_checklist_status.php on line 11
+[12-Nov-2025 16:37:21 Asia/Kolkata] action_update_checklist_status.php called with POST data: {"task_id":"933","status":"not_done"}
+[12-Nov-2025 16:37:21 Asia/Kolkata] User session info - ID: 4, Username: Ujjwal, User Type: manager
+[12-Nov-2025 16:37:21 Asia/Kolkata] Processing checklist task update - Task ID: 933, New Status: not_done
+[12-Nov-2025 16:37:54 Asia/Kolkata] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/u155861787/domains/teamfooracles.in/public_html/app-v2/pages/action_update_checklist_status.php on line 11
+[12-Nov-2025 16:37:54 Asia/Kolkata] action_update_checklist_status.php called with POST data: {"task_id":"933","status":"cant_be_done"}
+[12-Nov-2025 16:37:54 Asia/Kolkata] User session info - ID: 4, Username: Ujjwal, User Type: manager
+[12-Nov-2025 16:37:54 Asia/Kolkata] Processing checklist task update - Task ID: 933, New Status: cant_be_done
+[12-Nov-2025 16:38:05 Asia/Kolkata] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/u155861787/domains/teamfooracles.in/public_html/app-v2/pages/action_update_checklist_status.php on line 11
+[12-Nov-2025 16:38:05 Asia/Kolkata] action_update_checklist_status.php called with POST data: {"task_id":"926","status":"cant_be_done"}
+[12-Nov-2025 16:38:05 Asia/Kolkata] User session info - ID: 4, Username: Ujjwal, User Type: manager
+[12-Nov-2025 16:38:05 Asia/Kolkata] Processing checklist task update - Task ID: 926, New Status: cant_be_done
+[13-Nov-2025 11:02:30 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"1097","status":"not_done"}
+[13-Nov-2025 11:02:30 Asia/Kolkata] User session info - ID: 4, Username: Ujjwal, User Type: manager
+[13-Nov-2025 11:02:30 Asia/Kolkata] Processing task update - Task ID: 1097, New Status: not_done, Task Type: delegation
+[13-Nov-2025 11:02:30 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Not done.","new_status_text":"Not done","new_status_icon":"<span class=\"status-icon status-not-done\" title=\"Not Done\">\u274c<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"N\/A"}
+[15-Nov-2025 01:51:57 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"1118","status":"completed"}
+[15-Nov-2025 01:51:57 Asia/Kolkata] User session info - ID: 4, Username: Ujjwal, User Type: manager
+[15-Nov-2025 01:51:57 Asia/Kolkata] Processing task update - Task ID: 1118, New Status: completed, Task Type: delegation
+[15-Nov-2025 01:51:57 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"15-Nov-2025 01:51 AM","updated_delay_display_html":"<span class=\"text-danger\">1 D 11:21:57<\/span>"}
+[18-Nov-2025 15:32:16 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"35","status":"completed"}
+[18-Nov-2025 15:32:16 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[18-Nov-2025 15:32:16 Asia/Kolkata] Processing task update - Task ID: 35, New Status: completed, Task Type: delegation
+[18-Nov-2025 15:32:16 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"18-Nov-2025 03:32 PM","updated_delay_display_html":"<span class=\"text-danger\">14 D 00:02:16<\/span>"}
+[18-Nov-2025 15:34:19 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"39","status":"completed"}
+[18-Nov-2025 15:34:19 Asia/Kolkata] User session info - ID: 2, Username: Pratham, User Type: doer
+[18-Nov-2025 15:34:19 Asia/Kolkata] Processing task update - Task ID: 39, New Status: completed, Task Type: delegation
+[18-Nov-2025 15:34:19 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"18-Nov-2025 03:34 PM","updated_delay_display_html":"<span class=\"text-danger\">23:04:19<\/span>"}
+[18-Nov-2025 15:43:17 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"40","status":"completed"}
+[18-Nov-2025 15:43:17 Asia/Kolkata] User session info - ID: 3, Username: Kanishka, User Type: manager
+[18-Nov-2025 15:43:17 Asia/Kolkata] Processing task update - Task ID: 40, New Status: completed, Task Type: delegation
+[18-Nov-2025 15:43:17 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"18-Nov-2025 03:43 PM","updated_delay_display_html":"<span class=\"text-danger\">04:13:17<\/span>"}
+[18-Nov-2025 15:44:18 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"32","status":"completed"}
+[18-Nov-2025 15:44:18 Asia/Kolkata] User session info - ID: 10, Username: Utkarsh, User Type: doer
+[18-Nov-2025 15:44:18 Asia/Kolkata] Processing task update - Task ID: 32, New Status: completed, Task Type: delegation
+[18-Nov-2025 15:44:18 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"18-Nov-2025 03:44 PM","updated_delay_display_html":"<span class=\"text-danger\">25 D 22:14:18<\/span>"}
+[18-Nov-2025 15:59:37 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"43","status":"completed"}
+[18-Nov-2025 15:59:37 Asia/Kolkata] User session info - ID: 10, Username: Utkarsh, User Type: doer
+[18-Nov-2025 15:59:37 Asia/Kolkata] Processing task update - Task ID: 43, New Status: completed, Task Type: delegation
+[18-Nov-2025 15:59:37 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"18-Nov-2025 03:59 PM","updated_delay_display_html":"00:00:00"}
+[22-Nov-2025 13:35:07 Asia/Kolkata] Processing priority toggle - Task ID: 1, Task Type: checklist
+[22-Nov-2025 13:35:07 Asia/Kolkata] Checklist Priority Toggle - Task ID: 1, Current Priority (raw): 1, Normalized: 1, Attempting to set: 0
+[22-Nov-2025 13:35:07 Asia/Kolkata] Checklist Priority Toggle - Task ID: 1, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[22-Nov-2025 13:35:07 Asia/Kolkata] Checklist Priority Toggle Success - Task ID: 1, New Priority: 0 (verified)
+[22-Nov-2025 13:35:07 Asia/Kolkata] AJAX Response: {"status":"success","message":"Priority removed from task.","priority":0}
+[22-Nov-2025 13:35:18 Asia/Kolkata] Processing priority toggle - Task ID: 34607, Task Type: fms
+[22-Nov-2025 13:35:18 Asia/Kolkata] FMS Priority Toggle - Task ID: 34607, Current Priority (raw): 0, Normalized: 0, Attempting to set: 1
+[22-Nov-2025 13:35:18 Asia/Kolkata] FMS Priority Toggle - Task ID: 34607, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[22-Nov-2025 13:35:18 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 34607, New Priority: 1 (verified)
+[22-Nov-2025 13:35:18 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task marked as priority!","priority":1}
+[24-Nov-2025 15:50:55 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"44","status":"pending"}
+[24-Nov-2025 15:50:55 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[24-Nov-2025 15:50:55 Asia/Kolkata] Processing task update - Task ID: 44, New Status: pending, Task Type: delegation
+[24-Nov-2025 15:50:55 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"<span class=\"text-danger\">4 D 17:50:55<\/span>"}
+[24-Nov-2025 15:51:58 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"36","status":"completed"}
+[24-Nov-2025 15:51:58 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[24-Nov-2025 15:51:58 Asia/Kolkata] Processing task update - Task ID: 36, New Status: completed, Task Type: delegation
+[24-Nov-2025 15:51:58 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"24-Nov-2025 03:51 PM","updated_delay_display_html":"<span class=\"text-danger\">19 D 23:21:58<\/span>"}
+[26-Nov-2025 13:29:37 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"49","status":"completed"}
+[26-Nov-2025 13:29:37 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[26-Nov-2025 13:29:37 Asia/Kolkata] Processing task update - Task ID: 49, New Status: completed, Task Type: delegation
+[26-Nov-2025 13:29:37 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"26-Nov-2025 01:29 PM","updated_delay_display_html":"00:00:00"}
+[27-Nov-2025 13:37:10 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"52","status":"completed"}
+[27-Nov-2025 13:37:10 Asia/Kolkata] User session info - ID: 21, Username: Prateek, User Type: doer
+[27-Nov-2025 13:37:10 Asia/Kolkata] Processing task update - Task ID: 52, New Status: completed, Task Type: delegation
+[27-Nov-2025 13:37:10 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"27-Nov-2025 01:37 PM","updated_delay_display_html":"00:00:00"}
+[27-Nov-2025 13:41:26 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"53","status":"completed"}
+[27-Nov-2025 13:41:26 Asia/Kolkata] User session info - ID: 21, Username: Prateek, User Type: doer
+[27-Nov-2025 13:41:26 Asia/Kolkata] Processing task update - Task ID: 53, New Status: completed, Task Type: delegation
+[27-Nov-2025 13:41:26 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"27-Nov-2025 01:41 PM","updated_delay_display_html":"00:00:00"}
+[28-Nov-2025 15:19:32 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"29","task_type":"checklist","status":"completed","action":"update_status"}
+[28-Nov-2025 15:19:32 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:19:32 Asia/Kolkata] Processing task update - Task ID: 29, New Status: completed, Task Type: checklist
+[28-Nov-2025 15:19:32 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"28-Nov-2025 03:19 PM","updated_delay_display_html":"<span class=\"text-danger\">3 D 15:19:33<\/span>"}
+[28-Nov-2025 15:19:36 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"29","task_type":"checklist","status":"pending","action":"update_status"}
+[28-Nov-2025 15:19:36 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:19:36 Asia/Kolkata] Processing task update - Task ID: 29, New Status: pending, Task Type: checklist
+[28-Nov-2025 15:19:36 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"<span class=\"text-danger\">3 D 15:19:37<\/span>"}
+[28-Nov-2025 15:19:39 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"30","task_type":"checklist","status":"completed","action":"update_status"}
+[28-Nov-2025 15:19:39 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:19:39 Asia/Kolkata] Processing task update - Task ID: 30, New Status: completed, Task Type: checklist
+[28-Nov-2025 15:19:39 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"28-Nov-2025 03:19 PM","updated_delay_display_html":"<span class=\"text-danger\">2 D 15:19:40<\/span>"}
+[28-Nov-2025 15:19:43 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"30","task_type":"checklist","status":"pending","action":"update_status"}
+[28-Nov-2025 15:19:43 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:19:43 Asia/Kolkata] Processing task update - Task ID: 30, New Status: pending, Task Type: checklist
+[28-Nov-2025 15:19:43 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"<span class=\"text-danger\">2 D 15:19:44<\/span>"}
+[28-Nov-2025 15:19:49 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"31","task_type":"checklist","status":"completed","action":"update_status"}
+[28-Nov-2025 15:19:49 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:19:49 Asia/Kolkata] Processing task update - Task ID: 31, New Status: completed, Task Type: checklist
+[28-Nov-2025 15:19:49 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"28-Nov-2025 03:19 PM","updated_delay_display_html":"<span class=\"text-danger\">1 D 15:19:50<\/span>"}
+[28-Nov-2025 15:19:53 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"31","task_type":"checklist","status":"pending","action":"update_status"}
+[28-Nov-2025 15:19:53 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:19:53 Asia/Kolkata] Processing task update - Task ID: 31, New Status: pending, Task Type: checklist
+[28-Nov-2025 15:19:53 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"<span class=\"text-danger\">1 D 15:19:54<\/span>"}
+[28-Nov-2025 15:19:58 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"32","task_type":"checklist","status":"completed","action":"update_status"}
+[28-Nov-2025 15:19:58 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:19:58 Asia/Kolkata] Processing task update - Task ID: 32, New Status: completed, Task Type: checklist
+[28-Nov-2025 15:19:58 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"28-Nov-2025 03:19 PM","updated_delay_display_html":"<span class=\"text-danger\">15:19:59<\/span>"}
+[28-Nov-2025 15:20:01 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"32","task_type":"checklist","status":"pending","action":"update_status"}
+[28-Nov-2025 15:20:01 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:20:01 Asia/Kolkata] Processing task update - Task ID: 32, New Status: pending, Task Type: checklist
+[28-Nov-2025 15:20:01 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"<span class=\"text-danger\">15:20:02<\/span>"}
+[28-Nov-2025 15:20:06 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"33","task_type":"checklist","status":"completed","action":"update_status"}
+[28-Nov-2025 15:20:06 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:20:06 Asia/Kolkata] Processing task update - Task ID: 33, New Status: completed, Task Type: checklist
+[28-Nov-2025 15:20:06 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"28-Nov-2025 03:20 PM","updated_delay_display_html":"00:00:00"}
+[28-Nov-2025 15:20:11 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"33","task_type":"checklist","status":"pending","action":"update_status"}
+[28-Nov-2025 15:20:11 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:20:11 Asia/Kolkata] Processing task update - Task ID: 33, New Status: pending, Task Type: checklist
+[28-Nov-2025 15:20:11 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"N\/A"}
+[28-Nov-2025 15:20:16 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"54","task_type":"delegation","status":"completed","action":"update_status"}
+[28-Nov-2025 15:20:16 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:20:16 Asia/Kolkata] Processing task update - Task ID: 54, New Status: completed, Task Type: delegation
+[28-Nov-2025 15:20:16 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"28-Nov-2025 03:20 PM","updated_delay_display_html":"00:00:00"}
+[28-Nov-2025 15:20:21 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"54","task_type":"delegation","status":"pending","action":"update_status"}
+[28-Nov-2025 15:20:21 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[28-Nov-2025 15:20:21 Asia/Kolkata] Processing task update - Task ID: 54, New Status: pending, Task Type: delegation
+[28-Nov-2025 15:20:21 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"N\/A"}
+[01-Dec-2025 11:46:15 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"55","status":"cant_be_done"}
+[01-Dec-2025 11:46:15 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[01-Dec-2025 11:46:15 Asia/Kolkata] Processing task update - Task ID: 55, New Status: cant_be_done, Task Type: delegation
+[01-Dec-2025 11:46:15 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Can not be done.","new_status_text":"Can not be done","new_status_icon":"<span class=\"status-icon status-cant-be-done\" title=\"Can&#039;t be done\">\u26d4<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"N\/A"}
+[01-Dec-2025 11:46:20 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"55","status":"not_done"}
+[01-Dec-2025 11:46:20 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[01-Dec-2025 11:46:20 Asia/Kolkata] Processing task update - Task ID: 55, New Status: not_done, Task Type: delegation
+[01-Dec-2025 11:46:20 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Not done.","new_status_text":"Not done","new_status_icon":"<span class=\"status-icon status-not-done\" title=\"Not Done\">\u274c<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"N\/A"}
+[01-Dec-2025 11:46:24 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"55","status":"pending"}
+[01-Dec-2025 11:46:24 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[01-Dec-2025 11:46:24 Asia/Kolkata] Processing task update - Task ID: 55, New Status: pending, Task Type: delegation
+[01-Dec-2025 11:46:24 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Pending.","new_status_text":"Pending","new_status_icon":"<span class=\"status-icon status-pending\" title=\"Pending\">\u23f3<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"N\/A"}
+[01-Dec-2025 11:47:16 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"55","status":"not_done"}
+[01-Dec-2025 11:47:16 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[01-Dec-2025 11:47:16 Asia/Kolkata] Processing task update - Task ID: 55, New Status: not_done, Task Type: delegation
+[01-Dec-2025 11:47:16 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Not done.","new_status_text":"Not done","new_status_icon":"<span class=\"status-icon status-not-done\" title=\"Not Done\">\u274c<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"N\/A"}
+[01-Dec-2025 11:47:23 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"54","status":"cant_be_done"}
+[01-Dec-2025 11:47:23 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[01-Dec-2025 11:47:23 Asia/Kolkata] Processing task update - Task ID: 54, New Status: cant_be_done, Task Type: delegation
+[01-Dec-2025 11:47:23 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Can not be done.","new_status_text":"Can not be done","new_status_icon":"<span class=\"status-icon status-cant-be-done\" title=\"Can&#039;t be done\">\u26d4<\/span>","updated_actual_display":"N\/A","updated_delay_display_html":"N\/A"}
+[01-Dec-2025 12:59:16 Asia/Kolkata] Processing priority toggle - Task ID: 34607, Task Type: fms
+[01-Dec-2025 12:59:16 Asia/Kolkata] FMS Priority Toggle - Task ID: 34607, Current Priority (raw): 1, Normalized: 1, Attempting to set: 0
+[01-Dec-2025 12:59:16 Asia/Kolkata] FMS Priority Toggle - Task ID: 34607, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[01-Dec-2025 12:59:16 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 34607, New Priority: 0 (verified)
+[01-Dec-2025 12:59:16 Asia/Kolkata] AJAX Response: {"status":"success","message":"Priority removed from task.","priority":0}
+[05-Dec-2025 15:16:53 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"33","status":"completed"}
+[05-Dec-2025 15:16:53 Asia/Kolkata] User session info - ID: 2, Username: Pratham, User Type: doer
+[05-Dec-2025 15:16:53 Asia/Kolkata] Processing task update - Task ID: 33, New Status: completed, Task Type: delegation
+[05-Dec-2025 15:16:54 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"05-Dec-2025 03:16 PM","updated_delay_display_html":"<span class=\"text-danger\">34 D 21:46:53<\/span>"}
+[05-Dec-2025 15:48:29 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"56","status":"completed"}
+[05-Dec-2025 15:48:29 Asia/Kolkata] User session info - ID: 2, Username: Pratham, User Type: doer
+[05-Dec-2025 15:48:29 Asia/Kolkata] Processing task update - Task ID: 56, New Status: completed, Task Type: delegation
+[05-Dec-2025 15:48:29 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"05-Dec-2025 03:48 PM","updated_delay_display_html":"00:00:00"}
+[05-Dec-2025 16:06:49 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"5","status":"completed"}
+[05-Dec-2025 16:06:49 Asia/Kolkata] User session info - ID: 2, Username: Pratham, User Type: doer
+[05-Dec-2025 16:06:49 Asia/Kolkata] Processing task update - Task ID: 5, New Status: completed, Task Type: delegation
+[05-Dec-2025 16:06:49 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"05-Dec-2025 04:06 PM","updated_delay_display_html":"<span class=\"text-danger\">68 D 16:07:49<\/span>"}
+[10-Dec-2025 16:59:23 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"23","status":"completed"}
+[10-Dec-2025 16:59:23 Asia/Kolkata] User session info - ID: 19, Username: Hardeep, User Type: doer
+[10-Dec-2025 16:59:23 Asia/Kolkata] Processing task update - Task ID: 23, New Status: completed, Task Type: delegation
+[10-Dec-2025 16:59:23 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"10-Dec-2025 04:59 PM","updated_delay_display_html":"<span class=\"text-danger\">60 D 22:59:23<\/span>"}
+[10-Dec-2025 16:59:25 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"22","status":"completed"}
+[10-Dec-2025 16:59:25 Asia/Kolkata] User session info - ID: 19, Username: Hardeep, User Type: doer
+[10-Dec-2025 16:59:25 Asia/Kolkata] Processing task update - Task ID: 22, New Status: completed, Task Type: delegation
+[10-Dec-2025 16:59:25 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"10-Dec-2025 04:59 PM","updated_delay_display_html":"<span class=\"text-danger\">62 D 05:29:25<\/span>"}
+[10-Dec-2025 16:59:41 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"57","status":"completed"}
+[10-Dec-2025 16:59:41 Asia/Kolkata] User session info - ID: 19, Username: Hardeep, User Type: doer
+[10-Dec-2025 16:59:41 Asia/Kolkata] Processing task update - Task ID: 57, New Status: completed, Task Type: delegation
+[10-Dec-2025 16:59:41 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"10-Dec-2025 04:59 PM","updated_delay_display_html":"<span class=\"text-danger\">2 D 04:59:41<\/span>"}
+[10-Dec-2025 17:50:58 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully.","user_id":19,"Status":"Inactive"}
+[13-Dec-2025 12:25:11 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully.","user_id":19,"Status":"Active"}
+[13-Dec-2025 12:25:20 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully.","user_id":10,"Status":"Inactive"}
+[13-Dec-2025 12:25:36 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully.","user_id":22,"Status":"Inactive"}
+[23-Dec-2025 12:08:25 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"71","task_type":"delegation","status":"completed","action":"update_status"}
+[23-Dec-2025 12:08:25 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[23-Dec-2025 12:08:25 Asia/Kolkata] Processing task update - Task ID: 71, New Status: completed, Task Type: delegation
+[23-Dec-2025 12:08:25 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"23-Dec-2025 12:08 PM","updated_delay_display_html":"<span class=\"text-danger\">00:38:25<\/span>"}

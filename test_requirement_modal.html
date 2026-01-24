@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requirement Modal Automated Test</title>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+        .test-section {
+            background: #334155;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #475569;
+        }
+        .test-section h2 {
+            color: #60a5fa;
+            margin-top: 0;
+        }
+        .test-result {
+            background: #475569;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 4px solid #3b82f6;
+        }
+        .test-result.pass {
+            border-left-color: #10b981;
+        }
+        .test-result.fail {
+            border-left-color: #ef4444;
+        }
+        .test-result h3 {
+            margin-top: 0;
+            color: #93c5fd;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.pass {
+            background: #10b981;
+            color: white;
+        }
+        .status.fail {
+            background: #ef4444;
+            color: white;
+        }
+        .status.pending {
+            background: #f59e0b;
+            color: white;
+        }
+        .code-block {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border: 1px solid #475569;
+        }
+        .code-block code {
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .note {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #f59e0b;
+        }
+        .note strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .test-controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .log {
+            background: #1e293b;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-item {
+            padding: 2px 0;
+        }
+        .log-item.success {
+            color: #10b981;
+        }
+        .log-item.error {
+            color: #ef4444;
+        }
+        .log-item.info {
+            color: #60a5fa;
+        }
+        
+        /* Modal Styles for Testing */
+        [x-cloak] { 
+            display: none !important; 
+        }
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+        .modal-exit {
+            animation: modalExit 0.2s ease-in;
+        }
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        @keyframes modalExit {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Requirement Modal Automated Test Suite</h1>
+    
+    <div class="test-controls">
+        <button class="btn-primary" onclick="runAllTests()">Run All Tests</button>
+        <button class="btn-success" onclick="testModalVisibility()">Test Modal Visibility</button>
+        <button class="btn-danger" onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="testResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Log</h2>
+        <div id="testLog" class="log"></div>
+    </div>
+
+    <!-- Test Modal (Replica of Requirement Modal) -->
+    <div 
+        x-data="testApp()"
+        id="testApp"
+    >
+        <!-- Requirement Modal -->
+        <div 
+            x-show="isRequirementModalOpen"
+            x-transition:enter="modal-enter"
+            x-transition:leave="modal-exit"
+            @click.away="closeRequirementModal()"
+            @keydown.escape.window="closeRequirementModal()"
+            class="fixed inset-0 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            style="z-index: 999999 !important;"
+            x-cloak
+            id="requirementModal"
+        >
+            <!-- Modal Content -->
+            <div 
+                @click.stop
+                class="relative bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col"
+                style="z-index: 1000000 !important;"
+                id="requirementModalContent"
+            >
+                <!-- Modal Header -->
+                <div class="bg-slate-800 border-b border-slate-700 px-4 py-3 flex justify-between items-center rounded-t-2xl flex-shrink-0">
+                    <h2 class="text-lg font-bold text-white">Requirement</h2>
+                    <button 
+                        @click="closeRequirementModal()"
+                        class="text-slate-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-700"
+                        id="closeModalBtn"
+                    >
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-4 overflow-y-auto flex-1">
+                    <div class="mb-4">
+                        <p class="text-sm text-slate-300 mb-2">
+                            <strong class="text-white" x-text="requirementItem ? requirementItem.title : ''"></strong>
+                        </p>
+                        <p class="text-xs text-slate-400 mb-4">
+                            Provide description and attachments. Status will be updated to "Provided" when you submit.
+                        </p>
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Description</label>
+                        <textarea
+                            x-model="requirementDescription"
+                            rows="4"
+                            class="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                            placeholder="Enter description..."
+                            id="requirementDescription"
+                        ></textarea>
+                    </div>
+
+                    <!-- Attach Media Field -->
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Attachments</label>
+                        <div
+                            @dragover.prevent="isRequirementDragging = true"
+                            @dragleave.prevent="isRequirementDragging = false"
+                            @drop.prevent="handleRequirementFileDrop($event)"
+                            @click="$refs.requirementFileInput.click()"
+                            class="drop-zone rounded-lg p-4 text-center cursor-pointer transition-all"
+                            :class="isRequirementDragging ? 'drag-over' : 'bg-slate-700/30'"
+                            id="fileDropZone"
+                        >
+                            <input
+                                type="file"
+                                x-ref="requirementFileInput"
+                                @change="handleRequirementFileSelect($event)"
+                                multiple
+                                accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
+                                class="hidden"
+                                id="requirementFileInput"
+                            />
+                            <i data-lucide="upload" class="w-8 h-8 mx-auto mb-2 text-slate-400"></i>
+                            <p class="text-slate-300 mb-0.5 text-xs">Drag & drop or click to browse</p>
+                            <p class="text-xs text-slate-500">Docs, Images, Video, Audio</p>
+                            <p class="text-xs text-slate-500 mt-1">
+                                <i class="fas fa-info-circle"></i> Max file size: 50 MB
+                            </p>
+                        </div>
+                        
+                        <!-- File Previews -->
+                        <div x-show="requirementFiles.length > 0" class="mt-2 space-y-1.5" id="filePreviews">
+                            <template x-for="(file, index) in requirementFiles" :key="index">
+                                <div class="flex items-center justify-between bg-slate-700/50 rounded-lg p-2">
+                                    <div class="flex items-center gap-2 flex-1 min-w-0">
+                                        <i :data-lucide="getFileIcon(file.type)" class="w-4 h-4 text-slate-400 flex-shrink-0"></i>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-xs text-white truncate" x-text="file.name"></p>
+                                            <p class="text-xs text-slate-400" x-text="formatFileSize(file.size)"></p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        @click="removeRequirementFile(index)"
+                                        class="text-slate-400 hover:text-red-400 transition-colors p-1 flex-shrink-0"
+                                    >
+                                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex justify-end gap-2 pt-2 border-t border-slate-700 flex-shrink-0">
+                        <button
+                            type="button"
+                            @click="closeRequirementModal()"
+                            class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium transition-colors text-sm"
+                            id="cancelBtn"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            @click="submitRequirement()"
+                            class="gradient-button text-white px-4 py-2 rounded-lg font-medium shadow-lg text-sm"
+                            id="submitBtn"
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Button to Open Modal -->
+        <div style="padding: 20px;">
+            <button 
+                @click="openRequirementModal({id: 'REQ001', title: 'Test Requirement', type: 'Required'}, 0)"
+                class="btn-primary"
+                id="openModalBtn"
+            >
+                Open Requirement Modal (Test)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let testLog = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            testLog.push({message: `${timestamp} - ${message}`, type});
+            updateLogDisplay();
+        }
+        
+        function updateLogDisplay() {
+            const logDiv = document.getElementById('testLog');
+            logDiv.innerHTML = testLog.map(item => 
+                `<div class="log-item ${item.type}">${item.message}</div>`
+            ).join('');
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLogs() {
+            testLog = [];
+            updateLogDisplay();
+            document.getElementById('testResults').innerHTML = '';
+        }
+        
+        function addTestResult(testName, passed, details = '') {
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            resultDiv.innerHTML = `
+                <h3>${testName} <span class="status ${passed ? 'pass' : 'fail'}">${passed ? 'PASS' : 'FAIL'}</span></h3>
+                ${details ? `<p>${details}</p>` : ''}
+            `;
+            resultsDiv.appendChild(resultDiv);
+            log(`${testName}: ${passed ? 'PASSED' : 'FAILED'}`, passed ? 'success' : 'error');
+        }
+        
+        function testModalExists() {
+            log('Testing if modal exists in DOM...', 'info');
+            const modal = document.getElementById('requirementModal');
+            const exists = modal !== null;
+            addTestResult('Modal Exists in DOM', exists, exists ? 'Modal element found' : 'Modal element not found');
+            return exists;
+        }
+        
+        function testModalVisibility() {
+            log('Testing modal visibility...', 'info');
+            return new Promise((resolve) => {
+                // Wait for Alpine to initialize
+                setTimeout(() => {
+                    const app = document.getElementById('testApp');
+                    if (!app || !app._x_dataStack || !app._x_dataStack[0]) {
+                        addTestResult('Alpine.js Initialized', false, 'Alpine.js not initialized');
+                        resolve(false);
+                        return;
+                    }
+                    
+                    const appData = app._x_dataStack[0];
+                    log('Alpine.js is initialized', 'success');
+                    
+                    // Test opening modal
+                    if (typeof appData.openRequirementModal === 'function') {
+                        log('openRequirementModal function exists', 'success');
+                        appData.openRequirementModal({id: 'REQ001', title: 'Test Requirement', type: 'Required'}, 0);
+                        
+                        setTimeout(() => {
+                            const modal = document.getElementById('requirementModal');
+                            const isOpen = appData.isRequirementModalOpen === true;
+                            const isVisible = modal && window.getComputedStyle(modal).display !== 'none';
+                            const zIndex = modal ? window.getComputedStyle(modal).zIndex : '0';
+                            
+                            log(`Modal state - isOpen: ${isOpen}, isVisible: ${isVisible}, zIndex: ${zIndex}`, 'info');
+                            
+                            addTestResult('Modal Opens Correctly', isOpen, 
+                                `State: ${isOpen ? 'OPEN' : 'CLOSED'}, Visible: ${isVisible ? 'YES' : 'NO'}, Z-Index: ${zIndex}`);
+                            
+                            addTestResult('Modal Z-Index', parseInt(zIndex) >= 999999, 
+                                `Z-Index: ${zIndex} (should be >= 999999)`);
+                            
+                            addTestResult('Modal Visible in DOM', isVisible, 
+                                `Display: ${window.getComputedStyle(modal).display}`);
+                            
+                            // Test modal content
+                            const modalContent = document.getElementById('requirementModalContent');
+                            const contentExists = modalContent !== null;
+                            addTestResult('Modal Content Exists', contentExists);
+                            
+                            // Test form elements
+                            const descriptionField = document.getElementById('requirementDescription');
+                            const fileInput = document.getElementById('requirementFileInput');
+                            const submitBtn = document.getElementById('submitBtn');
+                            const cancelBtn = document.getElementById('cancelBtn');
+                            
+                            addTestResult('Description Field Exists', descriptionField !== null);
+                            addTestResult('File Input Exists', fileInput !== null);
+                            addTestResult('Submit Button Exists', submitBtn !== null);
+                            addTestResult('Cancel Button Exists', cancelBtn !== null);
+                            
+                            // Test closing
+                            appData.closeRequirementModal();
+                            setTimeout(() => {
+                                const isClosed = appData.isRequirementModalOpen === false;
+                                addTestResult('Modal Closes Correctly', isClosed);
+                                resolve(true);
+                            }, 300);
+                        }, 500);
+                    } else {
+                        addTestResult('openRequirementModal Function Exists', false, 'Function not found');
+                        resolve(false);
+                    }
+                }, 1000);
+            });
+        }
+        
+        function testModalFunctions() {
+            log('Testing modal functions...', 'info');
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const app = document.getElementById('testApp');
+                    if (!app || !app._x_dataStack || !app._x_dataStack[0]) {
+                        resolve(false);
+                        return;
+                    }
+                    
+                    const appData = app._x_dataStack[0];
+                    const functions = [
+                        'openRequirementModal',
+                        'closeRequirementModal',
+                        'submitRequirement',
+                        'handleRequirementFileSelect',
+                        'handleRequirementFileDrop',
+                        'addRequirementFiles',
+                        'removeRequirementFile'
+                    ];
+                    
+                    functions.forEach(funcName => {
+                        const exists = typeof appData[funcName] === 'function';
+                        addTestResult(`${funcName}() Exists`, exists);
+                    });
+                    
+                    resolve(true);
+                }, 1000);
+            });
+        }
+        
+        function testModalDataProperties() {
+            log('Testing modal data properties...', 'info');
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const app = document.getElementById('testApp');
+                    if (!app || !app._x_dataStack || !app._x_dataStack[0]) {
+                        resolve(false);
+                        return;
+                    }
+                    
+                    const appData = app._x_dataStack[0];
+                    const properties = [
+                        'isRequirementModalOpen',
+                        'requirementItem',
+                        'requirementIndex',
+                        'requirementDescription',
+                        'requirementFiles',
+                        'isRequirementDragging'
+                    ];
+                    
+                    properties.forEach(prop => {
+                        const exists = prop in appData;
+                        addTestResult(`Property: ${prop}`, exists);
+                    });
+                    
+                    resolve(true);
+                }, 1000);
+            });
+        }
+        
+        async function runAllTests() {
+            clearLogs();
+            log('Starting automated test suite...', 'info');
+            
+            // Test 1: Modal exists
+            testModalExists();
+            
+            // Test 2: Modal visibility
+            await testModalVisibility();
+            
+            // Test 3: Functions exist
+            await testModalFunctions();
+            
+            // Test 4: Data properties exist
+            await testModalDataProperties();
+            
+            log('All tests completed!', 'success');
+        }
+        
+        // Alpine.js App for Testing
+        function testApp() {
+            return {
+                isRequirementModalOpen: false,
+                requirementItem: null,
+                requirementIndex: null,
+                requirementDescription: '',
+                requirementFiles: [],
+                isRequirementDragging: false,
+                
+                openRequirementModal(item, index) {
+                    try {
+                        console.log('openRequirementModal called', item, index);
+                        if (!item) {
+                            console.error('Item is undefined');
+                            return;
+                        }
+                        this.requirementItem = item;
+                        this.requirementIndex = index;
+                        this.requirementDescription = item.provided_description || '';
+                        this.requirementFiles = [];
+                        this.isRequirementModalOpen = true;
+                        console.log('Modal state:', {
+                            isOpen: this.isRequirementModalOpen,
+                            item: this.requirementItem,
+                            description: this.requirementDescription
+                        });
+                    } catch (error) {
+                        console.error('Error opening requirement modal:', error);
+                    }
+                },
+                
+                closeRequirementModal() {
+                    this.isRequirementModalOpen = false;
+                    this.requirementItem = null;
+                    this.requirementIndex = null;
+                    this.requirementDescription = '';
+                    this.requirementFiles = [];
+                },
+                
+                async submitRequirement() {
+                    console.log('Submit requirement called');
+                    // Test implementation
+                },
+                
+                handleRequirementFileSelect(event) {
+                    const files = Array.from(event.target.files || []);
+                    this.addRequirementFiles(files);
+                },
+                
+                handleRequirementFileDrop(event) {
+                    event.preventDefault();
+                    this.isRequirementDragging = false;
+                    const files = Array.from(event.dataTransfer.files || []);
+                    this.addRequirementFiles(files);
+                },
+                
+                addRequirementFiles(files) {
+                    const maxSize = 50 * 1024 * 1024; // 50MB
+                    for (let file of files) {
+                        if (file.size > maxSize) {
+                            alert(`File "${file.name}" exceeds 50MB limit.`);
+                            continue;
+                        }
+                        this.requirementFiles.push(file);
+                    }
+                },
+                
+                removeRequirementFile(index) {
+                    this.requirementFiles.splice(index, 1);
+                },
+                
+                getFileIcon(type) {
+                    if (!type) return 'file';
+                    if (type.startsWith('image/')) return 'image';
+                    if (type.startsWith('video/')) return 'video';
+                    if (type.startsWith('audio/')) return 'music';
+                    if (type === 'application/pdf') return 'file-text';
+                    return 'file';
+                },
+                
+                formatFileSize(bytes) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+                }
+            };
+        }
+        
+        // Initialize Lucide icons when available
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+        
+        // Auto-run tests when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('Page loaded, ready for testing', 'success');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

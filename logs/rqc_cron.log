@@ -1,0 +1,1231 @@
+[2025-11-20 13:03:16] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 13:03:16] MANUAL: Database connection: SUCCESS
+[2025-11-20 13:03:16] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 13:03:16] MANUAL: Tab Name: All RQC
+[2025-11-20 13:03:17] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 13:03:17] MANUAL: Fetching data from Google Sheet
+[2025-11-20 13:03:23] MANUAL: Skipped header row
+[2025-11-20 13:03:23] MANUAL: Fetched 571 rows from Google Sheet
+[2025-11-20 13:03:23] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 13:03:23] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 13:03:23] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 13:05:13] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 13:05:13] MANUAL: Database connection: SUCCESS
+[2025-11-20 13:05:13] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 13:05:13] MANUAL: Tab Name: All RQC
+[2025-11-20 13:05:13] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 13:05:13] MANUAL: Fetching data from Google Sheet
+[2025-11-20 13:05:15] MANUAL: Skipped header row
+[2025-11-20 13:05:15] MANUAL: Fetched 571 rows from Google Sheet
+[2025-11-20 13:05:15] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 13:05:15] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 13:05:15] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 13:13:43] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 13:13:43] MANUAL: Database connection: SUCCESS
+[2025-11-20 13:13:43] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 13:13:43] MANUAL: Tab Name: All RQC
+[2025-11-20 13:13:43] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 13:13:43] MANUAL: Fetching data from Google Sheet
+[2025-11-20 13:13:45] MANUAL: Skipped header row
+[2025-11-20 13:13:45] MANUAL: Fetched 571 rows from Google Sheet
+[2025-11-20 13:13:45] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 13:13:45] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 13:13:45] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 13:19:21] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 13:19:21] MANUAL: Database connection: SUCCESS
+[2025-11-20 13:19:21] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 13:19:21] MANUAL: Tab Name: All RQC
+[2025-11-20 13:19:21] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 13:19:21] MANUAL: Fetching data from Google Sheet
+[2025-11-20 13:19:22] MANUAL: Skipped header row
+[2025-11-20 13:19:22] MANUAL: Fetched 571 rows from Google Sheet
+[2025-11-20 13:19:22] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 13:19:22] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 13:19:22] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 13:25:18] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 13:25:18] MANUAL: Database connection: SUCCESS
+[2025-11-20 13:25:18] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 13:25:18] MANUAL: Tab Name: All RQC
+[2025-11-20 13:25:18] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 13:25:18] MANUAL: Fetching data from Google Sheet
+[2025-11-20 13:25:19] MANUAL: Skipped header row
+[2025-11-20 13:25:19] MANUAL: Fetched 571 rows from Google Sheet
+[2025-11-20 13:25:19] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 13:25:19] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 13:25:19] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 13:36:06] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 13:36:06] MANUAL: Database connection: SUCCESS
+[2025-11-20 13:36:06] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 13:36:06] MANUAL: Tab Name: All RQC
+[2025-11-20 13:36:06] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 13:36:06] MANUAL: Fetching data from Google Sheet
+[2025-11-20 13:36:07] MANUAL: Skipped header row
+[2025-11-20 13:36:07] MANUAL: Fetched 571 rows from Google Sheet
+[2025-11-20 13:36:07] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 13:36:07] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 13:36:07] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 15:43:44] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 15:43:44] MANUAL: Database connection: SUCCESS
+[2025-11-20 15:43:44] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 15:43:44] MANUAL: Tab Name: All RQC
+[2025-11-20 15:43:46] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 15:43:46] MANUAL: Fetching data from Google Sheet
+[2025-11-20 15:43:50] MANUAL: Skipped header row
+[2025-11-20 15:43:50] MANUAL: Fetched 571 rows from Google Sheet
+[2025-11-20 15:43:50] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 15:43:50] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 15:43:50] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 16:00:30] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 16:00:30] MANUAL: Database connection: SUCCESS
+[2025-11-20 16:00:30] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 16:00:30] MANUAL: Tab Name: All RQC
+[2025-11-20 16:00:30] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 16:00:30] MANUAL: Fetching data from Google Sheet
+[2025-11-20 16:00:32] MANUAL: Skipped header row
+[2025-11-20 16:00:32] MANUAL: Fetched 571 rows from Google Sheet
+[2025-11-20 16:00:32] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 16:00:32] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 16:00:32] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 16:07:48] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 16:07:48] MANUAL: Database connection: SUCCESS
+[2025-11-20 16:07:48] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 16:07:48] MANUAL: Tab Name: All RQC
+[2025-11-20 16:07:48] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 16:07:48] MANUAL: Fetching data from Google Sheet
+[2025-11-20 16:07:50] MANUAL: Skipped header row
+[2025-11-20 16:07:50] MANUAL: Fetched 573 rows from Google Sheet
+[2025-11-20 16:07:50] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 16:07:50] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 16:07:50] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 16:28:37] CRON: Started RQC Sheet Sync
+[2025-11-20 16:28:37] CRON: Database connected successfully
+[2025-11-20 16:28:37] CRON: Google Sheets client initialized
+[2025-11-20 16:28:37] CRON: Fetching data from Google Sheet: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ, Tab: All RQC
+[2025-11-20 16:28:38] CRON: Skipped header row
+[2025-11-20 16:28:38] CRON: Fetched 573 rows from Google Sheet
+[2025-11-20 16:28:38] CRON: ERROR: Row 2 - Invalid timestamp format: 14/02/25  12:48 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 3 - Invalid timestamp format: 15/02/25  11:54 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 4 - Invalid timestamp format: 22/02/25  10:16 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 5 - Invalid timestamp format: 22/02/25  01:09 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 6 - Invalid timestamp format: 28/02/25  05:43 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 7 - Invalid timestamp format: 28/02/25  06:39 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 10 - Invalid timestamp format: 15/03/25  11:37 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 11 - Invalid timestamp format: 21/03/25  12:31 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 14 - Invalid timestamp format: 19/04/25  04:07 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 15 - Invalid timestamp format: 26/04/25  06:19 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 17 - Invalid timestamp format: 24/05/25  04:37 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 18 - Invalid timestamp format: 24/05/25  04:44 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 21 - Invalid timestamp format: 20/10/24  01:42 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 22 - Invalid timestamp format: 20/10/24  01:44 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 23 - Invalid timestamp format: 20/10/24  03:20 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 24 - Invalid timestamp format: 26/10/24  05:47 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 25 - Invalid timestamp format: 26/10/24  09:42 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 26 - Invalid timestamp format: 26/10/24  09:50 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 32 - Invalid timestamp format: 16/11/24  05:46 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 33 - Invalid timestamp format: 16/11/24  05:51 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 34 - Invalid timestamp format: 17/11/24  05:26 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 35 - Invalid timestamp format: 22/11/24  01:31 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 36 - Invalid timestamp format: 22/11/24  04:01 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 37 - Invalid timestamp format: 23/11/24  05:29 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 38 - Invalid timestamp format: 29/11/24  12:48 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 39 - Invalid timestamp format: 29/11/24  04:36 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 40 - Invalid timestamp format: 29/11/24  05:02 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 44 - Invalid timestamp format: 13/12/24  03:17 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 45 - Invalid timestamp format: 13/12/24  03:42 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 46 - Invalid timestamp format: 14/12/24  01:37 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 47 - Invalid timestamp format: 20/12/24  05:09 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 48 - Invalid timestamp format: 20/12/24  05:31 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 49 - Invalid timestamp format: 21/12/24  08:36 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 50 - Invalid timestamp format: 21/12/24  08:38 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 51 - Invalid timestamp format: 27/12/24  03:22 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 52 - Invalid timestamp format: 27/12/24  03:44 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 53 - Invalid timestamp format: 27/12/24  03:45 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 54 - Invalid timestamp format: 27/12/24  03:48 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 55 - Invalid timestamp format: 27/12/24  03:52 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 60 - Invalid timestamp format: 18/01/25  11:19 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 61 - Invalid timestamp format: 18/01/25  12:29 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 62 - Invalid timestamp format: 24/01/25  01:23 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 63 - Invalid timestamp format: 24/01/25  01:29 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 64 - Invalid timestamp format: 24/01/25  06:55 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 65 - Invalid timestamp format: 24/01/25  07:13 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 66 - Invalid timestamp format: 24/01/25  07:14 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 67 - Invalid timestamp format: 31/01/25  04:41 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 68 - Invalid timestamp format: 31/01/25  05:15 PM
+[2025-11-20 16:28:38] CRON: UPDATED: Aysha - Score: 20.00% → 88.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:28:38] CRON: UPDATED: Aysha - Score: 88.00% → 20.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:28:38] CRON: ERROR: Row 73 - Invalid timestamp format: 14/02/25  11:39 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 74 - Invalid timestamp format: 14/02/25  11:40 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 75 - Invalid timestamp format: 14/02/25  04:45 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 76 - Invalid timestamp format: 14/02/25  05:10 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 77 - Invalid timestamp format: 21/02/25  04:40 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 78 - Invalid timestamp format: 21/02/25  05:04 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 79 - Invalid timestamp format: 23/02/25  08:50 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 80 - Invalid timestamp format: 28/02/25  04:59 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 81 - Invalid timestamp format: 28/02/25  05:27 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 86 - Invalid timestamp format: 15/03/25  03:20 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 87 - Invalid timestamp format: 15/03/25  03:46 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 88 - Invalid timestamp format: 15/03/25  04:33 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 89 - Invalid timestamp format: 21/03/25  04:37 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 90 - Invalid timestamp format: 21/03/25  04:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 91 - Invalid timestamp format: 21/03/25  05:10 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 92 - Invalid timestamp format: 21/03/25  05:54 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 93 - Invalid timestamp format: 26/03/25  05:31 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 94 - Invalid timestamp format: 27/03/25  05:57 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 95 - Invalid timestamp format: 29/03/25  12:52 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 103 - Invalid timestamp format: 19/04/25  05:43 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 104 - Invalid timestamp format: 19/04/25  05:44 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 105 - Invalid timestamp format: 26/04/25  03:32 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 106 - Invalid timestamp format: 26/04/25  03:35 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 112 - Invalid timestamp format: 16/05/25  03:34 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 113 - Invalid timestamp format: 16/05/25  06:53 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 114 - Invalid timestamp format: 16/05/25  06:54 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 115 - Invalid timestamp format: 22/05/25  09:41 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 116 - Invalid timestamp format: 22/05/25  09:50 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 117 - Invalid timestamp format: 23/05/25  03:21 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 118 - Invalid timestamp format: 30/05/25  05:29 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 119 - Invalid timestamp format: 30/05/25  05:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 120 - Invalid timestamp format: 30/05/25  05:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 124 - Invalid timestamp format: 14/06/25  06:21 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 125 - Invalid timestamp format: 14/06/25  06:51 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 126 - Invalid timestamp format: 21/06/25  01:58 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 127 - Invalid timestamp format: 21/06/25  04:17 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 128 - Invalid timestamp format: 21/06/25  04:48 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 129 - Invalid timestamp format: 27/06/25  01:56 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 130 - Invalid timestamp format: 28/06/25  06:16 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 131 - Invalid timestamp format: 28/06/25  06:28 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 138 - Invalid timestamp format: 18/07/25  05:08 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 139 - Invalid timestamp format: 18/07/25  05:26 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 140 - Invalid timestamp format: 19/07/25  01:57 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 141 - Invalid timestamp format: 19/07/25  01:57 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 142 - Invalid timestamp format: 19/07/25  01:57 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 143 - Invalid timestamp format: 28/07/25  01:34 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 144 - Invalid timestamp format: 28/07/25  01:40 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 149 - Invalid timestamp format: 16/08/25  11:24 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 150 - Invalid timestamp format: 16/08/25  11:24 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 151 - Invalid timestamp format: 20/10/24  05:15 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 152 - Invalid timestamp format: 20/10/24  04:41 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 153 - Invalid timestamp format: 26/10/24  05:53 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 154 - Invalid timestamp format: 26/10/24  10:13 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 155 - Invalid timestamp format: 26/10/24  03:32 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 161 - Invalid timestamp format: 16/11/24  04:49 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 162 - Invalid timestamp format: 16/11/24  05:06 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 163 - Invalid timestamp format: 22/11/24  12:41 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 164 - Invalid timestamp format: 22/11/24  12:51 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 165 - Invalid timestamp format: 23/11/24  11:49 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 166 - Invalid timestamp format: 29/11/24  03:57 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 167 - Invalid timestamp format: 29/11/24  04:03 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 171 - Invalid timestamp format: 13/12/24  01:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 172 - Invalid timestamp format: 13/12/24  01:48 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 173 - Invalid timestamp format: 20/12/24  04:31 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 174 - Invalid timestamp format: 20/12/24  04:44 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 175 - Invalid timestamp format: 27/12/24  01:19 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 176 - Invalid timestamp format: 27/12/24  01:44 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 181 - Invalid timestamp format: 17/01/25  04:14 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 182 - Invalid timestamp format: 17/01/25  06:16 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 183 - Invalid timestamp format: 18/01/25  01:43 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 184 - Invalid timestamp format: 24/01/25  03:56 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 185 - Invalid timestamp format: 24/01/25  04:08 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 186 - Invalid timestamp format: 24/01/25  05:35 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 187 - Invalid timestamp format: 31/01/25  03:10 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 188 - Invalid timestamp format: 31/01/25  03:56 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 189 - Invalid timestamp format: 31/01/25  04:09 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 193 - Invalid timestamp format: 14/02/25  03:40 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 194 - Invalid timestamp format: 14/02/25  03:49 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 195 - Invalid timestamp format: 14/02/25  04:20 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 196 - Invalid timestamp format: 21/02/25  03:54 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 197 - Invalid timestamp format: 21/02/25  03:58 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 198 - Invalid timestamp format: 21/02/25  04:13 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 199 - Invalid timestamp format: 28/02/25  03:39 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 200 - Invalid timestamp format: 28/02/25  03:49 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 201 - Invalid timestamp format: 28/02/25  04:13 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 205 - Invalid timestamp format: 15/03/25  04:36 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 206 - Invalid timestamp format: 15/03/25  04:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 207 - Invalid timestamp format: 15/03/25  04:51 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 208 - Invalid timestamp format: 21/03/25  04:46 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 209 - Invalid timestamp format: 21/03/25  06:28 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 210 - Invalid timestamp format: 21/03/25  08:00 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 211 - Invalid timestamp format: 26/03/25  05:43 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 212 - Invalid timestamp format: 26/03/25  05:48 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 213 - Invalid timestamp format: 27/03/25  05:45 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 220 - Invalid timestamp format: 19/04/25  05:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 221 - Invalid timestamp format: 19/04/25  05:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 222 - Invalid timestamp format: 19/04/25  05:40 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 223 - Invalid timestamp format: 26/04/25  02:54 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 224 - Invalid timestamp format: 26/04/25  03:18 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 225 - Invalid timestamp format: 26/04/25  03:39 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 232 - Invalid timestamp format: 16/05/25  06:46 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 233 - Invalid timestamp format: 16/05/25  06:47 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 234 - Invalid timestamp format: 16/05/25  06:48 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 235 - Invalid timestamp format: 22/05/25  09:58 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 236 - Invalid timestamp format: 22/05/25  10:00 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 237 - Invalid timestamp format: 22/05/25  10:03 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 238 - Invalid timestamp format: 30/05/25  05:07 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 239 - Invalid timestamp format: 30/05/25  05:18 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 240 - Invalid timestamp format: 30/05/25  09:20 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 241 - Invalid timestamp format: 31/05/25  05:49 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 246 - Invalid timestamp format: 14/06/25  05:02 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 247 - Invalid timestamp format: 14/06/25  05:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 248 - Invalid timestamp format: 14/06/25  07:05 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 249 - Invalid timestamp format: 15/06/25  12:19 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 250 - Invalid timestamp format: 21/06/25  01:18 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 251 - Invalid timestamp format: 21/06/25  03:39 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 252 - Invalid timestamp format: 21/06/25  04:02 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 253 - Invalid timestamp format: 21/06/25  05:08 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 254 - Invalid timestamp format: 27/06/25  02:10 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 255 - Invalid timestamp format: 28/06/25  05:27 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 256 - Invalid timestamp format: 28/06/25  05:53 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 257 - Invalid timestamp format: 28/06/25  06:38 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 265 - Invalid timestamp format: 18/07/25  04:55 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 266 - Invalid timestamp format: 18/07/25  06:18 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 267 - Invalid timestamp format: 18/07/25  06:21 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 268 - Invalid timestamp format: 28/07/25  12:33 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 269 - Invalid timestamp format: 28/07/25  01:28 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 270 - Invalid timestamp format: 28/07/25  01:50 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 277 - Invalid timestamp format: 16/08/25  11:04 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 278 - Invalid timestamp format: 16/08/25  11:04 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 279 - Invalid timestamp format: 16/08/25  11:04 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 280 - Invalid timestamp format: 20/10/24  10:58 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 281 - Invalid timestamp format: 26/10/24  11:39 AM
+[2025-11-20 16:28:38] CRON: ERROR: Row 283 - Invalid timestamp format: 22/11/24  04:54 PM
+[2025-11-20 16:28:38] CRON: ERROR: Row 284 - Invalid timestamp format: 29/11/24  03:28 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 286 - Invalid timestamp format: 26/10/24  04:17 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 289 - Invalid timestamp format: 17/11/24  05:27 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 290 - Invalid timestamp format: 23/11/24  01:53 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 291 - Invalid timestamp format: 30/11/24  10:55 AM
+[2025-11-20 16:28:39] CRON: UPDATED: Vaishnavi - Score: 70.91% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:28:39] CRON: UPDATED: Vaishnavi - Score: 80.00% → 70.91% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:28:39] CRON: ERROR: Row 294 - Invalid timestamp format: 20/10/24  01:01 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 295 - Invalid timestamp format: 26/10/24  10:48 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 296 - Invalid timestamp format: 29/11/24  05:18 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 297 - Invalid timestamp format: 15/02/25  10:51 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 298 - Invalid timestamp format: 21/02/25  05:44 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 299 - Invalid timestamp format: 28/02/25  04:27 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 301 - Invalid timestamp format: 15/03/25  03:03 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 302 - Invalid timestamp format: 21/03/25  07:01 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 303 - Invalid timestamp format: 27/03/25  05:49 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 306 - Invalid timestamp format: 19/04/25  05:46 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 307 - Invalid timestamp format: 26/04/25  03:39 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 310 - Invalid timestamp format: 16/05/25  07:01 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 311 - Invalid timestamp format: 22/05/25  10:10 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 312 - Invalid timestamp format: 30/05/25  09:33 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 314 - Invalid timestamp format: 14/06/25  07:22 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 315 - Invalid timestamp format: 21/06/25  05:22 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 316 - Invalid timestamp format: 28/06/25  06:45 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 321 - Invalid timestamp format: 16/08/25  12:32 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 322 - Invalid timestamp format: 20/10/24  09:02 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 323 - Invalid timestamp format: 26/10/24  05:45 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 328 - Invalid timestamp format: 18/11/24  12:00 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 329 - Invalid timestamp format: 23/11/24  05:33 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 330 - Invalid timestamp format: 29/11/24  05:08 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 332 - Invalid timestamp format: 24/01/25  01:44 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 333 - Invalid timestamp format: 24/01/25  01:45 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 334 - Invalid timestamp format: 24/01/25  07:35 PM
+[2025-11-20 16:28:39] CRON: UPDATED: Aditya Saini - Score: 100.00% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:28:39] CRON: UPDATED: Aditya Saini - Score: 80.00% → 100.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:28:39] CRON: ERROR: Row 338 - Invalid timestamp format: 14/02/25  11:37 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 339 - Invalid timestamp format: 14/02/25  05:14 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 340 - Invalid timestamp format: 21/02/25  05:08 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 341 - Invalid timestamp format: 23/02/25  08:54 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 342 - Invalid timestamp format: 28/02/25  05:47 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 346 - Invalid timestamp format: 15/03/25  03:48 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 347 - Invalid timestamp format: 15/03/25  05:00 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 348 - Invalid timestamp format: 21/03/25  04:42 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 349 - Invalid timestamp format: 21/03/25  07:30 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 350 - Invalid timestamp format: 27/03/25  05:55 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 351 - Invalid timestamp format: 29/03/25  12:54 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 356 - Invalid timestamp format: 19/04/25  05:45 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 357 - Invalid timestamp format: 26/04/25  03:40 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 361 - Invalid timestamp format: 16/05/25  07:00 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 362 - Invalid timestamp format: 22/05/25  10:13 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 363 - Invalid timestamp format: 23/05/25  03:19 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 364 - Invalid timestamp format: 30/05/25  09:45 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 365 - Invalid timestamp format: 31/05/25  06:00 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 368 - Invalid timestamp format: 14/06/25  08:23 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 369 - Invalid timestamp format: 15/06/25  12:22 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 370 - Invalid timestamp format: 21/06/25  01:49 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 371 - Invalid timestamp format: 21/06/25  06:03 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 372 - Invalid timestamp format: 27/06/25  02:09 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 373 - Invalid timestamp format: 28/06/25  06:53 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 377 - Invalid timestamp format: 20/10/24  06:10 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 378 - Invalid timestamp format: 26/10/24  05:16 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 380 - Invalid timestamp format: 15/11/24  04:15 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 381 - Invalid timestamp format: 22/11/24  05:30 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 382 - Invalid timestamp format: 30/11/24  11:09 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 384 - Invalid timestamp format: 14/12/24  07:04 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 385 - Invalid timestamp format: 21/12/24  10:16 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 386 - Invalid timestamp format: 21/12/24  10:17 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 387 - Invalid timestamp format: 24/01/25  01:47 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 389 - Invalid timestamp format: 14/02/25  11:27 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 390 - Invalid timestamp format: 14/02/25  11:35 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 391 - Invalid timestamp format: 23/02/25  09:04 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 394 - Invalid timestamp format: 14/04/25  04:38 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 395 - Invalid timestamp format: 22/08/25  11:33 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 396 - Invalid timestamp format: 20/10/24  01:07 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 397 - Invalid timestamp format: 20/10/24  01:26 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 398 - Invalid timestamp format: 20/10/24  01:27 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 399 - Invalid timestamp format: 26/10/24  05:06 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 400 - Invalid timestamp format: 26/10/24  10:14 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 401 - Invalid timestamp format: 26/10/24  03:29 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 407 - Invalid timestamp format: 16/11/24  04:29 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 408 - Invalid timestamp format: 16/11/24  04:39 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 409 - Invalid timestamp format: 17/11/24  09:43 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 410 - Invalid timestamp format: 22/11/24  12:15 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 411 - Invalid timestamp format: 23/11/24  12:52 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 412 - Invalid timestamp format: 29/11/24  12:41 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 413 - Invalid timestamp format: 29/11/24  05:28 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 416 - Invalid timestamp format: 13/12/24  03:59 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 417 - Invalid timestamp format: 14/12/24  01:51 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 418 - Invalid timestamp format: 20/12/24  05:44 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 419 - Invalid timestamp format: 21/12/24  08:41 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 420 - Invalid timestamp format: 21/12/24  08:42 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 421 - Invalid timestamp format: 21/12/24  08:43 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 422 - Invalid timestamp format: 27/12/24  03:53 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 423 - Invalid timestamp format: 28/12/24  09:22 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 426 - Invalid timestamp format: 18/01/25  01:02 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 427 - Invalid timestamp format: 24/01/25  01:55 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 428 - Invalid timestamp format: 24/01/25  01:57 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 429 - Invalid timestamp format: 24/01/25  07:28 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 430 - Invalid timestamp format: 31/01/25  05:23 PM
+[2025-11-20 16:28:39] CRON: UPDATED: Nakul - Score: 87.14% → 82.22% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:28:39] CRON: UPDATED: Nakul - Score: 82.22% → 87.14% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:28:39] CRON: ERROR: Row 434 - Invalid timestamp format: 14/02/25  11:22 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 435 - Invalid timestamp format: 14/02/25  11:26 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 436 - Invalid timestamp format: 14/02/25  05:24 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 437 - Invalid timestamp format: 21/02/25  05:17 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 438 - Invalid timestamp format: 23/02/25  09:07 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 439 - Invalid timestamp format: 28/02/25  05:39 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 443 - Invalid timestamp format: 15/03/25  03:53 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 444 - Invalid timestamp format: 15/03/25  04:41 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 445 - Invalid timestamp format: 21/03/25  04:43 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 446 - Invalid timestamp format: 21/03/25  04:50 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 447 - Invalid timestamp format: 28/03/25  10:41 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 448 - Invalid timestamp format: 29/03/25  12:55 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 451 - Invalid timestamp format: 26/04/25  03:25 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 454 - Invalid timestamp format: 16/05/25  05:33 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 455 - Invalid timestamp format: 23/05/25  02:52 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 456 - Invalid timestamp format: 31/05/25  06:21 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 459 - Invalid timestamp format: 15/06/25  12:27 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 460 - Invalid timestamp format: 21/06/25  02:00 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 461 - Invalid timestamp format: 21/06/25  04:12 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 462 - Invalid timestamp format: 27/06/25  02:02 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 465 - Invalid timestamp format: 19/07/25  02:00 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 466 - Invalid timestamp format: 19/07/25  02:00 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 467 - Invalid timestamp format: 19/07/25  02:00 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 468 - Invalid timestamp format: 27/07/25  09:46 AM
+[2025-11-20 16:28:39] CRON: UPDATED: Nakul - Score: 55.00% → 40.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:28:39] CRON: UPDATED: Nakul - Score: 40.00% → 55.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:28:39] CRON: UPDATED: Nakul - Score: 34.00% → 41.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:28:39] CRON: UPDATED: Nakul - Score: 41.00% → 34.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:28:39] CRON: ERROR: Row 473 - Invalid timestamp format: 17/08/25  10:21 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 474 - Invalid timestamp format: 20/10/24  01:17 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 475 - Invalid timestamp format: 20/10/24  12:08 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 476 - Invalid timestamp format: 25/10/24  03:03 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 477 - Invalid timestamp format: 25/10/24  03:04 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 478 - Invalid timestamp format: 26/10/24  05:52 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 479 - Invalid timestamp format: 26/10/24  10:17 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 484 - Invalid timestamp format: 17/11/24  11:57 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 485 - Invalid timestamp format: 17/11/24  05:36 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 486 - Invalid timestamp format: 22/11/24  11:54 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 487 - Invalid timestamp format: 23/11/24  12:23 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 488 - Invalid timestamp format: 29/11/24  05:49 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 489 - Invalid timestamp format: 30/11/24  11:05 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 490 - Invalid timestamp format: 13/12/24  04:04 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 491 - Invalid timestamp format: 14/12/24  01:47 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 492 - Invalid timestamp format: 20/12/24  05:50 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 493 - Invalid timestamp format: 21/12/24  10:11 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 494 - Invalid timestamp format: 21/12/24  10:12 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 495 - Invalid timestamp format: 27/12/24  04:11 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 496 - Invalid timestamp format: 28/12/24  09:28 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 497 - Invalid timestamp format: 28/12/24  09:30 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 500 - Invalid timestamp format: 18/01/25  01:14 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 501 - Invalid timestamp format: 24/01/25  07:33 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 502 - Invalid timestamp format: 31/01/25  05:28 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 504 - Invalid timestamp format: 14/02/25  11:55 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 505 - Invalid timestamp format: 14/02/25  05:18 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 506 - Invalid timestamp format: 21/02/25  05:30 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 507 - Invalid timestamp format: 28/02/25  04:35 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 511 - Invalid timestamp format: 15/03/25  05:06 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 512 - Invalid timestamp format: 21/03/25  06:14 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 513 - Invalid timestamp format: 26/03/25  05:35 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 514 - Invalid timestamp format: 29/03/25  12:57 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 520 - Invalid timestamp format: 19/04/25  05:42 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 521 - Invalid timestamp format: 26/04/25  03:37 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 525 - Invalid timestamp format: 16/05/25  03:32 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 526 - Invalid timestamp format: 16/05/25  06:52 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 527 - Invalid timestamp format: 22/05/25  10:07 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 528 - Invalid timestamp format: 23/05/25  03:11 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 529 - Invalid timestamp format: 30/05/25  04:54 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 530 - Invalid timestamp format: 31/05/25  06:17 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 533 - Invalid timestamp format: 14/06/25  05:23 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 534 - Invalid timestamp format: 15/06/25  12:32 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 535 - Invalid timestamp format: 21/06/25  01:08 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 536 - Invalid timestamp format: 21/06/25  03:53 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 537 - Invalid timestamp format: 27/06/25  02:04 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 538 - Invalid timestamp format: 28/06/25  06:21 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 541 - Invalid timestamp format: 19/07/25  02:13 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 542 - Invalid timestamp format: 19/07/25  02:13 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 543 - Invalid timestamp format: 27/07/25  10:02 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 546 - Invalid timestamp format: 17/08/25  10:04 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 547 - Invalid timestamp format: 22/08/25  11:26 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 548 - Invalid timestamp format: 22/08/25  11:36 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 550 - Invalid timestamp format: 15/09/25  10:19 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 551 - Invalid timestamp format: 20/10/24  12:38 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 552 - Invalid timestamp format: 20/10/24  12:43 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 553 - Invalid timestamp format: 26/10/24  05:55 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 554 - Invalid timestamp format: 26/10/24  10:17 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 559 - Invalid timestamp format: 17/11/24  12:00 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 560 - Invalid timestamp format: 17/11/24  05:47 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 561 - Invalid timestamp format: 23/11/24  05:31 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 562 - Invalid timestamp format: 23/11/24  05:32 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 563 - Invalid timestamp format: 20/10/24  01:34 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 564 - Invalid timestamp format: 26/10/24  09:32 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 567 - Invalid timestamp format: 17/11/24  12:00 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 568 - Invalid timestamp format: 23/11/24  04:09 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 570 - Invalid timestamp format: 18/09/25  12:59 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 571 - Invalid timestamp format: 18/09/25  12:59 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 572 - Invalid timestamp format: 18/09/25  12:59 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 573 - Invalid timestamp format: 18/11/25  11:04 AM
+[2025-11-20 16:28:39] CRON: Sync completed successfully
+[2025-11-20 16:28:39] CRON: Total rows fetched: 573
+[2025-11-20 16:28:39] CRON: New records inserted: 0
+[2025-11-20 16:28:39] CRON: Records updated: 12
+[2025-11-20 16:28:39] CRON: Records skipped (no changes): 191
+[2025-11-20 16:28:39] CRON: Errors encountered: 370
+[2025-11-20 16:28:39] CRON: ERROR: Row 2: Could not parse timestamp: 14/02/25  12:48 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 3: Could not parse timestamp: 15/02/25  11:54 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 4: Could not parse timestamp: 22/02/25  10:16 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 5: Could not parse timestamp: 22/02/25  01:09 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 6: Could not parse timestamp: 28/02/25  05:43 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 7: Could not parse timestamp: 28/02/25  06:39 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 10: Could not parse timestamp: 15/03/25  11:37 AM
+[2025-11-20 16:28:39] CRON: ERROR: Row 11: Could not parse timestamp: 21/03/25  12:31 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 14: Could not parse timestamp: 19/04/25  04:07 PM
+[2025-11-20 16:28:39] CRON: ERROR: Row 15: Could not parse timestamp: 26/04/25  06:19 PM
+[2025-11-20 16:28:39] CRON: ... and 360 more errors
+[2025-11-20 16:28:39] CRON: Cleaning up log entries older than 2 days
+[2025-11-20 16:28:39] CRON: Log cleanup completed
+[2025-11-20 16:30:59] CRON: === STARTING RQC SHEET SYNC ===
+[2025-11-20 16:30:59] CRON: Database connected successfully
+[2025-11-20 16:30:59] CRON: Google Sheets client initialized
+[2025-11-20 16:30:59] CRON: Fetching data from Google Sheet: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ, Tab: All RQC
+[2025-11-20 16:31:01] CRON: Skipped header row
+[2025-11-20 16:31:01] CRON: Fetched 573 rows from Google Sheet
+[2025-11-20 16:31:01] CRON: INSERTED: Tanzeem - Score: 83.67% - Timestamp: 2025-02-14 12:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Lalit Gaur - Score: 73.89% - Timestamp: 2025-02-15 11:54:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tanzeem - Score: 94.67% - Timestamp: 2025-02-22 10:16:00
+[2025-11-20 16:31:01] CRON: INSERTED: Lalit Gaur - Score: 69.72% - Timestamp: 2025-02-22 13:09:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tanzeem - Score: 93.75% - Timestamp: 2025-02-28 17:43:00
+[2025-11-20 16:31:01] CRON: INSERTED: Lalit Gaur - Score: 94.44% - Timestamp: 2025-02-28 18:39:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tanzeem - Score: 99.26% - Timestamp: 2025-03-15 11:37:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tanzeem - Score: 66.67% - Timestamp: 2025-03-21 12:31:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tanzeem - Score: 73.00% - Timestamp: 2025-04-19 16:07:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tanzeem - Score: 85.50% - Timestamp: 2025-04-26 18:19:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tanzeem - Score: 54.67% - Timestamp: 2025-05-24 16:37:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aditi - Score: 77.33% - Timestamp: 2025-05-24 16:44:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhishek - Score: 81.00% - Timestamp: 2024-10-20 13:42:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 52.00% - Timestamp: 2024-10-20 13:44:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 55.00% - Timestamp: 2024-10-20 15:20:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhishek - Score: 47.00% - Timestamp: 2024-10-26 17:47:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 62.00% - Timestamp: 2024-10-26 21:42:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 65.00% - Timestamp: 2024-10-26 21:50:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 71.00% - Timestamp: 2024-11-16 17:46:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 74.00% - Timestamp: 2024-11-16 17:51:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 47.00% - Timestamp: 2024-11-17 17:26:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 69.00% - Timestamp: 2024-11-22 13:31:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 72.00% - Timestamp: 2024-11-22 16:01:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 68.00% - Timestamp: 2024-11-23 17:29:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 47.00% - Timestamp: 2024-11-29 12:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 76.00% - Timestamp: 2024-11-29 16:36:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 67.00% - Timestamp: 2024-11-29 17:02:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 64.00% - Timestamp: 2024-12-13 15:17:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 57.00% - Timestamp: 2024-12-13 15:42:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 70.00% - Timestamp: 2024-12-14 13:37:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 74.00% - Timestamp: 2024-12-20 17:09:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 40.00% - Timestamp: 2024-12-20 17:31:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 47.00% - Timestamp: 2024-12-21 08:36:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 40.00% - Timestamp: 2024-12-21 08:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 80.00% - Timestamp: 2024-12-27 15:22:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 60.00% - Timestamp: 2024-12-27 15:44:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 80.00% - Timestamp: 2024-12-27 15:45:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 89.33% - Timestamp: 2024-12-27 15:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshul - Score: 100.00% - Timestamp: 2024-12-27 15:52:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 80.00% - Timestamp: 2025-01-18 11:19:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 80.00% - Timestamp: 2025-01-18 12:29:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 95.00% - Timestamp: 2025-01-24 13:23:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 80.00% - Timestamp: 2025-01-24 13:29:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 74.00% - Timestamp: 2025-01-24 18:55:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 80.00% - Timestamp: 2025-01-24 19:13:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 80.00% - Timestamp: 2025-01-24 19:14:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 78.00% - Timestamp: 2025-01-31 16:41:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 74.00% - Timestamp: 2025-01-31 17:15:00
+[2025-11-20 16:31:01] CRON: UPDATED: Aysha - Score: 20.00% → 88.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:31:01] CRON: UPDATED: Aysha - Score: 88.00% → 20.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 89.33% - Timestamp: 2025-02-14 11:39:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 87.00% - Timestamp: 2025-02-14 11:40:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 80.00% - Timestamp: 2025-02-14 16:45:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 80.00% - Timestamp: 2025-02-14 17:10:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 72.00% - Timestamp: 2025-02-21 16:40:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 70.00% - Timestamp: 2025-02-21 17:04:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 90.67% - Timestamp: 2025-02-23 20:50:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 72.00% - Timestamp: 2025-02-28 16:59:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 60.00% - Timestamp: 2025-02-28 17:27:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 73.00% - Timestamp: 2025-03-15 15:20:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 80.00% - Timestamp: 2025-03-15 15:46:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 71.00% - Timestamp: 2025-03-15 16:33:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 60.00% - Timestamp: 2025-03-21 16:37:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 100.00% - Timestamp: 2025-03-21 16:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 73.00% - Timestamp: 2025-03-21 17:10:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 55.00% - Timestamp: 2025-03-21 17:54:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 78.00% - Timestamp: 2025-03-26 17:31:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 76.00% - Timestamp: 2025-03-27 17:57:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 73.00% - Timestamp: 2025-03-29 12:52:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 77.00% - Timestamp: 2025-04-19 17:43:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 78.00% - Timestamp: 2025-04-19 17:44:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 75.00% - Timestamp: 2025-04-26 15:32:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 72.00% - Timestamp: 2025-04-26 15:35:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 95.00% - Timestamp: 2025-05-16 15:34:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 80.00% - Timestamp: 2025-05-16 18:53:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 78.00% - Timestamp: 2025-05-16 18:54:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 67.00% - Timestamp: 2025-05-22 21:41:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 75.00% - Timestamp: 2025-05-22 21:50:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aysha - Score: 68.00% - Timestamp: 2025-05-23 15:21:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 66.00% - Timestamp: 2025-05-30 17:29:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 69.00% - Timestamp: 2025-05-30 17:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Simran - Score: 80.00% - Timestamp: 2025-05-30 17:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 67.00% - Timestamp: 2025-06-14 18:21:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 67.00% - Timestamp: 2025-06-14 18:51:00
+[2025-11-20 16:31:01] CRON: INSERTED: Simran - Score: 72.00% - Timestamp: 2025-06-21 13:58:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 67.00% - Timestamp: 2025-06-21 16:17:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 70.00% - Timestamp: 2025-06-21 16:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Simran - Score: 68.00% - Timestamp: 2025-06-27 13:56:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 68.00% - Timestamp: 2025-06-28 18:16:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 73.00% - Timestamp: 2025-06-28 18:28:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 75.00% - Timestamp: 2025-07-18 17:08:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 70.00% - Timestamp: 2025-07-18 17:26:00
+[2025-11-20 16:31:01] CRON: INSERTED: Simran - Score: 80.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:31:01] CRON: UPDATED: Simran - Score: 80.00% → 48.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:31:01] CRON: UPDATED: Simran - Score: 48.00% → 52.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 71.00% - Timestamp: 2025-07-28 13:34:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 75.00% - Timestamp: 2025-07-28 13:40:00
+[2025-11-20 16:31:01] CRON: INSERTED: Kaveri - Score: 75.00% - Timestamp: 2025-08-16 11:24:00
+[2025-11-20 16:31:01] CRON: INSERTED: Manu - Score: 78.00% - Timestamp: 2025-08-16 11:24:00
+[2025-11-20 16:31:01] CRON: INSERTED: Avijeet - Score: 69.00% - Timestamp: 2024-10-20 17:15:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 75.00% - Timestamp: 2024-10-20 16:41:00
+[2025-11-20 16:31:01] CRON: INSERTED: Avijeet - Score: 71.00% - Timestamp: 2024-10-26 17:53:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 57.00% - Timestamp: 2024-10-26 22:13:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 64.00% - Timestamp: 2024-10-26 15:32:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2024-11-16 16:49:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 62.00% - Timestamp: 2024-11-16 17:06:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 72.00% - Timestamp: 2024-11-22 12:41:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 55.00% - Timestamp: 2024-11-22 12:51:00
+[2025-11-20 16:31:01] CRON: INSERTED: Avijeet - Score: 56.00% - Timestamp: 2024-11-23 11:49:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 86.00% - Timestamp: 2024-11-29 15:57:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 40.00% - Timestamp: 2024-11-29 16:03:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 45.00% - Timestamp: 2024-12-13 13:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 24.00% - Timestamp: 2024-12-13 13:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2024-12-20 16:31:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 40.00% - Timestamp: 2024-12-20 16:44:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2024-12-27 13:19:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 20.00% - Timestamp: 2024-12-27 13:44:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-01-17 16:14:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 40.00% - Timestamp: 2025-01-17 18:16:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 60.00% - Timestamp: 2025-01-18 13:43:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-01-24 15:56:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 40.00% - Timestamp: 2025-01-24 16:08:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 20.00% - Timestamp: 2025-01-24 17:35:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-01-31 15:10:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 20.00% - Timestamp: 2025-01-31 15:56:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 42.00% - Timestamp: 2025-01-31 16:09:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-02-14 15:40:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 57.00% - Timestamp: 2025-02-14 15:49:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 40.00% - Timestamp: 2025-02-14 16:20:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 68.00% - Timestamp: 2025-02-21 15:54:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 47.00% - Timestamp: 2025-02-21 15:58:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 48.00% - Timestamp: 2025-02-21 16:13:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 72.00% - Timestamp: 2025-02-28 15:39:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 45.00% - Timestamp: 2025-02-28 15:49:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 64.00% - Timestamp: 2025-02-28 16:13:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-03-15 16:36:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 70.00% - Timestamp: 2025-03-15 16:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 71.00% - Timestamp: 2025-03-15 16:51:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 71.00% - Timestamp: 2025-03-21 16:46:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-03-21 18:28:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 75.00% - Timestamp: 2025-03-21 20:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 69.00% - Timestamp: 2025-03-26 17:43:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-03-26 17:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 70.00% - Timestamp: 2025-03-27 17:45:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-04-19 17:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 80.00% - Timestamp: 2025-04-19 17:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 75.00% - Timestamp: 2025-04-19 17:40:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 77.00% - Timestamp: 2025-04-26 14:54:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 75.00% - Timestamp: 2025-04-26 15:18:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 71.00% - Timestamp: 2025-04-26 15:39:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-05-16 18:46:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 80.00% - Timestamp: 2025-05-16 18:47:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 77.00% - Timestamp: 2025-05-16 18:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 76.00% - Timestamp: 2025-05-22 21:58:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 71.00% - Timestamp: 2025-05-22 22:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 65.00% - Timestamp: 2025-05-22 22:03:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-05-30 17:07:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 60.00% - Timestamp: 2025-05-30 17:18:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 65.00% - Timestamp: 2025-05-30 21:20:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshuman - Score: 71.00% - Timestamp: 2025-05-31 17:49:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 74.00% - Timestamp: 2025-06-14 17:02:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 71.00% - Timestamp: 2025-06-14 17:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 62.00% - Timestamp: 2025-06-14 19:05:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshuman - Score: 56.00% - Timestamp: 2025-06-15 12:19:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshuman - Score: 47.00% - Timestamp: 2025-06-21 13:18:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 75.00% - Timestamp: 2025-06-21 15:39:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 71.00% - Timestamp: 2025-06-21 16:02:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 68.00% - Timestamp: 2025-06-21 17:08:00
+[2025-11-20 16:31:01] CRON: INSERTED: Anshuman - Score: 86.00% - Timestamp: 2025-06-27 14:10:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-06-28 17:27:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 71.00% - Timestamp: 2025-06-28 17:53:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 62.00% - Timestamp: 2025-06-28 18:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 75.00% - Timestamp: 2025-07-18 16:55:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 71.00% - Timestamp: 2025-07-18 18:18:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 65.00% - Timestamp: 2025-07-18 18:21:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 80.00% - Timestamp: 2025-07-28 12:33:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 71.00% - Timestamp: 2025-07-28 13:28:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 71.00% - Timestamp: 2025-07-28 13:50:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prateek - Score: 76.00% - Timestamp: 2025-08-16 11:04:00
+[2025-11-20 16:31:01] CRON: INSERTED: Hardeep - Score: 73.00% - Timestamp: 2025-08-16 11:04:00
+[2025-11-20 16:31:01] CRON: INSERTED: Shivek - Score: 80.00% - Timestamp: 2025-08-16 11:04:00
+[2025-11-20 16:31:01] CRON: INSERTED: Sawan - Score: 73.00% - Timestamp: 2024-10-20 10:58:00
+[2025-11-20 16:31:01] CRON: INSERTED: Sawan - Score: 64.00% - Timestamp: 2024-10-26 11:39:00
+[2025-11-20 16:31:01] CRON: INSERTED: Sawan - Score: 66.00% - Timestamp: 2024-11-22 16:54:00
+[2025-11-20 16:31:01] CRON: INSERTED: Sawan - Score: 58.00% - Timestamp: 2024-11-29 15:28:00
+[2025-11-20 16:31:01] CRON: INSERTED: Vaishnavi - Score: 46.00% - Timestamp: 2024-10-26 16:17:00
+[2025-11-20 16:31:01] CRON: INSERTED: Vaishnavi - Score: 46.00% - Timestamp: 2024-11-17 17:27:00
+[2025-11-20 16:31:01] CRON: INSERTED: Vaishnavi - Score: 46.00% - Timestamp: 2024-11-23 13:53:00
+[2025-11-20 16:31:01] CRON: INSERTED: Vaishnavi - Score: 37.00% - Timestamp: 2024-11-30 10:55:00
+[2025-11-20 16:31:01] CRON: UPDATED: Vaishnavi - Score: 70.91% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:31:01] CRON: UPDATED: Vaishnavi - Score: 80.00% → 70.91% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 75.00% - Timestamp: 2024-10-20 13:01:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 70.00% - Timestamp: 2024-10-26 10:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 65.00% - Timestamp: 2024-11-29 17:18:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 50.00% - Timestamp: 2025-02-15 10:51:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 60.00% - Timestamp: 2025-02-21 17:44:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 65.00% - Timestamp: 2025-02-28 16:27:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 70.00% - Timestamp: 2025-03-15 15:03:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 50.00% - Timestamp: 2025-03-21 19:01:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 70.00% - Timestamp: 2025-03-27 17:49:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 65.00% - Timestamp: 2025-04-19 17:46:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 70.00% - Timestamp: 2025-04-26 15:39:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 75.00% - Timestamp: 2025-05-16 19:01:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 70.00% - Timestamp: 2025-05-22 22:10:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 50.00% - Timestamp: 2025-05-30 21:33:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 70.00% - Timestamp: 2025-06-14 19:22:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 60.00% - Timestamp: 2025-06-21 17:22:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 60.00% - Timestamp: 2025-06-28 18:45:00
+[2025-11-20 16:31:01] CRON: INSERTED: Rohit - Score: 60.00% - Timestamp: 2025-08-16 12:32:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 60.00% - Timestamp: 2024-10-20 09:02:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 53.00% - Timestamp: 2024-10-26 17:45:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aditya Saini - Score: 73.00% - Timestamp: 2024-11-18 00:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 60.00% - Timestamp: 2024-11-23 17:33:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 60.00% - Timestamp: 2024-11-29 17:08:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 80.00% - Timestamp: 2025-01-24 13:44:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aditya Saini - Score: 90.77% - Timestamp: 2025-01-24 13:45:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 60.00% - Timestamp: 2025-01-24 19:35:00
+[2025-11-20 16:31:01] CRON: UPDATED: Aditya Saini - Score: 100.00% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:31:01] CRON: UPDATED: Aditya Saini - Score: 80.00% → 100.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aditya Saini - Score: 100.00% - Timestamp: 2025-02-14 11:37:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 60.00% - Timestamp: 2025-02-14 17:14:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 55.00% - Timestamp: 2025-02-21 17:08:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aditya Saini - Score: 86.00% - Timestamp: 2025-02-23 20:54:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 60.00% - Timestamp: 2025-02-28 17:47:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aditya Saini - Score: 73.00% - Timestamp: 2025-03-15 15:48:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 59.00% - Timestamp: 2025-03-15 17:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aditya Saini - Score: 89.23% - Timestamp: 2025-03-21 16:42:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 67.00% - Timestamp: 2025-03-21 19:30:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 40.00% - Timestamp: 2025-03-27 17:55:00
+[2025-11-20 16:31:01] CRON: INSERTED: Aditya Saini - Score: 80.00% - Timestamp: 2025-03-29 12:54:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 74.00% - Timestamp: 2025-04-19 17:45:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 74.00% - Timestamp: 2025-04-26 15:40:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 74.00% - Timestamp: 2025-05-16 19:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 54.00% - Timestamp: 2025-05-22 22:13:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 53.00% - Timestamp: 2025-05-23 15:19:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 53.00% - Timestamp: 2025-05-30 21:45:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 53.00% - Timestamp: 2025-05-31 18:00:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 53.00% - Timestamp: 2025-06-14 20:23:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 53.00% - Timestamp: 2025-06-15 12:22:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 61.00% - Timestamp: 2025-06-21 13:49:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 60.00% - Timestamp: 2025-06-21 18:03:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 54.00% - Timestamp: 2025-06-27 14:09:00
+[2025-11-20 16:31:01] CRON: INSERTED: Gaurav - Score: 60.00% - Timestamp: 2025-06-28 18:53:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 72.00% - Timestamp: 2024-10-20 18:10:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 51.00% - Timestamp: 2024-10-26 17:16:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 46.00% - Timestamp: 2024-11-15 16:15:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 51.00% - Timestamp: 2024-11-22 17:30:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 39.00% - Timestamp: 2024-11-30 11:09:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 76.00% - Timestamp: 2024-12-14 19:04:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 91.11% - Timestamp: 2024-12-21 10:16:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 80.00% - Timestamp: 2024-12-21 10:17:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 91.11% - Timestamp: 2025-01-24 13:47:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 100.00% - Timestamp: 2025-02-14 11:27:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 80.00% - Timestamp: 2025-02-14 11:35:00
+[2025-11-20 16:31:01] CRON: INSERTED: Abhinav - Score: 80.00% - Timestamp: 2025-02-23 21:04:00
+[2025-11-20 16:31:01] CRON: INSERTED: Prashaant - Score: 57.78% - Timestamp: 2025-04-14 16:38:00
+[2025-11-20 16:31:01] CRON: INSERTED: Vivek - Score: 50.00% - Timestamp: 2025-08-22 11:33:00
+[2025-11-20 16:31:01] CRON: INSERTED: Nakul - Score: 65.00% - Timestamp: 2024-10-20 13:07:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tejas - Score: 78.00% - Timestamp: 2024-10-20 13:26:00
+[2025-11-20 16:31:01] CRON: INSERTED: Arjun - Score: 60.00% - Timestamp: 2024-10-20 13:27:00
+[2025-11-20 16:31:01] CRON: INSERTED: Nakul - Score: 54.00% - Timestamp: 2024-10-26 17:06:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tejas - Score: 72.00% - Timestamp: 2024-10-26 22:14:00
+[2025-11-20 16:31:01] CRON: INSERTED: Arjun - Score: 49.00% - Timestamp: 2024-10-26 15:29:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tejas - Score: 75.00% - Timestamp: 2024-11-16 16:29:00
+[2025-11-20 16:31:01] CRON: INSERTED: Arjun - Score: 55.00% - Timestamp: 2024-11-16 16:39:00
+[2025-11-20 16:31:01] CRON: INSERTED: Nakul - Score: 55.00% - Timestamp: 2024-11-17 21:43:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tejas - Score: 69.00% - Timestamp: 2024-11-22 12:15:00
+[2025-11-20 16:31:01] CRON: INSERTED: Nakul - Score: 49.00% - Timestamp: 2024-11-23 12:52:00
+[2025-11-20 16:31:01] CRON: INSERTED: Nakul - Score: 44.00% - Timestamp: 2024-11-29 12:41:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2024-11-29 17:28:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tejas - Score: 69.00% - Timestamp: 2024-12-13 15:59:00
+[2025-11-20 16:31:01] CRON: INSERTED: Nakul - Score: 49.00% - Timestamp: 2024-12-14 13:51:00
+[2025-11-20 16:31:01] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2024-12-20 17:44:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 40.00% - Timestamp: 2024-12-21 08:41:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 91.11% - Timestamp: 2024-12-21 08:42:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 67.27% - Timestamp: 2024-12-21 08:43:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2024-12-27 15:53:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 87.14% - Timestamp: 2024-12-28 09:22:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2025-01-18 13:02:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 92.86% - Timestamp: 2025-01-24 13:55:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 91.00% - Timestamp: 2025-01-24 13:57:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2025-01-24 19:28:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2025-01-31 17:23:00
+[2025-11-20 16:31:02] CRON: UPDATED: Nakul - Score: 87.14% → 82.22% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:31:02] CRON: UPDATED: Nakul - Score: 82.22% → 87.14% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 87.14% - Timestamp: 2025-02-14 11:22:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 85.00% - Timestamp: 2025-02-14 11:26:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2025-02-14 17:24:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2025-02-21 17:17:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 79.00% - Timestamp: 2025-02-23 21:07:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 73.00% - Timestamp: 2025-02-28 17:39:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 79.00% - Timestamp: 2025-03-15 15:53:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2025-03-15 16:41:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 91.00% - Timestamp: 2025-03-21 16:43:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2025-03-21 16:50:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 80.00% - Timestamp: 2025-03-28 10:41:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 74.00% - Timestamp: 2025-03-29 12:55:00
+[2025-11-20 16:31:02] CRON: INSERTED: Tejas - Score: 67.00% - Timestamp: 2025-04-26 15:25:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 86.67% - Timestamp: 2025-05-16 17:33:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 61.00% - Timestamp: 2025-05-23 14:52:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 49.00% - Timestamp: 2025-05-31 18:21:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 51.00% - Timestamp: 2025-06-15 12:27:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 91.00% - Timestamp: 2025-06-21 14:00:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 66.00% - Timestamp: 2025-06-21 16:12:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 54.00% - Timestamp: 2025-06-27 14:02:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 50.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:31:02] CRON: UPDATED: Nakul - Score: 50.00% → 41.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:31:02] CRON: UPDATED: Nakul - Score: 41.00% → 65.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 46.00% - Timestamp: 2025-07-27 09:46:00
+[2025-11-20 16:31:02] CRON: UPDATED: Nakul - Score: 55.00% → 40.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:31:02] CRON: UPDATED: Nakul - Score: 40.00% → 55.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:31:02] CRON: UPDATED: Nakul - Score: 34.00% → 41.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:31:02] CRON: UPDATED: Nakul - Score: 41.00% → 34.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:31:02] CRON: INSERTED: Nakul - Score: 40.00% - Timestamp: 2025-08-17 22:21:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 85.00% - Timestamp: 2024-10-20 13:17:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 71.00% - Timestamp: 2024-10-20 12:08:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 67.00% - Timestamp: 2024-10-25 15:03:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 76.50% - Timestamp: 2024-10-25 15:04:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 40.50% - Timestamp: 2024-10-26 17:52:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 57.00% - Timestamp: 2024-10-26 22:17:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 51.50% - Timestamp: 2024-11-17 23:57:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 50.00% - Timestamp: 2024-11-17 17:36:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 50.00% - Timestamp: 2024-11-22 11:54:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 46.00% - Timestamp: 2024-11-23 12:23:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 30.00% - Timestamp: 2024-11-29 17:49:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 36.00% - Timestamp: 2024-11-30 11:05:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 36.00% - Timestamp: 2024-12-13 16:04:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 84.50% - Timestamp: 2024-12-14 13:47:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 20.00% - Timestamp: 2024-12-20 17:50:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 52.31% - Timestamp: 2024-12-21 10:11:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 80.00% - Timestamp: 2024-12-21 10:12:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 20.00% - Timestamp: 2024-12-27 16:11:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 100.00% - Timestamp: 2024-12-28 09:28:00
+[2025-11-20 16:31:02] CRON: INSERTED: Vansh - Score: 85.56% - Timestamp: 2024-12-28 09:30:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 20.00% - Timestamp: 2025-01-18 13:14:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 20.00% - Timestamp: 2025-01-24 19:33:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 20.00% - Timestamp: 2025-01-31 17:28:00
+[2025-11-20 16:31:02] CRON: INSERTED: Moksh - Score: 63.33% - Timestamp: 2025-02-14 11:55:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 40.00% - Timestamp: 2025-02-14 17:18:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 49.00% - Timestamp: 2025-02-21 17:30:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 20.00% - Timestamp: 2025-02-28 16:35:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 63.00% - Timestamp: 2025-03-15 17:06:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 53.00% - Timestamp: 2025-03-21 18:14:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 69.00% - Timestamp: 2025-03-26 17:35:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 70.00% - Timestamp: 2025-03-29 12:57:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 72.00% - Timestamp: 2025-04-19 17:42:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 80.00% - Timestamp: 2025-04-26 15:37:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 34.00% - Timestamp: 2025-05-16 15:32:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 75.00% - Timestamp: 2025-05-16 18:52:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 59.00% - Timestamp: 2025-05-22 22:07:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 54.50% - Timestamp: 2025-05-23 15:11:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 34.00% - Timestamp: 2025-05-30 16:54:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 67.50% - Timestamp: 2025-05-31 18:17:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 41.00% - Timestamp: 2025-06-14 17:23:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 65.50% - Timestamp: 2025-06-15 12:32:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 41.50% - Timestamp: 2025-06-21 13:08:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 56.00% - Timestamp: 2025-06-21 15:53:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 57.00% - Timestamp: 2025-06-27 14:04:00
+[2025-11-20 16:31:02] CRON: INSERTED: Pratham - Score: 58.00% - Timestamp: 2025-06-28 18:21:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 41.50% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 16:31:02] CRON: UPDATED: Sanyam - Score: 41.50% → 37.00% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 67.00% - Timestamp: 2025-07-27 10:02:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 54.50% - Timestamp: 2025-08-17 22:04:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 35.00% - Timestamp: 2025-08-22 11:26:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 31.00% - Timestamp: 2025-08-22 11:36:00
+[2025-11-20 16:31:02] CRON: INSERTED: Sanyam - Score: 42.50% - Timestamp: 2025-09-15 10:19:00
+[2025-11-20 16:31:02] CRON: INSERTED: Simran - Score: 63.50% - Timestamp: 2024-10-20 12:38:00
+[2025-11-20 16:31:02] CRON: INSERTED: Mansi - Score: 67.00% - Timestamp: 2024-10-20 12:43:00
+[2025-11-20 16:31:02] CRON: INSERTED: Simran - Score: 53.00% - Timestamp: 2024-10-26 17:55:00
+[2025-11-20 16:31:02] CRON: INSERTED: Mansi - Score: 60.00% - Timestamp: 2024-10-26 22:17:00
+[2025-11-20 16:31:02] CRON: INSERTED: Simran - Score: 55.50% - Timestamp: 2024-11-17 00:00:00
+[2025-11-20 16:31:02] CRON: INSERTED: Mansi - Score: 62.00% - Timestamp: 2024-11-17 17:47:00
+[2025-11-20 16:31:02] CRON: INSERTED: Mansi - Score: 65.00% - Timestamp: 2024-11-23 17:31:00
+[2025-11-20 16:31:02] CRON: INSERTED: Simran - Score: 59.50% - Timestamp: 2024-11-23 17:32:00
+[2025-11-20 16:31:02] CRON: INSERTED: Ayushi - Score: 75.00% - Timestamp: 2024-10-20 13:34:00
+[2025-11-20 16:31:02] CRON: INSERTED: Ayushi - Score: 66.00% - Timestamp: 2024-10-26 21:32:00
+[2025-11-20 16:31:02] CRON: INSERTED: Ayushi - Score: 64.00% - Timestamp: 2024-11-17 00:00:00
+[2025-11-20 16:31:02] CRON: INSERTED: Ayushi - Score: 64.00% - Timestamp: 2024-11-23 16:09:00
+[2025-11-20 16:31:02] CRON: INSERTED: Prateek - Score: 2.22% - Timestamp: 2025-09-18 12:59:00
+[2025-11-20 16:31:02] CRON: INSERTED: Prateek - Score: 98.00% - Timestamp: 2025-11-18 11:04:00
+[2025-11-20 16:31:02] CRON: === RQC SYNC COMPLETED ===
+[2025-11-20 16:31:02] CRON: Total rows fetched: 573
+[2025-11-20 16:31:02] CRON: New records inserted: 363
+[2025-11-20 16:31:02] CRON: Records updated: 17
+[2025-11-20 16:31:02] CRON: Records skipped (no changes): 193
+[2025-11-20 16:31:02] CRON: Cleaning up log entries older than 2 days
+[2025-11-20 16:31:02] CRON: Log cleanup completed
+[2025-11-20 16:31:02] CRON: === END RQC SYNC ===
+[2025-11-20 16:34:06] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 16:34:06] MANUAL: Database connection: SUCCESS
+[2025-11-20 16:34:06] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 16:34:06] MANUAL: Tab Name: All RQC
+[2025-11-20 16:34:07] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 16:34:07] MANUAL: Fetching data from Google Sheet
+[2025-11-20 16:34:08] MANUAL: Skipped header row
+[2025-11-20 16:34:08] MANUAL: Fetched 573 rows from Google Sheet
+[2025-11-20 16:34:08] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 16:34:08] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 16:34:08] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 16:34:08] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 16:34:08] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 16:34:08] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 16:34:09] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 16:34:09] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 16:34:10] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 16:34:10] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 16:34:10] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 16:34:10] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 16:34:10] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 16:35:34] CRON: === STARTING RQC SHEET SYNC ===
+[2025-11-20 16:35:34] CRON: Database connected successfully
+[2025-11-20 16:35:34] CRON: Google Sheets client initialized
+[2025-11-20 16:35:34] CRON: Fetching data from Google Sheet: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ, Tab: All RQC
+[2025-11-20 16:35:36] CRON: Skipped header row
+[2025-11-20 16:35:36] CRON: Fetched 573 rows from Google Sheet
+[2025-11-20 16:35:36] CRON: UPDATED: Aysha - Score: 20.00% → 88.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:35:36] CRON: UPDATED: Aysha - Score: 88.00% → 20.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:35:36] CRON: UPDATED: Simran - Score: 52.00% → 80.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:35:36] CRON: UPDATED: Simran - Score: 80.00% → 48.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:35:36] CRON: UPDATED: Simran - Score: 48.00% → 52.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:35:36] CRON: UPDATED: Vaishnavi - Score: 70.91% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:35:36] CRON: UPDATED: Vaishnavi - Score: 80.00% → 70.91% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Aditya Saini - Score: 100.00% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Aditya Saini - Score: 80.00% → 100.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 87.14% → 82.22% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 82.22% → 87.14% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 65.00% → 50.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 50.00% → 41.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 41.00% → 65.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 55.00% → 40.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 40.00% → 55.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 34.00% → 41.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Nakul - Score: 41.00% → 34.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:35:37] CRON: UPDATED: Sanyam - Score: 37.00% → 41.50% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 16:35:37] CRON: UPDATED: Sanyam - Score: 41.50% → 37.00% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 16:35:37] CRON: === RQC SYNC COMPLETED ===
+[2025-11-20 16:35:37] CRON: Total rows fetched: 573
+[2025-11-20 16:35:37] CRON: New records inserted: 0
+[2025-11-20 16:35:37] CRON: Records updated: 20
+[2025-11-20 16:35:37] CRON: Records skipped (no changes): 553
+[2025-11-20 16:35:37] CRON: Cleaning up log entries older than 2 days
+[2025-11-20 16:35:37] CRON: Log cleanup completed
+[2025-11-20 16:35:37] CRON: === END RQC SYNC ===
+[2025-11-20 16:38:53] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-20 16:38:53] MANUAL: Database connection: SUCCESS
+[2025-11-20 16:38:53] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-20 16:38:53] MANUAL: Tab Name: All RQC
+[2025-11-20 16:38:53] MANUAL: Google Sheets client initialized successfully
+[2025-11-20 16:38:53] MANUAL: Fetching data from Google Sheet
+[2025-11-20 16:38:54] MANUAL: Skipped header row
+[2025-11-20 16:38:54] MANUAL: Fetched 573 rows from Google Sheet
+[2025-11-20 16:38:54] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-20 16:38:54] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-20 16:38:54] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-20 16:40:31] CRON: === STARTING RQC SHEET SYNC ===
+[2025-11-20 16:40:31] CRON: Database connected successfully
+[2025-11-20 16:40:31] CRON: Google Sheets client initialized
+[2025-11-20 16:40:31] CRON: Fetching data from Google Sheet: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ, Tab: All RQC
+[2025-11-20 16:40:32] CRON: Skipped header row
+[2025-11-20 16:40:32] CRON: Fetched 573 rows from Google Sheet
+[2025-11-20 16:40:32] CRON: UPDATED: Aysha - Score: 20.00% → 88.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:32] CRON: UPDATED: Aysha - Score: 88.00% → 20.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:32] CRON: UPDATED: Simran - Score: 52.00% → 80.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:40:32] CRON: UPDATED: Simran - Score: 80.00% → 48.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:40:32] CRON: UPDATED: Simran - Score: 48.00% → 52.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:40:32] CRON: UPDATED: Vaishnavi - Score: 70.91% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:32] CRON: UPDATED: Vaishnavi - Score: 80.00% → 70.91% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:32] CRON: UPDATED: Aditya Saini - Score: 100.00% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:32] CRON: UPDATED: Aditya Saini - Score: 80.00% → 100.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 87.14% → 82.22% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 82.22% → 87.14% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 65.00% → 50.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 50.00% → 41.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 41.00% → 65.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 55.00% → 40.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 40.00% → 55.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 34.00% → 41.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:40:33] CRON: UPDATED: Nakul - Score: 41.00% → 34.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:40:33] CRON: UPDATED: Sanyam - Score: 37.00% → 41.50% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 16:40:33] CRON: UPDATED: Sanyam - Score: 41.50% → 37.00% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 16:40:33] CRON: === RQC SYNC COMPLETED ===
+[2025-11-20 16:40:33] CRON: Total rows fetched: 573
+[2025-11-20 16:40:33] CRON: New records inserted: 0
+[2025-11-20 16:40:33] CRON: Records updated: 20
+[2025-11-20 16:40:33] CRON: Records skipped (no changes): 553
+[2025-11-20 16:40:33] CRON: Cleaning up log entries older than 2 days
+[2025-11-20 16:40:33] CRON: Log cleanup completed
+[2025-11-20 16:40:33] CRON: === END RQC SYNC ===
+[2025-11-20 16:40:43] CRON: === STARTING RQC SHEET SYNC ===
+[2025-11-20 16:40:43] CRON: Database connected successfully
+[2025-11-20 16:40:43] CRON: Google Sheets client initialized
+[2025-11-20 16:40:43] CRON: Fetching data from Google Sheet: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ, Tab: All RQC
+[2025-11-20 16:40:44] CRON: Skipped header row
+[2025-11-20 16:40:44] CRON: Fetched 573 rows from Google Sheet
+[2025-11-20 16:40:44] CRON: UPDATED: Aysha - Score: 20.00% → 88.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Aysha - Score: 88.00% → 20.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Simran - Score: 52.00% → 80.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:40:44] CRON: UPDATED: Simran - Score: 80.00% → 48.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:40:44] CRON: UPDATED: Simran - Score: 48.00% → 52.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 16:40:44] CRON: UPDATED: Vaishnavi - Score: 70.91% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Vaishnavi - Score: 80.00% → 70.91% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Aditya Saini - Score: 100.00% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Aditya Saini - Score: 80.00% → 100.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 87.14% → 82.22% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 82.22% → 87.14% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 65.00% → 50.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 50.00% → 41.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 41.00% → 65.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 55.00% → 40.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 40.00% → 55.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 34.00% → 41.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Nakul - Score: 41.00% → 34.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 16:40:44] CRON: UPDATED: Sanyam - Score: 37.00% → 41.50% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 16:40:44] CRON: UPDATED: Sanyam - Score: 41.50% → 37.00% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 16:40:44] CRON: === RQC SYNC COMPLETED ===
+[2025-11-20 16:40:44] CRON: Total rows fetched: 573
+[2025-11-20 16:40:44] CRON: New records inserted: 0
+[2025-11-20 16:40:44] CRON: Records updated: 20
+[2025-11-20 16:40:44] CRON: Records skipped (no changes): 553
+[2025-11-20 16:40:44] CRON: Cleaning up log entries older than 2 days
+[2025-11-20 16:40:44] CRON: Log cleanup completed
+[2025-11-20 16:40:44] CRON: === END RQC SYNC ===
+[2025-11-20 17:09:56] CRON: === STARTING RQC SHEET SYNC ===
+[2025-11-20 17:09:56] CRON: Database connected successfully
+[2025-11-20 17:09:56] CRON: Google Sheets client initialized
+[2025-11-20 17:09:56] CRON: Fetching data from Google Sheet: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ, Tab: All RQC
+[2025-11-20 17:09:57] CRON: Skipped header row
+[2025-11-20 17:09:57] CRON: Fetched 573 rows from Google Sheet
+[2025-11-20 17:09:57] CRON: UPDATED: Aysha - Score: 20.00% → 88.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 17:09:57] CRON: UPDATED: Aysha - Score: 88.00% → 20.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 17:09:57] CRON: UPDATED: Simran - Score: 52.00% → 80.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 17:09:57] CRON: UPDATED: Simran - Score: 80.00% → 48.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 17:09:57] CRON: UPDATED: Simran - Score: 48.00% → 52.00% - Timestamp: 2025-07-19 13:57:00
+[2025-11-20 17:09:58] CRON: UPDATED: Vaishnavi - Score: 70.91% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Vaishnavi - Score: 80.00% → 70.91% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Aditya Saini - Score: 100.00% → 80.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Aditya Saini - Score: 80.00% → 100.00% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 87.14% → 82.22% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 82.22% → 87.14% - Timestamp: 2025-08-02 00:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 65.00% → 50.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 50.00% → 41.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 41.00% → 65.00% - Timestamp: 2025-07-19 14:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 55.00% → 40.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 40.00% → 55.00% - Timestamp: 2025-02-08 10:19:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 34.00% → 41.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Nakul - Score: 41.00% → 34.00% - Timestamp: 2025-08-08 00:00:00
+[2025-11-20 17:09:58] CRON: UPDATED: Sanyam - Score: 37.00% → 41.50% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 17:09:58] CRON: UPDATED: Sanyam - Score: 41.50% → 37.00% - Timestamp: 2025-07-19 14:13:00
+[2025-11-20 17:09:58] CRON: === RQC SYNC COMPLETED ===
+[2025-11-20 17:09:58] CRON: Total rows fetched: 573
+[2025-11-20 17:09:58] CRON: New records inserted: 0
+[2025-11-20 17:09:58] CRON: Records updated: 20
+[2025-11-20 17:09:58] CRON: Records skipped (no changes): 553
+[2025-11-20 17:09:58] CRON: Cleaning up log entries older than 2 days
+[2025-11-20 17:09:58] CRON: Log cleanup completed
+[2025-11-20 17:09:58] CRON: === END RQC SYNC ===
+[2025-11-26 15:55:51] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-26 15:55:51] MANUAL: Database connection: SUCCESS
+[2025-11-26 15:55:51] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-26 15:55:51] MANUAL: Tab Name: All RQC
+[2025-11-26 15:55:55] MANUAL: Google Sheets client initialized successfully
+[2025-11-26 15:55:55] MANUAL: Fetching data from Google Sheet
+[2025-11-26 15:56:05] MANUAL: Skipped header row
+[2025-11-26 15:56:05] MANUAL: Fetched 573 rows from Google Sheet
+[2025-11-26 15:56:06] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-26 15:56:06] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-26 15:56:06] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-30 14:45:27] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-30 14:45:27] MANUAL: Database connection: SUCCESS
+[2025-11-30 14:45:27] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-30 14:45:27] MANUAL: Tab Name: All RQC
+[2025-11-30 14:45:30] MANUAL: Google Sheets client initialized successfully
+[2025-11-30 14:45:30] MANUAL: Fetching data from Google Sheet
+[2025-11-30 14:45:38] MANUAL: Skipped header row
+[2025-11-30 14:45:38] MANUAL: Fetched 576 rows from Google Sheet
+[2025-11-30 14:45:39] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-30 14:45:39] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-30 14:45:39] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)
+[2025-11-30 14:46:59] MANUAL: === STARTING MANUAL RQC SYNC ===
+[2025-11-30 14:46:59] MANUAL: Database connection: SUCCESS
+[2025-11-30 14:46:59] MANUAL: Sheet ID: 1E0wn_EIhNRyDnfBZDVm3swxE5YQxJkT5GPRssDbiZMQ
+[2025-11-30 14:46:59] MANUAL: Tab Name: All RQC
+[2025-11-30 14:46:59] MANUAL: Google Sheets client initialized successfully
+[2025-11-30 14:46:59] MANUAL: Fetching data from Google Sheet
+[2025-11-30 14:47:01] MANUAL: Skipped header row
+[2025-11-30 14:47:01] MANUAL: Fetched 576 rows from Google Sheet
+[2025-11-30 14:47:01] MANUAL: UPDATED: Aysha - Score: 20.00% → 88.00%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Aysha - Score: 88.00% → 20.00%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Vaishnavi - Score: 70.91% → 80.00%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Vaishnavi - Score: 80.00% → 70.91%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Aditya Saini - Score: 100.00% → 80.00%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Aditya Saini - Score: 80.00% → 100.00%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Nakul - Score: 87.14% → 82.22%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Nakul - Score: 82.22% → 87.14%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Nakul - Score: 55.00% → 40.00%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Nakul - Score: 40.00% → 55.00%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Nakul - Score: 34.00% → 41.00%
+[2025-11-30 14:47:01] MANUAL: UPDATED: Nakul - Score: 41.00% → 34.00%
+[2025-11-30 14:47:01] MANUAL: Manual sync completed. Total: 12 (Inserted: 0, Updated: 12)

@@ -1,0 +1,288 @@
+/* ========================================
+   FOORACLES MANAGEMENT SYSTEM - THEME COLORS
+   Primary Theme Stylesheet for Color Management
+   ======================================== */
+
+:root {
+    /* ========================================
+       BRAND COLOR PALETTE
+       ======================================== */
+    
+    /* Primary Brand Colors */
+    --brand-primary: #2f3c7e;        /* Dark Blue - Primary brand color */
+    --brand-secondary: #b85042;      /* Warm Red - Secondary brand color */
+    --brand-accent: #898d91;         /* Neutral Gray - Accent color */
+    --brand-light: #fff2d7;          /* Cream White - Light background/text */
+    --brand-dark: #101820;           /* Dark Navy - Dark text/accents */
+    
+    /* ========================================
+       COLOR VARIATIONS & OPACITIES
+       ======================================== */
+    
+    /* Primary Color Variations */
+    --primary-50: rgba(47, 60, 126, 0.05);
+    --primary-100: rgba(47, 60, 126, 0.1);
+    --primary-200: rgba(47, 60, 126, 0.2);
+    --primary-300: rgba(47, 60, 126, 0.3);
+    --primary-500: #2f3c7e;
+    --primary-600: #253066;
+    --primary-700: #1e254f;
+    --primary-800: #171b38;
+    --primary-900: #101820;
+    
+    /* Secondary Color Variations */
+    --secondary-50: rgba(184, 80, 66, 0.05);
+    --secondary-100: rgba(184, 80, 66, 0.1);
+    --secondary-200: rgba(184, 80, 66, 0.2);
+    --secondary-300: rgba(184, 80, 66, 0.3);
+    --secondary-500: #b85042;
+    --secondary-600: #a6453a;
+    --secondary-700: #943a32;
+    --secondary-800: #822f2a;
+    --secondary-900: #702422;
+    
+    /* Accent Color Variations */
+    --accent-50: rgba(137, 141, 145, 0.05);
+    --accent-100: rgba(137, 141, 145, 0.1);
+    --accent-200: rgba(137, 141, 145, 0.2);
+    --accent-300: rgba(137, 141, 145, 0.3);
+    --accent-500: #898d91;
+    --accent-600: #7a7e82;
+    --accent-700: #6b6f73;
+    --accent-800: #5c6064;
+    --accent-900: #4d5155;
+    
+    /* Light Color Variations */
+    --light-50: rgba(255, 242, 215, 0.05);
+    --light-100: rgba(255, 242, 215, 0.1);
+    --light-200: rgba(255, 242, 215, 0.2);
+    --light-300: rgba(255, 242, 215, 0.3);
+    --light-500: #fff2d7;
+    --light-600: #e6dac1;
+    --light-700: #ccc2ab;
+    --light-800: #b3aa95;
+    --light-900: #99927f;
+    
+    /* ========================================
+       SEMANTIC COLORS
+       ======================================== */
+    
+    /* Status Colors */
+    --success: #28a745;
+    --success-light: rgba(40, 167, 69, 0.1);
+    --warning: #ffc107;
+    --warning-light: rgba(255, 193, 7, 0.1);
+    --danger: #dc3545;
+    --danger-light: rgba(220, 53, 69, 0.1);
+    --info: #17a2b8;
+    --info-light: rgba(23, 162, 184, 0.1);
+    
+    /* ========================================
+       BACKGROUND COLORS
+       ======================================== */
+    
+    /* Main Backgrounds */
+    --bg-primary: var(--brand-light);
+    --bg-secondary: #f8f9fa;
+    --bg-dark: var(--brand-dark);
+    --bg-sidebar: #111111;
+    --bg-sidebar-header: #111111;
+    --bg-header: #111111;
+    --bg-content: var(--brand-light);
+    
+    /* ========================================
+       TEXT COLORS
+       ======================================== */
+    
+    /* Text Colors */
+    --text-primary: var(--brand-dark);
+    --text-secondary: var(--accent-500);
+    --text-light: var(--brand-light);
+    --text-muted: var(--accent-600);
+    --text-white: #ffffff;
+    
+    /* ========================================
+       BORDER COLORS
+       ======================================== */
+    
+    /* Border Colors */
+    --border-primary: var(--accent-500);
+    --border-secondary: var(--accent-300);
+    --border-light: var(--accent-200);
+    --border-dark: var(--brand-dark);
+    
+    /* ========================================
+       SHADOW COLORS
+       ======================================== */
+    
+    /* Shadow Colors */
+    --shadow-light: rgba(16, 24, 32, 0.1);
+    --shadow-medium: rgba(16, 24, 32, 0.15);
+    --shadow-dark: rgba(16, 24, 32, 0.2);
+    --shadow-brand: rgba(47, 60, 126, 0.2);
+    
+    /* ========================================
+       COMPONENT SPECIFIC COLORS
+       ======================================== */
+    
+    /* Sidebar */
+    --sidebar-bg: #111111;
+    --sidebar-header-bg: #111111;
+    --sidebar-text: var(--text-light);
+    --sidebar-text-muted: #888888;
+    --sidebar-hover: rgba(255, 255, 255, 0.1);
+    --sidebar-active: var(--brand-secondary);
+    --sidebar-border: #333333;
+    --sidebar-shadow: var(--shadow-medium);
+    
+    /* Header */
+    --header-bg: #111111;
+    --header-text: var(--text-light);
+    --header-shadow: var(--shadow-medium);
+    --header-border: #333333;
+    
+    /* Buttons */
+    --btn-primary-bg: var(--brand-primary);
+    --btn-primary-text: var(--text-white);
+    --btn-primary-hover: var(--primary-600);
+    --btn-secondary-bg: var(--brand-secondary);
+    --btn-secondary-text: var(--text-white);
+    --btn-secondary-hover: var(--secondary-600);
+    --btn-outline-border: var(--light-300);
+    --btn-outline-text: var(--text-light);
+    --btn-outline-bg: var(--light-100);
+    
+    /* Forms */
+    --form-bg: var(--text-white);
+    --form-border: var(--border-secondary);
+    --form-border-focus: var(--brand-primary);
+    --form-text: var(--text-primary);
+    --form-placeholder: var(--text-muted);
+    
+    /* Cards */
+    --card-bg: var(--text-white);
+    --card-border: var(--border-light);
+    --card-shadow: var(--shadow-light);
+    
+    /* Tooltips */
+    --tooltip-bg: var(--text-white);
+    --tooltip-border: var(--border-secondary);
+    --tooltip-text: var(--text-primary);
+    --tooltip-shadow: var(--shadow-medium);
+    
+    /* ========================================
+       PREMIUM STYLING VARIABLES
+       ======================================== */
+    
+    /* Premium Effects */
+    --premium-shadow: 0 4px 20px rgba(16, 24, 32, 0.12);
+    --premium-shadow-hover: 0 8px 30px rgba(16, 24, 32, 0.18);
+    --premium-border-radius: 8px;
+    --premium-border-radius-lg: 12px;
+    --premium-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Card Styling */
+    --card-bg: #ffffff;
+    --card-border: var(--accent-200);
+    --card-shadow: var(--premium-shadow);
+    --card-hover-shadow: var(--premium-shadow-hover);
+    
+    /* Button Premium Styling */
+    --btn-shadow: 0 2px 8px rgba(16, 24, 32, 0.1);
+    --btn-shadow-hover: 0 4px 12px rgba(16, 24, 32, 0.15);
+    --btn-border-radius: var(--premium-border-radius);
+    
+    /* ========================================
+       SPACING & SIZING
+       ======================================== */
+    
+    /* Spacing Scale */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-full: 50%;
+    
+    /* ========================================
+       TYPOGRAPHY
+       ======================================== */
+    
+    /* Font Weights */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    
+    /* Font Sizes */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    
+    /* ========================================
+       TRANSITIONS
+       ======================================== */
+    
+    /* Transition Durations */
+    --transition-fast: 0.15s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.5s;
+    
+    /* Transition Easing */
+    --ease-in: ease-in;
+    --ease-out: ease-out;
+    --ease-in-out: ease-in-out;
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========================================
+   DARK THEME VARIABLES (Future Enhancement)
+   ======================================== */
+
+/* Dark theme support - ready for future implementation */
+/* @media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: var(--brand-dark);
+        --text-primary: var(--brand-light);
+        --sidebar-bg: linear-gradient(180deg, var(--brand-dark) 0%, #111111 100%);
+    }
+} */
+
+/* ========================================
+   THEME UTILITY CLASSES
+   ======================================== */
+
+/* Background Utilities */
+.bg-primary { background-color: var(--brand-primary) !important; }
+.bg-secondary { background-color: var(--brand-secondary) !important; }
+.bg-accent { background-color: var(--brand-accent) !important; }
+.bg-light { background-color: var(--brand-light) !important; }
+.bg-dark { background-color: var(--brand-dark) !important; }
+
+/* Text Utilities */
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-light { color: var(--text-light) !important; }
+.text-muted { color: var(--text-muted) !important; }
+
+/* Border Utilities */
+.border-primary { border-color: var(--border-primary) !important; }
+.border-secondary { border-color: var(--border-secondary) !important; }
+.border-light { border-color: var(--border-light) !important; }
+
+/* Shadow Utilities */
+.shadow-light { box-shadow: 0 2px 4px var(--shadow-light) !important; }
+.shadow-medium { box-shadow: 0 4px 8px var(--shadow-medium) !important; }
+.shadow-dark { box-shadow: 0 8px 16px var(--shadow-dark) !important; }

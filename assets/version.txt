@@ -1,0 +1,5 @@
+<?php
+// Version file for cache busting
+// This file should be updated whenever CSS or JS files are modified
+echo time();
+?>

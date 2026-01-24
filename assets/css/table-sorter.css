@@ -1,0 +1,132 @@
+/* Table Sorting Styles - Unified Chevron Icon System */
+
+/* Base styles for sortable headers */
+.sortable-header {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+.sortable-header:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Sort icon base styles */
+.sort-icon {
+    font-size: 0.75em;
+    display: inline-block;
+    margin-left: 4px;
+    vertical-align: middle;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    line-height: 1;
+}
+
+/* Active sort icon - golden glow (matching priority star) */
+.sort-icon-active {
+    opacity: 1 !important;
+    color: #fbbf24 !important;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8));
+    animation: sort-icon-pulse 2s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+/* Inactive sort icon - faded golden */
+.sort-icon-inactive {
+    opacity: 0.35 !important;
+    color: rgba(251, 191, 36, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* Hover effect on inactive icons - golden glow */
+.sortable-header:hover .sort-icon-inactive {
+    opacity: 0.8 !important;
+    color: #fbbf24 !important;
+    filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));
+}
+
+/* Pulse animation for active sort icon (matching priority star) */
+@keyframes sort-icon-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8));
+    }
+    50% {
+        filter: drop-shadow(0 0 10px rgba(251, 191, 36, 1));
+    }
+}
+
+/* Ensure only one icon is visible per column */
+.sortable-header .sort-icon {
+    display: inline-block;
+}
+
+/* Hide any duplicate icons */
+.sortable-header .sort-icon + .sort-icon {
+    display: none;
+}
+
+/* Table-specific styles */
+.sortable-table th.sortable {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+.sortable-table th.sortable:hover {
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+.sortable-table th .sort-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.sortable-table th {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* Active sort state on header */
+.sortable-table th.sortable.sort-asc,
+.sortable-table th.sortable.sort-desc {
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+/* General table header sorting styles */
+table thead th .sortable-header,
+.table thead th .sortable-header {
+    color: #ffffff;
+}
+
+table thead th .sortable-header:hover,
+.table thead th .sortable-header:hover {
+    color: #ffffff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sortable-table th .sort-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .sort-icon {
+        margin-left: 0;
+        margin-top: 4px;
+    }
+}

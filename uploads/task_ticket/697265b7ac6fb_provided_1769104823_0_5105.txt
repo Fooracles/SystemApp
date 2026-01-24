@@ -1,0 +1,271 @@
+FMS-4.11-App PROJECT PREVIEW AND DOCUMENTATION
+
+Date: December 2024
+Project: FMS-4.11-App Task Management System
+Version: Updated with Description Hover Tooltips and Column Fixes
+
+================================================================================
+
+PROJECT OVERVIEW
+
+The FMS-4.11-App is a comprehensive Task Management System designed for 
+organizations to manage delegation tasks, checklist tasks, and FMS (File 
+Management System) tasks. The system supports multiple user roles (Admin, 
+Manager, Doer) with role-based access control and advanced filtering capabilities.
+
+================================================================================
+
+FILES MODIFIED AND THEIR CHANGES
+
+1. pages/doer_dashboard.php
+Purpose: My Tasks section for doers to view and manage their assigned tasks
+File Logic: Displays delegation tasks, checklist tasks, and FMS tasks assigned to the logged-in doer
+
+Changes Made:
+- Description Hover Tooltip Implementation: Added CSS styling for description hover tooltips with dark background and white text, implemented PHP logic to truncate descriptions to 50 characters with ellipsis, added JavaScript function to convert line breaks to HTML for proper tooltip display
+- Column Width Fixes: Fixed description column overlapping issue by setting fixed width of 150px, added table-layout fixed to ensure consistent column sizing
+- FMS Button Grey-out Logic: FMS "Mark Done" buttons turn grey and disabled during processing for 2 minutes after clicking, uses localStorage to persist state
+- Assigned by/Client name Column Logic: Delegation tasks show manager name or "self", Checklist tasks show assigned_by field, FMS tasks show client_name field
+
+2. pages/manage_tasks.php
+Purpose: Main task management interface for admins and managers to view all tasks
+File Logic: Displays all delegation, checklist, and FMS tasks with filtering, sorting, and status update capabilities
+
+Changes Made:
+- Description Hover Tooltip Implementation: Added identical CSS styling for description hover tooltips, implemented PHP logic to truncate descriptions to 50 characters
+- Column Width Fixes: Fixed description column overlapping by setting 150px fixed width, added table-layout fixed for consistent column sizing
+- Assigned by/Client name Column Logic: Delegation tasks display manager name or "self", Checklist tasks display assigned_by field, FMS tasks display client_name field
+- Manager Filtering Logic: Managers see only tasks assigned by them or to their subordinates
+
+3. pages/add_task.php
+Purpose: Interface for creating delegation tasks and viewing existing delegation tasks
+File Logic: Form for adding new delegation tasks and table displaying all delegation tasks
+
+Changes Made:
+- Description Hover Tooltip Implementation: Added CSS styling for description hover tooltips, implemented PHP logic to truncate descriptions to 50 characters
+- Column Width Fixes: Fixed description column overlapping by setting 150px fixed width, added table-layout fixed for consistent column sizing
+- Manager Filtering Logic: Managers see only delegation tasks assigned by them or to their subordinates
+- Assigned by Column Logic: Delegation tasks display manager name or "self"
+
+4. pages/checklist_task.php
+Purpose: Interface for creating checklist tasks and viewing existing checklist tasks
+File Logic: Form for adding new checklist tasks and table displaying all checklist tasks
+
+Changes Made:
+- Description Hover Tooltip Implementation: Added CSS styling for description hover tooltips, implemented PHP logic to truncate descriptions to 50 characters
+- Column Width Fixes: Fixed description column overlapping by setting 150px fixed width, added table-layout fixed for consistent column sizing
+- Manager Filtering Logic: Managers see only checklist tasks assigned to their subordinates
+- Assigned by Field Implementation: Added "Assigned by" field to checklist task creation form, auto-populates with selected doer's manager name
+- Doer Dropdown Filtering: Manager users only see doers under their supervision
+
+5. pages/manager_dashboard.php
+Purpose: Dashboard interface for managers to view task summaries and recent tasks
+File Logic: Displays task statistics, completion rates, and recent task lists for managers
+
+Changes Made:
+- Assigned by/Client name Column Logic: Delegation tasks display manager name or "self", Checklist tasks display assigned_by field, FMS tasks display client_name field (needs 1-line fix)
+- Manager Task Viewing: Shows all tasks regardless of department
+- FMS Client Name Fix Needed: Missing client_name field in FMS task array structure
+
+6. pages/manage_users.php
+Purpose: User management interface for admins to add, edit, and delete users
+File Logic: Form for adding new users and table displaying all users with management capabilities
+
+Changes Made (Previous Updates):
+- Manager Field Implementation: Added "Manager" dropdown field to "Add new user" form, dropdown shows all Manager and Admin users, "Shubham Tyagi" set as default manager
+- Auto-update Logic: When a Manager/Admin user is deleted, all users who had them as manager are updated to "Shubham Tyagi"
+- Parameter Binding Fixes: Fixed mysqli_stmt_bind_param errors on lines 310 and 342
+
+7. includes/header.php
+Purpose: Common header and navigation bar for the application
+File Logic: Provides consistent navigation across all pages
+
+Changes Made (Previous Updates):
+- Path Corrections: Fixed absolute paths to relative paths for CSS and navigation links, corrected brand link to ensure proper display in subdirectory
+- Navigation Expansion: Expanded admin navigation options to show all relevant links
+
+8. includes/footer.php
+Purpose: Common footer for the application
+File Logic: Provides consistent footer across all pages
+
+Changes Made (Previous Updates):
+- Path Corrections: Fixed JavaScript asset paths to relative paths, corrected paths to work with FMS-4.11-App subdirectory
+
+9. insert_defaults.php
+Purpose: Database initialization script for default data
+File Logic: Inserts default department names and other initial data
+
+Changes Made (Previous Updates):
+- Department List Update: Updated hardcoded list of departments to new expanded list, added new department names as provided by user
+
+================================================================================
+
+DATABASE STRUCTURE AND USAGE
+
+1. users Table
+Purpose: Stores user account information and manager relationships
+Structure: id, username, email, password, user_type, department, manager (NEW FIELD), created_at, updated_at
+Usage: User authentication, manager-doer relationship tracking, department assignment, role-based access control
+
+2. tasks Table (Delegation Tasks)
+Purpose: Stores delegation tasks assigned by managers to doers
+Structure: id, unique_id, description, planned_date, planned_time, actual_date, actual_time, status, is_delayed, delay_duration, duration, doer_id, doer_name, manager_id, assigned_by, department_id, shifted_count, created_at, updated_at
+Usage: Task assignment and tracking, delay calculation, status management, manager-doer relationship
+
+3. checklist_subtasks Table
+Purpose: Stores checklist tasks with frequency and assignment information
+Structure: id, task_code, task_description, task_date, actual_date, actual_time, status, is_delayed, delay_duration, duration, assignee, department, frequency, assigned_by (NEW FIELD), created_at, updated_at
+Usage: Recurring task management, frequency-based task scheduling, department-based task assignment
+
+4. fms_tasks Table
+Purpose: Stores FMS (File Management System) tasks from external sources
+Structure: id, unique_key, step_name, client_name, planned, actual, status, duration, doer_name, sheet_label, task_link, created_at, updated_at
+Usage: External task integration, client-based task tracking, Google Sheets integration
+
+5. departments Table
+Purpose: Stores department information for user and task assignment
+Structure: id, name, created_at, updated_at
+Usage: Department-based filtering, user department assignment, task department assignment
+
+================================================================================
+
+TECHNICAL IMPLEMENTATION DETAILS
+
+Description Hover Tooltip System:
+- Uses CSS ::after and ::before pseudo-elements for tooltip display
+- JavaScript converts line breaks to HTML for proper tooltip formatting
+- Data attributes store full description for hover display
+- Tooltips have dark background, white text, and arrow pointer
+
+Column Width Management:
+- Fixed table-layout ensures consistent column sizing
+- Description column set to 150px fixed width
+- Text truncation at 50 characters with ellipsis
+- Overflow hidden prevents text from breaking layout
+
+FMS Button State Management:
+- Uses localStorage to persist button states across page refreshes
+- 2-minute grey-out period after button click
+- Prevents multiple clicks during processing
+- Visual feedback with grey background and disabled state
+
+Manager Filtering System:
+- SQL-based filtering based on user relationships
+- Different logic for different task types
+- OR conditions for delegation tasks (assigned by OR doer under management)
+- AND conditions for checklist and FMS tasks (doer under management)
+
+================================================================================
+
+FILES TO UPLOAD TO LIVE SERVER
+
+Primary Files (Must Upload):
+1. pages/doer_dashboard.php
+2. pages/manage_tasks.php
+3. pages/add_task.php
+4. pages/checklist_task.php
+5. pages/manager_dashboard.php (needs 1-line fix)
+6. pages/manage_users.php
+7. includes/header.php
+8. includes/footer.php
+9. insert_defaults.php
+
+================================================================================
+
+IMPORTANT NOTES
+
+FMS Client Name Fix Required:
+- File: pages/manager_dashboard.php
+- Line: 658 (after 'description' => $fms_task['step_name'],)
+- Add: 'client_name' => $fms_task['client_name'] ?? 'N/A',
+- This will fix FMS tasks showing "N/A" in assigned by column
+
+Database Requirements:
+- Ensure all database tables are created
+- Verify manager column exists in users table
+- Confirm assigned_by column exists in checklist_subtasks table
+- Check that fms_tasks table has client_name column
+
+================================================================================
+
+DATABASE MIGRATION SCRIPTS NEEDED
+
+1. Add Manager Column to Users Table:
+ALTER TABLE users ADD COLUMN manager VARCHAR(255) DEFAULT 'Shubham Tyagi';
+
+2. Add Assigned By Column to Checklist Subtasks Table:
+ALTER TABLE checklist_subtasks ADD COLUMN assigned_by VARCHAR(255) DEFAULT 'N/A';
+
+3. Update Department List:
+INSERT INTO departments (name) VALUES 
+('PC Lead generation'),
+('Content Writing'),
+('Video Journalist'),
+('HR Admin PC'),
+('Legal Administration'),
+('QA Sales'),
+('Marketing Research & Development'),
+('Product Development'),
+('Quality and Operations'),
+('Strategist Content Writing'),
+('Video Editor'),
+('Social Media Executive'),
+('Lead Generation'),
+('Video Content Creator'),
+('CEO Digital Marketing Manager'),
+('EA Finance & Accounts'),
+('Culture, Ethics and Compliance'),
+('MIS Graphic Designing'),
+('Marketing Automation System Creation'),
+('Data Analysis Tools & Technology'),
+('Corporate Social Responsibilities'),
+('AI Solution Specialist')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
+
+================================================================================
+
+SUMMARY OF IMPROVEMENTS
+
+1. User Experience: Added description hover tooltips for better readability
+2. Layout Fixes: Resolved column overlapping issues
+3. Visual Feedback: Enhanced FMS button state management
+4. Data Display: Improved assigned by/client name column logic
+5. Manager Features: Enhanced manager filtering and task viewing
+6. Code Quality: Fixed parameter binding errors and path issues
+7. Database Integration: Added manager relationships and assigned by tracking
+
+All changes maintain backward compatibility and improve the overall user experience of the task management system.
+
+================================================================================
+
+DEPLOYMENT CHECKLIST
+
+Pre-Deployment:
+- Backup existing database
+- Test all functionality on staging environment
+- Verify all file permissions
+- Check database connection settings
+- Validate all SQL queries
+
+Deployment:
+- Upload all modified files
+- Run database migration scripts
+- Update configuration files
+- Test user authentication
+- Verify task creation and management
+- Check manager filtering functionality
+- Test description hover tooltips
+- Validate column width fixes
+
+Post-Deployment:
+- Monitor system performance
+- Check error logs
+- Verify user access levels
+- Test all user roles (Admin, Manager, Doer)
+- Validate task assignment workflows
+- Check FMS integration
+- Test mobile responsiveness
+
+================================================================================
+
+End of Project Preview Documentation

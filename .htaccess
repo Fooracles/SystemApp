@@ -1,0 +1,26 @@
+# Protect sensitive files
+<FilesMatch "(credentials\.json|config\.php|\.env)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Enable URL rewriting
+RewriteEngine On
+
+# Redirect to HTTPS if available (uncomment when SSL is set up)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Ensure proper session handling
+<IfModule mod_php7.c>
+  php_value session.cookie_httponly 1
+  php_value session.use_only_cookies 1
+  php_value session.cookie_lifetime 0
+  php_value session.gc_maxlifetime 3600
+</IfModule>
+
+# PHP settings
+php_flag display_startup_errors on
+php_flag display_errors on
+php_flag html_errors on
+php_value error_reporting -1

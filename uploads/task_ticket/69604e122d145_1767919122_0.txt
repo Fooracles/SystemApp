@@ -1,0 +1,163 @@
+FMS-4.11-App CORE SYSTEM FILES DOCUMENTATION
+===============================================
+
+Date: December 2024
+Project: FMS-4.11-App Task Management System
+Version: Updated with Description Hover Tooltips and Column Fixes
+
+================================================================================
+
+PROJECT OVERVIEW
+
+The FMS-4.11-App is a comprehensive Task Management System designed for
+organizations to manage delegation tasks, checklist tasks, and FMS (File
+Management System) tasks. The system supports multiple user roles (Admin,
+Manager, Doer) with role-based access control and advanced filtering capabilities.
+
+================================================================================
+
+CORE SYSTEM LOGIC FILES
+
+================================================================================
+
+CONFIGURATION & DATABASE LOGIC
+------------------------------
+- config/database.php - Database connection configuration
+- includes/config.php - Main system configuration and settings
+- includes/db_functions.php - Database operation functions and queries
+- includes/db_schema.php - Database schema definitions and table structures
+- database.sql - Complete database schema and initial data
+
+CORE BUSINESS LOGIC
+-------------------
+- includes/functions.php - Main business logic functions, utilities, and helpers
+- includes/header.php - Common header logic and navigation
+- includes/footer.php - Common footer logic and scripts
+- includes/navbar_manager.php - Manager-specific navigation logic
+
+USER MANAGEMENT LOGIC
+---------------------
+- login.php - User authentication and login logic
+- logout.php - User logout and session cleanup
+- pages/manage_users.php - User CRUD operations and management
+- pages/profile.php - User profile management and updates
+
+DASHBOARD LOGIC (Role-based)
+-----------------------------
+- pages/admin_dashboard.php - Admin dashboard with system overview
+- pages/manager_dashboard.php - Manager dashboard with team oversight
+- pages/doer_dashboard.php - Doer dashboard with assigned tasks
+- pages/my_task.php - Personal task management interface
+
+TASK MANAGEMENT LOGIC
+---------------------
+- pages/manage_tasks.php - Main task management interface
+- pages/add_task.php - Task creation and assignment logic
+- pages/checklist_task.php - Checklist task management
+- pages/fms_task.php - FMS (File Management System) task handling
+
+TASK ACTION LOGIC
+-----------------
+- pages/action_update_task_status.php - Task status update logic
+- pages/action_update_task_edit.php - Task editing logic
+- pages/action_shift_task.php - Task shifting/reassignment logic
+- pages/action_doer_complete_task.php - Task completion logic
+- pages/action_update_checklist_status.php - Checklist status updates
+- pages/action_update_checklist_edit.php - Checklist editing logic
+
+AJAX LOGIC (Real-time Operations)
+---------------------------------
+- ajax/get_doers.php - Fetch available doers for task assignment
+- ajax/get_notifications.php - Real-time notification fetching
+- ajax/clear_all_notifications.php - Notification cleanup
+- ajax/update_delays.php - Task delay updates
+- ajax/delegation_tasks_sse.php - Server-sent events for delegation tasks
+- ajax/get_new_delegation_tasks.php - New delegation task fetching
+- ajax/fms_sheet_handler.php - FMS sheet data handling
+- ajax/ajax_fetch_sheet_data.php - Sheet data fetching
+- ajax/holiday_handler.php - Holiday management
+- ajax/approve_password_reset.php - Password reset approval
+- ajax/reject_password_reset.php - Password reset rejection
+- ajax/create_test_request.php - Test request creation
+
+DATA SYNCHRONIZATION LOGIC
+---------------------------
+- update_fms_tasks.php - FMS task synchronization with Google Sheets
+- update_fms_tasks_web.php - Web-based FMS task updates
+- update_fms_tasks_background.php - Background FMS synchronization
+- manage_sheets.php - Google Sheets management interface
+- view_sheet_data.php - Sheet data viewing and debugging
+
+SYSTEM MAINTENANCE LOGIC
+------------------------
+- fix_delayed_highlights_complete.php - Task highlighting correction logic
+- force_refresh_highlighting.php - Highlighting refresh logic
+- performance_monitor.php - System performance monitoring
+
+UTILITY LOGIC
+-------------
+- pages/holiday_list.php - Holiday management and display
+- index.php - Main entry point and routing logic
+
+================================================================================
+
+LOGIC CATEGORIES
+
+================================================================================
+
+AUTHENTICATION & AUTHORIZATION
+- Login/logout, user management, role-based access control
+
+TASK MANAGEMENT
+- CRUD operations, status updates, assignments, filtering, sorting
+
+DATA SYNCHRONIZATION
+- Google Sheets integration, background sync, real-time updates
+
+USER INTERFACE
+- Dashboards, forms, AJAX operations, real-time notifications
+
+SYSTEM ADMINISTRATION
+- User management, system monitoring, maintenance operations
+
+BUSINESS RULES
+- Task assignment logic, status workflows, notification triggers
+
+================================================================================
+
+SYSTEM ARCHITECTURE
+
+This FMS system follows a MODULAR ARCHITECTURE with clear separation of concerns:
+
+1. CONFIGURATION LAYER - Database and system settings
+2. BUSINESS LOGIC LAYER - Core functions and utilities
+3. USER INTERFACE LAYER - Dashboards and forms
+4. DATA SYNCHRONIZATION LAYER - Google Sheets integration
+5. AJAX LAYER - Real-time operations and notifications
+6. MAINTENANCE LAYER - System monitoring and fixes
+
+================================================================================
+
+FILE ORGANIZATION
+
+- /config/ - Database configuration
+- /includes/ - Core business logic and utilities
+- /pages/ - Main application pages and dashboards
+- /ajax/ - Real-time operations and AJAX handlers
+- /assets/ - CSS and JavaScript files
+- /logs/ - System logs and error tracking
+
+================================================================================
+
+NOTES
+
+- All core files are actively maintained and essential for system operation
+- AJAX files handle real-time user interactions
+- Data synchronization files maintain Google Sheets integration
+- Dashboard files provide role-based user interfaces
+- Action files handle specific task operations
+- Configuration files manage system settings and database connections
+
+================================================================================
+
+END OF DOCUMENTATION
