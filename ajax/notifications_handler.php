@@ -6,6 +6,7 @@ ob_start();
 
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
+require_once '../includes/request_debug.php';
 
 startSession();
 
@@ -20,6 +21,7 @@ if (!isLoggedIn()) {
 }
 
 header('Content-Type: application/json');
+debug500Bootstrap('ajax/notifications_handler.php');
 
 // CSRF protection for POST requests
 csrfProtect();

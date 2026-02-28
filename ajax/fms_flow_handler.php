@@ -21,11 +21,13 @@ ob_start();
 
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/request_debug.php';
 
 // Discard any accidental output from includes (e.g. table creation notices)
 ob_end_clean();
 
 header('Content-Type: application/json; charset=utf-8');
+debug500Bootstrap('ajax/fms_flow_handler.php');
 
 // CORS — allow the Vite dev server (localhost:5173) to call this endpoint
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';

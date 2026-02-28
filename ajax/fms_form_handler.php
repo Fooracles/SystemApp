@@ -12,9 +12,11 @@ ob_start();
 
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/request_debug.php';
 
 ob_end_clean();
 header('Content-Type: application/json; charset=utf-8');
+debug500Bootstrap('ajax/fms_form_handler.php');
 
 // CORS for Vite dev server
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
