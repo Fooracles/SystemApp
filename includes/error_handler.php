@@ -28,6 +28,7 @@ $is_production_env = !(
 );
 
 define('IS_PRODUCTION', $is_production_env);
+define('ERROR_REF_ID', date('YmdHis') . '-' . substr(sha1(uniqid('', true)), 0, 10));
 
 // Configure error display based on environment
 if (IS_PRODUCTION) {
@@ -192,14 +193,9 @@ function handleConnectionError($error) {
  * @param array $context
  */
 function appCriticalLog($kind, $message, $context = []) {
-    $logFile = __DIR__ . '/../logs/live_critical_errors.log';
-    $logDir = dirname($logFile);
-    if (!is_dir($logDir)) {
-        @mkdir($logDir, 0755, true);
-    }
-
     $record = [
         'time' => date('Y-m-d H:i:s'),
+        'ref' => defined('ERROR_REF_ID') ? ERROR_REF_ID : null,
         'kind' => $kind,
         'message' => $message,
         'uri' => $_SERVER['REQUEST_URI'] ?? '',
@@ -208,8 +204,23 @@ function appCriticalLog($kind, $message, $context = []) {
         'remote_ip' => $_SERVER['REMOTE_ADDR'] ?? '',
         'context' => $context,
     ];
+    $line = json_encode($record, JSON_UNESCAPED_UNICODE) . PHP_EOL;
 
-    @file_put_contents($logFile, json_encode($record, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND | LOCK_EX);
+    $primaryLog = __DIR__ . '/../logs/live_critical_errors.log';
+    $projectFallback = dirname(__DIR__) . '/live_critical_errors.log';
+    $tempFallback = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'systemapp_live_critical_errors.log';
+    $targets = [$primaryLog, $projectFallback, $tempFallback];
+
+    foreach ($targets as $target) {
+        $dir = dirname($target);
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
+        @file_put_contents($target, $line, FILE_APPEND | LOCK_EX);
+    }
+
+    // Keep default PHP error log in sync for hosts that expose it.
+    error_log('[APP_CRITICAL][' . (defined('ERROR_REF_ID') ? ERROR_REF_ID : 'no-ref') . '] ' . $kind . ': ' . $message);
 }
 
 /**
@@ -245,11 +256,12 @@ set_exception_handler(function($e) {
         echo json_encode([
             'success' => false,
             'status' => 'error',
-            'message' => IS_PRODUCTION ? 'An error occurred' : $e->getMessage()
+            'message' => IS_PRODUCTION ? 'An error occurred' : $e->getMessage(),
+            'ref' => IS_PRODUCTION ? ERROR_REF_ID : null
         ]);
     } else {
         if (IS_PRODUCTION) {
-            echo '<h1>An error occurred</h1><p>Please try again later.</p>';
+            echo '<h1>An error occurred</h1><p>Please try again later.</p><p>Reference: ' . htmlspecialchars(ERROR_REF_ID) . '</p>';
         } else {
             echo '<h1>Error</h1><pre>' . htmlspecialchars($e->getMessage()) . '</pre>';
         }
@@ -318,9 +330,14 @@ register_shutdown_function(function() {
             
             if ($isAjax) {
                 header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'status' => 'error', 'message' => 'An error occurred']);
+                echo json_encode([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => 'An error occurred',
+                    'ref' => ERROR_REF_ID
+                ]);
             } else {
-                echo '<h1>An error occurred</h1><p>Please try again later.</p>';
+                echo '<h1>An error occurred</h1><p>Please try again later.</p><p>Reference: ' . htmlspecialchars(ERROR_REF_ID) . '</p>';
             }
         }
     }
