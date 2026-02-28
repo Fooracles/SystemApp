@@ -14,7 +14,7 @@ require_once '../includes/functions.php';
 require_once '../includes/sorting_helpers.php';
 require_once '../includes/notification_triggers.php';
 
-session_start();
+startSession();
 
 // Clear any output buffer
 ob_clean();

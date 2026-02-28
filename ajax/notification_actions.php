@@ -3,7 +3,7 @@ require_once '../includes/config.php';
 require_once '../includes/functions.php';
 require_once '../includes/notification_triggers.php';
 
-session_start();
+startSession();
 
 // Ensure createNotification function is available (from functions.php)
 if (!function_exists('createNotification')) {
