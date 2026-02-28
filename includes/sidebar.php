@@ -73,7 +73,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             <a href="report.php" title="Report" class="nav-link <?php echo ($current_page == 'report.php') ? 'active' : ''; ?>">
                 <i class="fas fa-chart-bar"></i>
-                <span class="link-text">Report</span>
+                <span class="link-text">Reports</span>
             </a>
 
             <a href="updates.php" title="Updates" class="nav-link <?php echo ($current_page == 'updates.php') ? 'active' : ''; ?>">
