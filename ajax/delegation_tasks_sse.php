@@ -2,23 +2,21 @@
 // ajax/delegation_tasks_sse.php
 // Stream Server-Sent Events to notify a doer when new delegation tasks are created
 
-// Keep the script running
-ignore_user_abort(true);
-set_time_limit(0);
+// Stop script when client disconnects to free DB connections immediately
+ignore_user_abort(false);
+set_time_limit(120);
 
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
 
-// Start session to read user, then close to avoid session locking
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 header('Content-Type: text/event-stream; charset=utf-8');
 header('Cache-Control: no-cache');
-header('X-Accel-Buffering: no'); // prevent buffering on some proxies
+header('X-Accel-Buffering: no');
 
-// Helper: send SSE event
 function sse_send_event(string $event, $data, ?string $id = null, ?int $retryMs = null): void {
     if ($id !== null) {
         echo 'id: ' . $id . "\n";
@@ -28,7 +26,6 @@ function sse_send_event(string $event, $data, ?string $id = null, ?int $retryMs 
         echo 'retry: ' . $retryMs . "\n";
     }
     $payload = is_string($data) ? $data : json_encode($data);
-    // Ensure data lines are prefixed with 'data: '
     foreach (preg_split("/\r?\n/", (string)$payload) as $line) {
         echo 'data: ' . $line . "\n";
     }
@@ -49,29 +46,29 @@ try {
         exit;
     }
 
-    // We only need to read from session; close it so this long-running request does not block other requests
     session_write_close();
 
-    // Initialize 'since' from query or Last-Event-ID header
+    // Close the DB connection opened by config.php -- we'll open short-lived connections per poll
+    if (isset($conn) && $conn instanceof mysqli) {
+        mysqli_close($conn);
+        $conn = null;
+    }
+
     $since = isset($_GET['since']) ? trim($_GET['since']) : '';
     if (empty($since) && isset($_SERVER['HTTP_LAST_EVENT_ID'])) {
         $since = trim($_SERVER['HTTP_LAST_EVENT_ID']);
     }
-    // If not provided, start from current time so we only get future tasks
     if ($since === '' || !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $since)) {
         $since = date('Y-m-d H:i:s');
     }
 
-    // Make sure output buffers are flushed before starting
     while (ob_get_level() > 0) { ob_end_flush(); }
 
-    // Send an initial ping so client knows the stream is open
-    sse_send_event('ping', ['ok' => true], $since, 5000);
+    sse_send_event('ping', ['ok' => true], $since, 10000);
 
     $startTime = time();
-    $maxDurationSec = 60; // keep the connection ~1 minute; client will reconnect automatically
+    $maxDurationSec = 30;
 
-    // Prepare query for new tasks
     $query = "SELECT 
                 t.id as task_id,
                 t.unique_id,
@@ -85,12 +82,20 @@ try {
 
     while (!connection_aborted()) {
         if ((time() - $startTime) > $maxDurationSec) {
-            // Tell client to reconnect
-            sse_send_event('ping', ['keepalive' => true], $since, 5000);
+            sse_send_event('ping', ['keepalive' => true], $since, 10000);
             break;
         }
 
-        if ($stmt = mysqli_prepare($conn, $query)) {
+        // Open a short-lived DB connection just for this poll cycle
+        $poll_conn = @mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+        if (!$poll_conn) {
+            sse_send_event('ping', ['ok' => true], $since, 10000);
+            sleep(5);
+            continue;
+        }
+        mysqli_set_charset($poll_conn, "utf8mb4");
+
+        if ($stmt = mysqli_prepare($poll_conn, $query)) {
             mysqli_stmt_bind_param($stmt, 'is', $current_doer_id, $since);
             if (mysqli_stmt_execute($stmt)) {
                 $result = mysqli_stmt_get_result($stmt);
@@ -103,36 +108,31 @@ try {
                     }
                 }
                 mysqli_stmt_close($stmt);
+                mysqli_close($poll_conn);
 
                 if (!empty($rows)) {
-                    // Send event with new tasks; set event id as the latest timestamp for resumable stream
                     sse_send_event('new_tasks', ['count' => count($rows), 'items' => $rows], $newLatest, 3000);
-                    $since = $newLatest; // advance since
-                    // After notifying, we can break to let client reload; or continue to allow multiple batches.
-                    // We'll break to keep logic simple; client will reconnect after reload.
+                    $since = $newLatest;
                     break;
                 } else {
-                    // Periodic ping so proxies keep connection alive
-                    sse_send_event('ping', ['ok' => true], $since, 5000);
+                    sse_send_event('ping', ['ok' => true], $since, 10000);
                 }
             } else {
-                // On DB error, send error and stop
                 sse_send_event('error', ['message' => mysqli_stmt_error($stmt)]);
                 mysqli_stmt_close($stmt);
+                mysqli_close($poll_conn);
                 break;
             }
         } else {
-            sse_send_event('error', ['message' => mysqli_error($conn)]);
+            sse_send_event('error', ['message' => mysqli_error($poll_conn)]);
+            mysqli_close($poll_conn);
             break;
         }
 
-        // Sleep a bit before checking again
-        sleep(2);
+        sleep(5);
     }
 } catch (Throwable $e) {
     sse_send_event('error', ['message' => $e->getMessage()]);
 }
 
 exit;
-
-

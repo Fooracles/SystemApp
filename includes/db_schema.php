@@ -435,7 +435,7 @@ $DB_TABLES = [
         'sql' => "CREATE TABLE IF NOT EXISTS notifications (
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT NOT NULL,
-            type ENUM('task_delay', 'meeting_request', 'meeting_approved', 'meeting_rescheduled', 'day_special', 'notes_reminder', 'leave_request', 'leave_approved', 'leave_rejected') NOT NULL,
+            type ENUM('task_delay', 'meeting_request', 'meeting_approved', 'meeting_rescheduled', 'day_special', 'notes_reminder', 'leave_request', 'leave_approved', 'leave_rejected', 'client_update', 'client_requirement', 'client_report', 'client_ticket', 'client_task', 'client_update_created') NOT NULL,
             title VARCHAR(255) NOT NULL,
             message TEXT NOT NULL,
             related_id VARCHAR(255) NULL COMMENT 'ID of related record (task_id, meeting_id, leave_id, note_id, etc.) - Can be INT or VARCHAR',
@@ -511,6 +511,208 @@ $DB_TABLES = [
             INDEX (target_client_id),
             INDEX (created_at)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // ── FMS Flow Builder Tables ──────────────────────────────────────
+
+    // Flow definitions (workflow blueprints designed in the builder)
+    'fms_flows' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flows (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL DEFAULT 'Untitled Flow',
+            status ENUM('draft','active','inactive') DEFAULT 'draft',
+            created_by INT NOT NULL,
+            updated_by INT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL,
+            INDEX (status),
+            INDEX (created_by),
+            INDEX (updated_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // Flow nodes (steps / targets within a flow)
+    'fms_flow_nodes' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flow_nodes (
+            id VARCHAR(64) NOT NULL PRIMARY KEY COMMENT 'Frontend-generated node ID',
+            flow_id INT NOT NULL,
+            type ENUM('step','decision','target','start','end') NOT NULL,
+            position_x FLOAT NOT NULL DEFAULT 100,
+            position_y FLOAT NOT NULL DEFAULT 100,
+            data JSON NOT NULL COMMENT 'Full node data blob from frontend',
+            sort_order INT DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (flow_id) REFERENCES fms_flows(id) ON DELETE CASCADE,
+            INDEX (flow_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // Flow edges (connections between nodes)
+    'fms_flow_edges' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flow_edges (
+            id VARCHAR(64) NOT NULL PRIMARY KEY COMMENT 'Frontend-generated edge ID',
+            flow_id INT NOT NULL,
+            source_node_id VARCHAR(64) NOT NULL,
+            target_node_id VARCHAR(64) NOT NULL,
+            condition_type ENUM('default','yes','no') DEFAULT 'default',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (flow_id) REFERENCES fms_flows(id) ON DELETE CASCADE,
+            INDEX (flow_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // Flow version history (snapshots for undo / audit)
+    'fms_flow_versions' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flow_versions (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            flow_id INT NOT NULL,
+            version INT NOT NULL DEFAULT 1,
+            snapshot JSON NOT NULL COMMENT 'Full flow+nodes+edges JSON snapshot',
+            saved_by INT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (flow_id) REFERENCES fms_flows(id) ON DELETE CASCADE,
+            FOREIGN KEY (saved_by) REFERENCES users(id) ON DELETE CASCADE,
+            INDEX (flow_id, version)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // Flow forms (input definition attached to a flow)
+    'fms_flow_forms' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flow_forms (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            flow_id INT NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            description TEXT NULL,
+            status ENUM('draft','active','inactive') NOT NULL DEFAULT 'draft',
+            created_by INT NOT NULL,
+            updated_by INT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (flow_id) REFERENCES fms_flows(id) ON DELETE CASCADE,
+            FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL,
+            INDEX (flow_id),
+            INDEX (status),
+            INDEX (updated_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // Dynamic fields for each flow form
+    'fms_flow_form_fields' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flow_form_fields (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            form_id INT NOT NULL,
+            field_key VARCHAR(100) NOT NULL,
+            field_label VARCHAR(255) NOT NULL,
+            field_type ENUM('text','textarea','number','date','select','multiselect','file','checkbox') NOT NULL DEFAULT 'text',
+            options JSON NULL,
+            is_required TINYINT(1) NOT NULL DEFAULT 0,
+            default_value VARCHAR(500) NULL,
+            placeholder VARCHAR(255) NULL,
+            sort_order INT NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (form_id) REFERENCES fms_flow_forms(id) ON DELETE CASCADE,
+            UNIQUE KEY uniq_form_field_key (form_id, field_key),
+            INDEX idx_form_fields_order (form_id, sort_order)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // Effective user/duration mapping for each executable flow node in a form
+    'fms_flow_form_step_map' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flow_form_step_map (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            form_id INT NOT NULL,
+            node_id VARCHAR(64) NOT NULL,
+            doer_id INT NOT NULL,
+            duration_minutes INT NOT NULL DEFAULT 0,
+            sort_order INT NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (form_id) REFERENCES fms_flow_forms(id) ON DELETE CASCADE,
+            FOREIGN KEY (doer_id) REFERENCES users(id) ON DELETE RESTRICT,
+            UNIQUE KEY uniq_form_node (form_id, node_id),
+            INDEX idx_form_step_order (form_id, sort_order),
+            INDEX idx_form_step_doer (doer_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // Runtime flow run instances (created per form submission)
+    'fms_flow_runs' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flow_runs (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            flow_id INT NOT NULL,
+            form_id INT NOT NULL,
+            run_title VARCHAR(255) NOT NULL,
+            form_data JSON NOT NULL,
+            status ENUM('running','completed','cancelled','paused') NOT NULL DEFAULT 'running',
+            initiated_by INT NOT NULL,
+            current_node_id VARCHAR(64) NULL,
+            started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            completed_at TIMESTAMP NULL DEFAULT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (flow_id) REFERENCES fms_flows(id) ON DELETE RESTRICT,
+            FOREIGN KEY (form_id) REFERENCES fms_flow_forms(id) ON DELETE RESTRICT,
+            FOREIGN KEY (initiated_by) REFERENCES users(id) ON DELETE RESTRICT,
+            INDEX idx_runs_flow_status (flow_id, status),
+            INDEX idx_runs_form_status (form_id, status),
+            INDEX idx_runs_current_node (current_node_id),
+            INDEX idx_runs_started (started_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ],
+
+    // Runtime tasks per run/step/doer
+    'fms_flow_run_steps' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS fms_flow_run_steps (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            run_id INT NOT NULL,
+            node_id VARCHAR(64) NOT NULL,
+            step_name VARCHAR(255) NOT NULL,
+            step_code VARCHAR(100) NULL,
+            doer_id INT NOT NULL,
+            status ENUM('waiting','pending','in_progress','completed','skipped') NOT NULL DEFAULT 'waiting',
+            duration_minutes INT NOT NULL DEFAULT 0,
+            planned_at DATETIME NULL,
+            started_at DATETIME NULL,
+            actual_at DATETIME NULL,
+            sort_order INT NOT NULL DEFAULT 0,
+            comment TEXT NULL,
+            attachment_path VARCHAR(500) NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (run_id) REFERENCES fms_flow_runs(id) ON DELETE CASCADE,
+            FOREIGN KEY (doer_id) REFERENCES users(id) ON DELETE RESTRICT,
+            UNIQUE KEY uniq_run_node (run_id, node_id),
+            INDEX idx_run_steps_doer_status_planned (doer_id, status, planned_at),
+            INDEX idx_run_steps_run_sort (run_id, sort_order),
+            INDEX idx_run_steps_run_status (run_id, status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    ]
+,
+    // File Upload Audit table (tracks all upload attempts for security monitoring)
+    'file_upload_audit' => [
+        'sql' => "CREATE TABLE IF NOT EXISTS file_upload_audit (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL COMMENT 'ID of the user who attempted the upload',
+            ip_address VARCHAR(45) NOT NULL COMMENT 'Client IP address',
+            original_filename VARCHAR(255) NOT NULL COMMENT 'Original filename from client',
+            saved_filename VARCHAR(255) NULL COMMENT 'Filename saved on server (NULL if rejected)',
+            file_size INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'File size in bytes',
+            mime_type VARCHAR(100) NULL COMMENT 'Detected MIME type (server-side)',
+            upload_context VARCHAR(50) NOT NULL COMMENT 'Context: profile_photo, task_attachment, report, etc.',
+            status ENUM('accepted','rejected','error') NOT NULL DEFAULT 'accepted',
+            rejection_reason VARCHAR(255) NULL COMMENT 'Reason for rejection (NULL if accepted)',
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_audit_user (user_id),
+            INDEX idx_audit_status (status),
+            INDEX idx_audit_context (upload_context),
+            INDEX idx_audit_created (created_at),
+            INDEX idx_audit_ip (ip_address)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     ]
 ];
 
@@ -543,7 +745,16 @@ $TABLE_CREATION_ORDER = [
     'notifications',
     'user_sessions',
     'reports',
-    'updates'
+    'updates',
+    'fms_flows',
+    'fms_flow_nodes',
+    'fms_flow_edges',
+    'fms_flow_versions',
+    'fms_flow_forms',
+    'fms_flow_form_fields',
+    'fms_flow_form_step_map',
+    'fms_flow_runs',
+    'fms_flow_run_steps'
 ];
 
 /**

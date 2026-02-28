@@ -297,10 +297,7 @@ try {
     
     logSync("Force sync failed: " . $e->getMessage());
     
-    echo json_encode([
-        'success' => false,
-        'error' => 'Sync failed: ' . $e->getMessage()
-    ]);
+    handleException($e, 'leave_auto_sync');
 } finally {
     if (isset($conn)) {
         mysqli_close($conn);

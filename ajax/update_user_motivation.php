@@ -6,9 +6,11 @@ require_once '../includes/functions.php';
 // Check if user is logged in and is admin
 if (!isLoggedIn() || !isAdmin()) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 // Get POST data
 $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
@@ -18,8 +20,7 @@ $admin_id = $_SESSION['id'] ?? 0;
 
 if ($user_id <= 0) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Invalid user ID']);
-    exit;
+    jsonError('Invalid user ID', 400);
 }
 
 try {
@@ -35,7 +36,7 @@ try {
     ");
     
     if (!$stmt) {
-        throw new Exception('Database prepare error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, "issi", $user_id, $current_insights, $areas_of_improvement, $admin_id);
@@ -56,14 +57,18 @@ try {
             'updated_at' => $timestamp_row['updated_at'] ?? null
         ]);
     } else {
-        throw new Exception('Database execute error: ' . mysqli_stmt_error($stmt));
+        error_log("[DB Error] Database execute error"); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_close($stmt);
 } catch (Exception $e) {
     error_log("Update User Motivation Error: " . $e->getMessage());
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    handleException($e, 'update_user_motivation');
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>
-

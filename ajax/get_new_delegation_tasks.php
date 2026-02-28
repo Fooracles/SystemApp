@@ -83,7 +83,7 @@ try {
         mysqli_stmt_bind_param($stmt, $filter_param_types, ...$filter_params);
 
         if (!mysqli_stmt_execute($stmt)) {
-            throw new Exception('DB error: ' . mysqli_stmt_error($stmt));
+            error_log("[DB Error] DB error"); throw new Exception('A database error occurred');
         }
         $result = mysqli_stmt_get_result($stmt);
         $rows = [];
@@ -96,7 +96,7 @@ try {
         $response['message'] = 'ok';
         $response['tasks'] = $rows;
     } else {
-        throw new Exception('DB prepare error: ' . mysqli_error($conn));
+        error_log("[DB Error] DB prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
 } catch (Throwable $e) {
     $response['status'] = 'error';
@@ -106,4 +106,7 @@ try {
 echo json_encode($response);
 exit;
 
-
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}

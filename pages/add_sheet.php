@@ -2,7 +2,6 @@
 // Add a Google Sheet to the database
 $page_title = "Add Sheet";
 require_once '../includes/header.php';
-require_once '../vendor/autoload.php';
 
 // Initialize variables
 $success_message = '';
@@ -217,4 +216,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Include the universal footer
 require_once "../includes/footer.php";
 ?>
-

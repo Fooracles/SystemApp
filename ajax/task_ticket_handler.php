@@ -14,14 +14,14 @@ ob_start();
 
 require_once "../includes/config.php";
 require_once "../includes/functions.php";
+require_once "../includes/notification_triggers.php";
 
 // Check if user is logged in
 if (!isLoggedIn()) {
     ob_clean();
     header('Content-Type: application/json');
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
 
 // Check if user is Client, Manager, or Admin
@@ -29,9 +29,11 @@ if (!isClient() && !isManager() && !isAdmin()) {
     ob_clean();
     header('Content-Type: application/json');
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Access denied']);
-    exit;
+    jsonError('Access denied', 403);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $user_id = $_SESSION['id'] ?? $_SESSION['user_id'] ?? 0;
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
@@ -93,7 +95,7 @@ try {
     
     http_response_code(400);
     error_log("task_ticket_handler exception: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    handleException($e, 'task_ticket_handler');
     exit;
 }
 
@@ -286,26 +288,23 @@ function getItems($conn, $user_id) {
                 $account_data = mysqli_fetch_assoc($account_result);
                 mysqli_stmt_close($account_stmt);
                 
-                // Client user can see items:
-                // 1. Created by themselves
-                // 2. Created by their manager
-                // 3. Created by their client account
-                // 4. For Required items: Only if assigned_to = themselves (not all users under the account)
-                // 5. For other items: Created by or assigned to any user under their client account
+                // Client user can see items only for their account (not other clients'):
+                // 1. Created by themselves, their manager, or their client account
+                // 2. For Required items: Only if assigned_to = current user OR created by their manager/account (not all admins)
+                // 3. For Task/Ticket: Created by or assigned to any user under their client account only
                 
                 $allowed_user_ids = [$user_id, $client_account_id]; // Client user and their account
                 if ($account_data && !empty($account_data['manager_id'])) {
                     $allowed_user_ids[] = $account_data['manager_id']; // Their manager
                 }
                 
-                // Build conditions for different item types
                 $item_conditions = [];
-                
-                // For Required items: Only show if assigned_to = current user OR created by allowed users
                 $allowed_ids_string = implode(',', array_map('intval', $allowed_user_ids));
+                
+                // For Required items: Only show if assigned_to = current user OR created by allowed users (manager/account/client). Do NOT show Required items created by other admins for other accounts.
                 $item_conditions[] = "(ct.type = 'Required' AND (ct.assigned_to = $user_id OR ct.created_by IN ($allowed_ids_string)))";
                 
-                // For Task/Ticket items: Show if created by or assigned to allowed users or any user under their account
+                // For Task/Ticket items: Show if created by or assigned to allowed users or any user under their account only
                 $sibling_users_sql = "SELECT id FROM users WHERE manager_id = ? AND user_type = 'client' AND password IS NOT NULL AND password != ''";
                 $sibling_users_stmt = mysqli_prepare($conn, $sibling_users_sql);
                 mysqli_stmt_bind_param($sibling_users_stmt, 'i', $client_account_id);
@@ -323,8 +322,7 @@ function getItems($conn, $user_id) {
                     $all_allowed_ids_string = implode(',', array_map('intval', $all_allowed_ids));
                     $item_conditions[] = "((ct.type = 'Task' OR ct.type = 'Ticket') AND (ct.created_by IN ($all_allowed_ids_string) OR ct.assigned_to IN ($all_allowed_ids_string)))";
                 } else {
-                    $all_allowed_ids_string = implode(',', array_map('intval', $allowed_user_ids));
-                    $item_conditions[] = "((ct.type = 'Task' OR ct.type = 'Ticket') AND (ct.created_by IN ($all_allowed_ids_string) OR ct.assigned_to IN ($all_allowed_ids_string)))";
+                    $item_conditions[] = "((ct.type = 'Task' OR ct.type = 'Ticket') AND (ct.created_by IN ($allowed_ids_string) OR ct.assigned_to IN ($allowed_ids_string)))";
                 }
                 
                 if (!empty($item_conditions)) {
@@ -639,8 +637,8 @@ function getItem($conn, $user_id) {
             $account_data = mysqli_fetch_assoc($account_result);
             mysqli_stmt_close($account_stmt);
             
-            // For Required items: Only show if assigned_to = current user OR created by allowed users
-            // For other items: Show if created by or assigned to allowed users or any user under their account
+            // For Required items: Only show if assigned_to = current user OR created by allowed users (manager/account/client). Not other admins for other accounts.
+            // For other items: Show if created by or assigned to allowed users or any user under their account only
             $allowed_user_ids = [$user_id, $client_account_id];
             if ($account_data && !empty($account_data['manager_id'])) {
                 $allowed_user_ids[] = $account_data['manager_id'];
@@ -648,7 +646,6 @@ function getItem($conn, $user_id) {
             
             $allowed_ids_string = implode(',', array_map('intval', $allowed_user_ids));
             
-            // Build access condition with special handling for Required items
             $access_conditions = [];
             $access_conditions[] = "(ct.type = 'Required' AND (ct.assigned_to = $user_id OR ct.created_by IN ($allowed_ids_string)))";
             
@@ -684,7 +681,7 @@ function getItem($conn, $user_id) {
     
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, 'ss', $item_id, $item_id);
@@ -1022,6 +1019,25 @@ function createItem($conn, $user_id) {
                     'type' => $type,
                     'title' => $title
                 ];
+                
+                // Send notification to client user
+                // Get creator's name
+                $creator_sql = "SELECT name FROM users WHERE id = ?";
+                $creator_stmt = mysqli_prepare($conn, $creator_sql);
+                $created_by_name = 'Manager/Admin';
+                if ($creator_stmt) {
+                    mysqli_stmt_bind_param($creator_stmt, 'i', $user_id);
+                    mysqli_stmt_execute($creator_stmt);
+                    $creator_result = mysqli_stmt_get_result($creator_stmt);
+                    $creator = mysqli_fetch_assoc($creator_result);
+                    if ($creator) {
+                        $created_by_name = $creator['name'];
+                    }
+                    mysqli_stmt_close($creator_stmt);
+                }
+                
+                // Trigger notification for this client user
+                triggerClientRequirementNotification($conn, $unique_id, $client_user_id, $title, $created_by_name);
             }
             
             echo json_encode([
@@ -1079,46 +1095,71 @@ function createItem($conn, $user_id) {
                 $sql = "INSERT INTO client_taskflow (unique_id, type, title, description, status, created_by, created_by_type, assigned_to, attachments, status_updated_at) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '$escaped_time')";
             } else {
-                $sql = "INSERT INTO client_taskflow (unique_id, type, title, description, status, created_by, created_by_type, attachments, status_updated_at) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, '$escaped_time')";
+        $sql = "INSERT INTO client_taskflow (unique_id, type, title, description, status, created_by, created_by_type, attachments, status_updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, '$escaped_time')";
             }
-            
-            $stmt = mysqli_prepare($conn, $sql);
-            if (!$stmt) {
-                $error = mysqli_error($conn);
-                error_log("Failed to prepare INSERT statement: " . $error);
-                throw new Exception('Database error: ' . $error);
-            }
-            
+        
+        $stmt = mysqli_prepare($conn, $sql);
+        if (!$stmt) {
+            $error = mysqli_error($conn);
+            error_log("Failed to prepare INSERT statement: " . $error);
+            throw new Exception('Database error: ' . $error);
+        }
+        
             if ($assigned_to_manager_id !== null) {
                 // Format: s-s-s-s-s-i-s-i-s (9 parameters: unique_id, type, title, description, status, user_id, created_by_type, assigned_to_manager_id, attachments_json)
                 $format = 's' . 's' . 's' . 's' . 's' . 'i' . 's' . 'i' . 's';
                 mysqli_stmt_bind_param($stmt, $format, $unique_id, $type, $title, $description, $status, $user_id, $created_by_type, $assigned_to_manager_id, $attachments_json);
             } else {
                 // Format: s-s-s-s-s-i-s-s (8 parameters: unique_id, type, title, description, status, user_id, created_by_type, attachments_json)
-                mysqli_stmt_bind_param($stmt, 'sssssiss', $unique_id, $type, $title, $description, $status, $user_id, $created_by_type, $attachments_json);
+        mysqli_stmt_bind_param($stmt, 'sssssiss', $unique_id, $type, $title, $description, $status, $user_id, $created_by_type, $attachments_json);
             }
-            
-            if (!mysqli_stmt_execute($stmt)) {
-                $error = mysqli_error($conn);
-                error_log("Failed to execute INSERT statement: " . $error);
-                mysqli_stmt_close($stmt);
-                throw new Exception('Failed to create item: ' . $error);
-            }
-            
-            $item_id = mysqli_insert_id($conn);
+        
+        if (!mysqli_stmt_execute($stmt)) {
+            $error = mysqli_error($conn);
+            error_log("Failed to execute INSERT statement: " . $error);
             mysqli_stmt_close($stmt);
+            throw new Exception('Failed to create item: ' . $error);
+        }
+        
+        $item_id = mysqli_insert_id($conn);
+        mysqli_stmt_close($stmt);
+        
+        // Send notifications if client user created a Task or Ticket
+        if (isClient() && ($type === 'Task' || $type === 'Ticket')) {
+            // Get client user's name
+            $client_sql = "SELECT name FROM users WHERE id = ?";
+            $client_stmt = mysqli_prepare($conn, $client_sql);
+            $client_name = 'Client';
+            if ($client_stmt) {
+                mysqli_stmt_bind_param($client_stmt, 'i', $user_id);
+                mysqli_stmt_execute($client_stmt);
+                $client_result = mysqli_stmt_get_result($client_stmt);
+                $client = mysqli_fetch_assoc($client_result);
+                if ($client) {
+                    $client_name = $client['name'];
+                }
+                mysqli_stmt_close($client_stmt);
+            }
             
-            echo json_encode([
-                'success' => true, 
-                'message' => 'Item created successfully',
-                'item' => [
-                    'id' => $unique_id,
-                    'db_id' => $item_id,
-                    'type' => $type,
-                    'title' => $title
-                ]
-            ]);
+            // Trigger notifications
+            if ($type === 'Ticket') {
+                triggerClientTicketNotification($conn, $unique_id, $user_id, $title, $client_name);
+            } else if ($type === 'Task') {
+                triggerClientTaskNotification($conn, $unique_id, $user_id, $title, $client_name);
+            }
+        }
+        
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Item created successfully',
+            'item' => [
+                'id' => $unique_id,
+                'db_id' => $item_id,
+                'type' => $type,
+                'title' => $title
+            ]
+        ]);
         }
     } catch (Exception $e) {
         error_log("createItem error: " . $e->getMessage());
@@ -1320,13 +1361,13 @@ function updateItem($conn, $user_id) {
     $stmt = mysqli_prepare($conn, $sql);
     
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, 'sssss', $title, $description, $attachments_json, $item_id, $item_id);
     
     if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('Failed to update item: ' . mysqli_error($conn));
+        error_log("[DB Error] Failed to update item: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_close($stmt);
@@ -1382,13 +1423,13 @@ function deleteItem($conn, $user_id) {
     $stmt = mysqli_prepare($conn, $sql);
     
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, 'ss', $item_id, $item_id);
     
     if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('Failed to delete item: ' . mysqli_error($conn));
+        error_log("[DB Error] Failed to delete item: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_close($stmt);
@@ -1568,13 +1609,13 @@ function updateStatus($conn, $user_id) {
     $stmt = mysqli_prepare($conn, $sql);
     
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, $types, ...$params);
     
     if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('Failed to update status: ' . mysqli_error($conn));
+        error_log("[DB Error] Failed to update status: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_close($stmt);
@@ -1604,7 +1645,7 @@ function provideRequirement($conn, $user_id) {
         $check_sql = "SELECT * FROM client_taskflow WHERE unique_id = ? OR id = ?";
         $check_stmt = mysqli_prepare($conn, $check_sql);
         if (!$check_stmt) {
-            throw new Exception('Database error: ' . mysqli_error($conn));
+            error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
         }
         mysqli_stmt_bind_param($check_stmt, 'ss', $item_id, $item_id);
         mysqli_stmt_execute($check_stmt);
@@ -1722,7 +1763,7 @@ function provideRequirement($conn, $user_id) {
         
         $stmt = mysqli_prepare($conn, $update_sql);
         if (!$stmt) {
-            throw new Exception('Database error: ' . mysqli_error($conn));
+            error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
         }
         
         mysqli_stmt_bind_param($stmt, 'ssssssss', 
@@ -1738,7 +1779,7 @@ function provideRequirement($conn, $user_id) {
         
         if (!mysqli_stmt_execute($stmt)) {
             mysqli_stmt_close($stmt);
-            throw new Exception('Failed to update requirement: ' . mysqli_error($conn));
+            error_log("[DB Error] Failed to update requirement: " . mysqli_error($conn)); throw new Exception('A database error occurred');
         }
         
         mysqli_stmt_close($stmt);
@@ -1754,7 +1795,7 @@ function provideRequirement($conn, $user_id) {
         ob_clean();
         http_response_code(400);
         error_log("provideRequirement error: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        handleException($e, 'task_ticket_handler');
     }
 }
 
@@ -1765,16 +1806,14 @@ function updateProvided($conn, $user_id) {
     $item_id = $_POST['item_id'] ?? '';
     
     if (empty($item_id)) {
-        echo json_encode(['success' => false, 'message' => 'Item ID is required']);
-        exit;
+        jsonError('Item ID is required', 400);
     }
     
     // Get item to verify it exists and is a Required type
     $sql = "SELECT * FROM client_taskflow WHERE (unique_id = ? OR id = ?) AND type = 'Required'";
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
-        echo json_encode(['success' => false, 'message' => 'Database error']);
-        exit;
+        jsonError('Database error', 500);
     }
     
     mysqli_stmt_bind_param($stmt, 'ss', $item_id, $item_id);
@@ -1783,8 +1822,7 @@ function updateProvided($conn, $user_id) {
     $item = mysqli_fetch_assoc($result);
     
     if (!$item) {
-        echo json_encode(['success' => false, 'message' => 'Item not found or not a Required type']);
-        exit;
+        jsonError('Item not found or not a Required type', 404);
     }
     
     // Update provided_description if provided
@@ -2156,8 +2194,7 @@ function getFilterOptions($conn, $user_id) {
     $assigned_to_options = [];
     
     if ($is_admin) {
-        // Admin: All managers, all client accounts, all client users
-        // Get all managers
+        // Admin: All managers and client users only (no client accounts - filtering works by user)
         $managers_sql = "SELECT id, name, username FROM users WHERE user_type = 'manager' ORDER BY name";
         $managers_result = mysqli_query($conn, $managers_sql);
         while ($row = mysqli_fetch_assoc($managers_result)) {
@@ -2166,19 +2203,6 @@ function getFilterOptions($conn, $user_id) {
             $assigned_to_options[] = ['id' => $row['id'], 'name' => $name, 'type' => 'manager'];
         }
         
-        // Get all client accounts
-        $accounts_sql = "SELECT id, name, username FROM users 
-                         WHERE user_type = 'client' 
-                         AND (password IS NULL OR password = '') 
-                         ORDER BY name";
-        $accounts_result = mysqli_query($conn, $accounts_sql);
-        while ($row = mysqli_fetch_assoc($accounts_result)) {
-            $name = $row['name'] ?: $row['username'];
-            $assigner_options[] = ['id' => $row['id'], 'name' => $name, 'type' => 'client_account'];
-            $assigned_to_options[] = ['id' => $row['id'], 'name' => $name, 'type' => 'client_account'];
-        }
-        
-        // Get all client users
         $users_sql = "SELECT id, name, username FROM users 
                       WHERE user_type = 'client' 
                       AND password IS NOT NULL 
@@ -2191,8 +2215,7 @@ function getFilterOptions($conn, $user_id) {
             $assigned_to_options[] = ['id' => $row['id'], 'name' => $name, 'type' => 'client_user'];
         }
     } elseif ($is_manager) {
-        // Manager: Their own name + associated client accounts/users
-        // Get manager's own info
+        // Manager: Their own name + client users under their accounts only (no client account names)
         $manager_sql = "SELECT id, name, username FROM users WHERE id = ?";
         $manager_stmt = mysqli_prepare($conn, $manager_sql);
         mysqli_stmt_bind_param($manager_stmt, 'i', $user_id);
@@ -2205,24 +2228,7 @@ function getFilterOptions($conn, $user_id) {
         }
         mysqli_stmt_close($manager_stmt);
         
-        // Get client accounts assigned to this manager
-        $accounts_sql = "SELECT id, name, username FROM users 
-                         WHERE user_type = 'client' 
-                         AND (password IS NULL OR password = '') 
-                         AND manager_id = ?
-                         ORDER BY name";
-        $accounts_stmt = mysqli_prepare($conn, $accounts_sql);
-        mysqli_stmt_bind_param($accounts_stmt, 'i', $user_id);
-        mysqli_stmt_execute($accounts_stmt);
-        $accounts_result = mysqli_stmt_get_result($accounts_stmt);
-        while ($row = mysqli_fetch_assoc($accounts_result)) {
-            $name = $row['name'] ?: $row['username'];
-            $assigner_options[] = ['id' => $row['id'], 'name' => $name, 'type' => 'client_account'];
-            $assigned_to_options[] = ['id' => $row['id'], 'name' => $name, 'type' => 'client_account'];
-        }
-        mysqli_stmt_close($accounts_stmt);
-        
-        // Get client users under those accounts
+        // Get client users under this manager's accounts (no client account entries)
         $client_accounts_sql = "SELECT id FROM users 
                                 WHERE user_type = 'client' 
                                 AND (password IS NULL OR password = '') 
@@ -2326,5 +2332,10 @@ function getFilterOptions($conn, $user_id) {
         'assigner_options' => $assigner_options,
         'assigned_to_options' => $assigned_to_options
     ]);
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>

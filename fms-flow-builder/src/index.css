@@ -1,0 +1,373 @@
+:root {
+  --primary-color: #6366f1;
+  --primary-color-light: #8b5cf6;
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --primary-glow: rgba(99, 102, 241, 0.3);
+  --node-border-radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: #0f0f14;
+  color: #f4f4f5;
+  overflow: hidden;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* React Flow overrides */
+.react-flow__background {
+  background-color: #0f0f14 !important;
+}
+
+/* Hide React Flow attribution link in bottom-right of canvas */
+.react-flow__attribution {
+  display: none !important;
+}
+
+/* ── Fix: make "+" insert buttons on edges fully interactive ── */
+/* 1. Kill the invisible thick edge-interaction hit-area so it can't steal events */
+.react-flow__edge-interaction {
+  pointer-events: none !important;
+}
+/* 2. Lift the edge-label layer above all other viewport layers */
+.react-flow__edgelabel-renderer {
+  z-index: 1000 !important;
+}
+/* 3. Ensure our interactive wrappers inside the label renderer truly receive events */
+.react-flow__edgelabel-renderer .nopan {
+  pointer-events: all !important;
+  position: relative;
+  z-index: 1001;
+}
+
+/* MiniMap styling */
+.react-flow__minimap {
+  position: absolute !important;
+  background: #18181b !important;
+  border: 1px solid #3f3f46 !important;
+  border-radius: 8px !important;
+  bottom: 60px !important;
+  right: 16px !important;
+  z-index: 5 !important;
+}
+
+.react-flow__minimap svg {
+  display: block !important;
+}
+
+.react-flow__minimap-mask {
+  fill: rgba(15, 15, 20, 0.6) !important;
+}
+
+.react-flow__minimap-node {
+  fill-opacity: 1 !important;
+  stroke-width: 1px !important;
+  rx: 3 !important;
+  ry: 3 !important;
+}
+
+.react-flow__edge-path {
+  stroke: var(--primary-color);
+  stroke-width: 2;
+}
+
+.react-flow__edge.edge-yes .react-flow__edge-path {
+  stroke: var(--primary-color);
+}
+
+.react-flow__edge.edge-no .react-flow__edge-path {
+  stroke: #f87171;
+}
+
+.react-flow__node.selected .fms-node {
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+/* FMS custom nodes — rounded, reference style */
+.fms-node {
+  min-width: 180px;
+  padding: 12px 14px;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: var(--node-border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.fms-node::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%230f0f14' stroke-width='2'%3E%3Cpath d='M2 6l3 3 5-6'/%3E%3C/svg%3E");
+  background-size: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.9;
+}
+
+.fms-node.selected {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.fms-node-step { border-left: 3px solid var(--primary-color); }
+.fms-node-decision { border-left: 3px solid #eab308; }
+.fms-node-target { border-left: 3px solid #a78bfa; }
+
+.fms-node-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.fms-badge-step { color: var(--primary-color); }
+.fms-badge-decision { color: #eab308; }
+.fms-badge-target { color: #a78bfa; }
+
+.fms-node-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+  color: #f4f4f5;
+}
+
+.fms-node-code {
+  font-size: 11px;
+  color: #71717a;
+  margin-bottom: 6px;
+}
+
+.fms-node-target-value {
+  font-size: 12px;
+  color: #a78bfa;
+  margin-bottom: 4px;
+}
+
+.fms-node-status {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.status-pending { background: #27272a; color: #71717a; }
+.status-progress { background: rgba(234, 179, 8, 0.2); color: #eab308; }
+.status-completed { background: var(--primary-glow); color: var(--primary-color); }
+
+.fms-node-handles-row {
+  position: relative;
+  margin-top: 8px;
+  padding-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.fms-node-handles-row .handle-label {
+  font-size: 10px;
+}
+
+.handle-yes { color: var(--primary-color); }
+.handle-no { color: #f87171; }
+
+.node-handle {
+  width: 10px;
+  height: 10px;
+  background: var(--gradient-primary);
+  border: 2px solid #18181b;
+}
+.node-handle.react-flow__handle-bottom { bottom: -5px; }
+.node-handle.react-flow__handle-top { top: -5px; }
+.node-handle.react-flow__handle-left { left: -5px; }
+.node-handle.react-flow__handle-right { right: -5px; }
+
+.fms-decision-side-handles {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 56px;
+  pointer-events: none;
+}
+
+.fms-decision-side-handles .node-handle,
+.fms-decision-side-handles .handle-label {
+  pointer-events: all;
+}
+
+.fms-decision-label-yes,
+.fms-decision-label-no {
+  position: absolute;
+  right: 14px;
+  font-size: 10px;
+  transform: translateY(-50%);
+}
+
+.fms-decision-label-yes { top: 36%; }
+.fms-decision-label-no { top: 68%; }
+
+/* Node action buttons - top right */
+.fms-node-actions-top {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 5;
+}
+
+.fms-node-btn-sm {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 4px;
+  color: #71717a;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s;
+}
+
+.fms-node-btn-sm:hover {
+  background: #3f3f46;
+  color: #f4f4f5;
+}
+
+.fms-node-btn-sm.fms-node-btn-delete:hover {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+  border-color: #f87171;
+}
+
+/* Hide the green checkmark since we have action buttons now */
+.fms-node::before {
+  display: none;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 12px;
+  width: 580px;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Form elements in modal */
+.modal-content label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #a1a1aa;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content select {
+  width: 100%;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+  color: #f4f4f5;
+  font-size: 13px;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.modal-content input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: var(--primary-color);
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.field-row label {
+  margin-bottom: 0;
+}
+
+/* Validation panel */
+.validation-panel {
+  background: #16213e;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.validation-panel.error {
+  border-color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.validation-panel.success {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.validation-panel ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+}
+
+.validation-panel li {
+  margin: 4px 0;
+}
+
+.validation-panel .error-msg {
+  color: #f87171;
+}
+
+.validation-panel .success-msg {
+  color: #4ade80;
+}

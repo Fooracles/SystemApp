@@ -1,11 +1,16 @@
 <?php
-session_start();
+// Always keep JSON responses clean (no PHP warning HTML in output)
+ob_start();
+ini_set('display_errors', '0');
+ini_set('html_errors', '0');
+
+// IMPORTANT: include config BEFORE starting session (config sets session ini values)
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
 require_once '../includes/dashboard_components.php';
 
 // Set JSON header
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Get user information from request (passed from JavaScript)
 $user_role = $_GET['user_role'] ?? 'admin';
@@ -87,7 +92,7 @@ try {
     if ($stmt_count = mysqli_prepare($conn, $sql_count)) {
         // Bind parameters for user filtering
         if (!empty($where_params) && !empty($where_types)) {
-            mysqli_stmt_bind_param($stmt_count, $where_types, ...$where_params);
+            mysqliBindParams($stmt_count, $where_types, $where_params);
         }
         
         if (mysqli_stmt_execute($stmt_count)) {
@@ -158,7 +163,7 @@ try {
         if (!empty($where_params) && !empty($where_types)) {
             // Manager or doer with filtering
             $bind_params = array_merge($where_params, [$items_per_page, $offset]);
-            mysqli_stmt_bind_param($stmt_select, $where_types . "ii", ...$bind_params);
+            mysqliBindParams($stmt_select, $where_types . "ii", $bind_params);
         } else {
             // Admin or no filtering
             mysqli_stmt_bind_param($stmt_select, "ii", $items_per_page, $offset);
@@ -191,6 +196,11 @@ try {
     $start_record = $offset + 1;
     $end_record = min($offset + $items_per_page, $total_items);
     
+    // Ensure no stray output corrupts JSON
+    if (ob_get_length()) {
+        ob_clean();
+    }
+
     echo json_encode([
         'success' => true,
         'data' => $requests,
@@ -205,16 +215,19 @@ try {
         ]
     ]);
     
-} catch (Exception $e) {
+} catch (Throwable $e) {
     error_log("Error fetching pending requests: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Failed to fetch pending requests: ' . $e->getMessage()
-    ]);
+    if (ob_get_length()) {
+        ob_clean();
+    }
+    handleException($e, 'leave_fetch_pending');
 } finally {
     if (isset($conn)) {
         mysqli_close($conn);
+    }
+    if (ob_get_level()) {
+        ob_end_flush();
     }
 }
 ?>

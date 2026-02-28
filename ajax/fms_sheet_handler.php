@@ -10,9 +10,11 @@ function log_activity($msg) {
 
 if (!isLoggedIn()) {
     log_activity('Unauthorized access attempt to FMS sheet handler.');
-    echo json_encode(['status' => 'error', 'message' => 'Not authenticated.']);
-    exit;
+    jsonError('Not authenticated.', 401);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sheet_id'], $_POST['tab_name'], $_POST['sheet_label'])) {
     $sheet_id = trim($_POST['sheet_id']);
@@ -21,8 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sheet_id'], $_POST['t
     log_activity("Add sheet request: sheet_id=$sheet_id, tab_name=$tab_name, label=$label");
     if (!$sheet_id || !$tab_name || !$label) {
         log_activity('Missing required fields in add sheet request.');
-        echo json_encode(['status' => 'error', 'message' => 'Missing required fields.']);
-        exit;
+        jsonError('Missing required fields.', 400);
     }
     // Check if sheet already exists
     $check_stmt = $conn->prepare("SELECT id FROM fms_sheets WHERE sheet_id = ? AND tab_name = ?");
@@ -146,10 +147,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sheet_id'], $_POST['t
         echo json_encode(['status'=>'success', 'tasks' => $new_tasks]);
     } catch (Exception $e) {
         log_activity("Error fetching sheet data via API: " . $e->getMessage());
-        echo json_encode(['status'=>'error', 'message'=>'Error fetching sheet data: ' . $e->getMessage()]);
+        handleException($e, 'fms_sheet_handler');
     }
     
     exit;
 }
 log_activity('Invalid request to FMS sheet handler.');
-echo json_encode(['status' => 'error', 'message' => 'Invalid request.']); 
+echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}

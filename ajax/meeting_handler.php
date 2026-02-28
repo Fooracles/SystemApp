@@ -31,6 +31,9 @@ if (!isLoggedIn()) {
     exit;
 }
 
+// CSRF protection for POST requests
+csrfProtect();
+
 // Check database connection
 if (!isset($conn) || !$conn) {
     http_response_code(500);
@@ -74,10 +77,7 @@ if (mysqli_num_rows($table_result) == 0) {
     if (!mysqli_query($conn, $create_table)) {
         http_response_code(500);
         ob_clean();
-        echo json_encode([
-            'success' => false,
-            'error' => 'Failed to create meeting_requests table: ' . mysqli_error($conn)
-        ]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/meeting_handler.php');
         ob_end_flush();
         exit;
     }
@@ -192,13 +192,13 @@ try {
             $stmt = mysqli_prepare($conn, $insert_query);
             
             if (!$stmt) {
-                throw new Exception('Database prepare error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             
             mysqli_stmt_bind_param($stmt, 'sssssss', $doer_name, $doer_email, $reason, $duration, $urgency, $preferred_date, $preferred_time);
             
             if (!mysqli_stmt_execute($stmt)) {
-                throw new Exception('Failed to create meeting request: ' . mysqli_stmt_error($stmt));
+                error_log("[DB Error] Failed to create meeting request"); throw new Exception('A database error occurred');
             }
             
             $meeting_id = mysqli_insert_id($conn);
@@ -275,7 +275,7 @@ try {
             
             $stmt = mysqli_prepare($conn, $query);
             if (!$stmt) {
-                throw new Exception('Database prepare error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             
             mysqli_stmt_bind_param($stmt, 's', $today);
@@ -306,7 +306,7 @@ try {
             $result = mysqli_query($conn, $query);
             
             if (!$result) {
-                throw new Exception('Database query error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database query error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             
             $meetings = [];
@@ -331,7 +331,7 @@ try {
             $result = mysqli_query($conn, $query);
             
             if (!$result) {
-                throw new Exception('Database query error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database query error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             
             $meetings = [];
@@ -397,7 +397,7 @@ try {
             
             $stmt = mysqli_prepare($conn, $query);
             if (!$stmt) {
-                throw new Exception('Database prepare error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             
             mysqli_stmt_bind_param($stmt, 's', $today);
@@ -458,7 +458,7 @@ try {
                 $stmt = mysqli_prepare($conn, $update_query);
                 
                 if (!$stmt) {
-                    throw new Exception('Database prepare error: ' . mysqli_error($conn));
+                    error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
                 }
                 
                 mysqli_stmt_bind_param($stmt, 'ssi', $scheduled_date, $schedule_comment, $meeting_id);
@@ -467,14 +467,14 @@ try {
                 $stmt = mysqli_prepare($conn, $update_query);
                 
                 if (!$stmt) {
-                    throw new Exception('Database prepare error: ' . mysqli_error($conn));
+                    error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
                 }
                 
                 mysqli_stmt_bind_param($stmt, 'si', $scheduled_date, $meeting_id);
             }
             
             if (!mysqli_stmt_execute($stmt)) {
-                throw new Exception('Failed to schedule meeting: ' . mysqli_stmt_error($stmt));
+                error_log("[DB Error] Failed to schedule meeting"); throw new Exception('A database error occurred');
             }
             
             if (mysqli_stmt_affected_rows($stmt) === 0) {
@@ -570,7 +570,7 @@ try {
             $stmt = mysqli_prepare($conn, $query);
             
             if (!$stmt) {
-                throw new Exception('Database prepare error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             
             mysqli_stmt_bind_param($stmt, 's', $doer_email);
@@ -741,13 +741,13 @@ try {
             $stmt = mysqli_prepare($conn, $update_query);
             
             if (!$stmt) {
-                throw new Exception('Database prepare error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             
             mysqli_stmt_bind_param($stmt, 'si', $scheduled_date, $meeting_id);
             
             if (!mysqli_stmt_execute($stmt)) {
-                throw new Exception('Failed to approve meeting: ' . mysqli_stmt_error($stmt));
+                error_log("[DB Error] Failed to approve meeting"); throw new Exception('A database error occurred');
             }
             
             if (mysqli_stmt_affected_rows($stmt) === 0) {
@@ -805,19 +805,13 @@ try {
 } catch (Exception $e) {
     http_response_code(400);
     ob_clean();
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage()
-    ]);
+    handleException($e, 'meeting_handler');
     ob_end_flush();
     exit;
 } catch (Error $e) {
     http_response_code(500);
     ob_clean();
-    echo json_encode([
-        'success' => false,
-        'error' => 'Server error: ' . $e->getMessage()
-    ]);
+    handleException($e, 'meeting_handler');
     ob_end_flush();
     exit;
 } finally {

@@ -1012,9 +1012,4 @@ if ($sheets_result) {
 // Include the universal footer
 
 require_once "../includes/footer.php";
-
 ?>
-
-
-
-

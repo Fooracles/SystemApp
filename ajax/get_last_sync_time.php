@@ -35,7 +35,7 @@ try {
     $stmt = mysqli_prepare($conn, $query);
     
     if (!$stmt) {
-        throw new Exception('Failed to prepare query: ' . mysqli_error($conn));
+        error_log("[DB Error] Failed to prepare query: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, 's', $sheet_id);

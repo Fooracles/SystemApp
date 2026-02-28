@@ -211,9 +211,9 @@ if(isset($_POST['edit_user']) && !empty($_POST['user_id'])) {
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
     
-    // Validate username
+    // Validate username (edit_id empty = add new user; non-empty = edit)
     if(empty(trim($_POST["username"]))) {
-        if(!isset($_POST['edit_id'])) {
+        if(empty($_POST['edit_id'])) {
             $username_err = "Please enter a username.";
         }
     } else {
@@ -221,7 +221,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
         
         // Check if username exists (for new users or changed usernames)
         $check_username = true;
-        if(isset($_POST['edit_id'])) {
+        if(!empty($_POST['edit_id'])) {
             $sql = "SELECT username FROM users WHERE id = ?";
             if($stmt = mysqli_prepare($conn, $sql)) {
                 mysqli_stmt_bind_param($stmt, "i", $_POST['edit_id']);
@@ -230,7 +230,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
                 $current_user = mysqli_fetch_assoc($result);
                 
                 // If username hasn't changed, no need to check (case-sensitive comparison)
-                if($current_user['username'] === $username) {
+                if($current_user !== null && isset($current_user['username']) && $current_user['username'] === $username) {
                     $check_username = false;
                 }
                 
@@ -266,7 +266,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
     
     // Validate email
     if(empty(trim($_POST["email"]))) {
-        if(!isset($_POST['edit_id'])) {
+        if(empty($_POST['edit_id'])) {
             $email_err = "Please enter an email.";
         }
     } else {
@@ -274,7 +274,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
         
         // Check if email exists (for new users or changed emails)
         $check_email = true;
-        if(isset($_POST['edit_id'])) {
+        if(!empty($_POST['edit_id'])) {
             $sql = "SELECT email FROM users WHERE id = ?";
             if($stmt = mysqli_prepare($conn, $sql)) {
                 mysqli_stmt_bind_param($stmt, "i", $_POST['edit_id']);
@@ -283,7 +283,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
                 $current_user = mysqli_fetch_assoc($result);
                 
                 // If email hasn't changed, no need to check
-                if($current_user['email'] == $email) {
+                if($current_user !== null && isset($current_user['email']) && $current_user['email'] == $email) {
                     $check_email = false;
                 }
                 
@@ -318,11 +318,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
     
     // Validate user type
     if(empty($_POST["user_type"])) {
-        if(!isset($_POST['edit_id'])) {
+        if(empty($_POST['edit_id'])) {
             $user_type_err = "Please select a user type.";
         }
     } else {
         $user_type = $_POST["user_type"];
+        // Prevent client type from being selected in team section
+        if($user_type === "client") {
+            $user_type_err = "Client type users cannot be added in the team section. Please use the clients section to add client accounts and client users.";
+        }
     }
     
     // Get all Manager and Admin users for validation (needed before form processing)
@@ -335,13 +339,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
         }
     }
     
-    // Validate manager (mandatory for non-admin and non-client users)
+    // Validate manager (use default if not provided)
     if(empty(trim($_POST["manager"]))) {
-        if(!isset($_POST['edit_id']) && $user_type !== "admin" && $user_type !== "client") {
-            $manager_err = "Please select a manager.";
-        } else {
-            $manager = "Shubham Tyagi"; // Default for admin and client users
-        }
+        $manager = "Shubham Tyagi"; // Default when no manager selected
     } else {
         $manager = trim($_POST["manager"]);
         
@@ -356,13 +356,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
         }
     }
     
-    // Validate joining date
+    // Validate joining date (optional - allow empty, stored as NULL)
     if(empty($_POST["joining_date"])) {
-        if(!isset($_POST['edit_id'])) {
-            $joining_date_err = "Please enter joining date.";
-        }
-        $joining_date = null; // Set to null if empty
-        $joining_date_db = null; // Set to null if empty
+        $joining_date = null;
+        $joining_date_db = null;
     } else {
         $joining_date = $_POST["joining_date"]; // Keep original YYYY-MM-DD format for display
         
@@ -387,13 +384,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
         }
     }
     
-    // Validate date of birth
+    // Validate date of birth (optional - allow empty, stored as NULL)
     if(empty($_POST["date_of_birth"])) {
-        if(!isset($_POST['edit_id'])) {
-            $date_of_birth_err = "Please enter date of birth.";
-        }
-        $date_of_birth = null; // Set to null if empty
-        $date_of_birth_db = null; // Set to null if empty
+        $date_of_birth = null;
+        $date_of_birth_db = null;
     } else {
         $date_of_birth = $_POST["date_of_birth"]; // Keep original YYYY-MM-DD format for display
         
@@ -446,12 +440,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
     }
     
     // Check input errors before inserting in database
+    // Password: (edit with valid id and no new password) OR (no password/confirm errors)
+    $password_ok = (!empty($_POST['edit_id']) && empty(trim($_POST["password"] ?? ''))) || (empty($password_err) && empty($confirm_password_err));
     if(empty($username_err) && empty($name_err) && empty($email_err) && 
        empty($department_err) && empty($user_type_err) && empty($manager_err) && 
-       empty($joining_date_err) && empty($date_of_birth_err) &&
-       (isset($_POST['edit_id']) && empty($_POST["password"]) || empty($password_err) && empty($confirm_password_err))) {
+       empty($joining_date_err) && empty($date_of_birth_err) && $password_ok) {
         
-        if(isset($_POST['edit_id'])) {
+        if(!empty($_POST['edit_id'])) {
             // Update existing user - use current values for empty fields
             $current_user_sql = "SELECT username, name, email, department_id, user_type, manager, joining_date, date_of_birth FROM users WHERE id = ?";
             $current_stmt = mysqli_prepare($conn, $current_user_sql);
@@ -461,7 +456,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
             $current_user = mysqli_fetch_assoc($current_result);
             mysqli_stmt_close($current_stmt);
             
-            // Use current values for empty fields in edit mode
+            // Use current values for empty fields in edit mode (guard against user not found)
+            if($current_user === null) {
+                $error_msg = "User not found.";
+                goto skip_update;
+            }
             $username = !empty($username) ? $username : $current_user['username'];
             $name = !empty($name) ? $name : $current_user['name'];
             $email = !empty($email) ? $email : $current_user['email'];
@@ -470,6 +469,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
             $manager = !empty($manager) ? $manager : $current_user['manager'];
             $joining_date_db_final = $joining_date_db !== null ? $joining_date_db : $current_user['joining_date'];
             $date_of_birth_db_final = $date_of_birth_db !== null ? $date_of_birth_db : $current_user['date_of_birth'];
+            
+            // Prevent changing user type to client in team section
+            if($user_type === "client") {
+                $user_type_err = "Cannot change user type to client in the team section. Client users should be managed in the clients section.";
+                $error_msg = $user_type_err;
+                goto skip_update;
+            }
             
             if(!empty($_POST["password"])) {
                 // Update with new password
@@ -622,7 +628,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
                 }
             }
         } else {
-            // Create new user
+            // Create new user (password required and already validated)
+            if (!isset($password) || $password === '') {
+                $error_msg = "Password is required for new users.";
+            } else {
             // Get manager_id from manager name
             $manager_id = null;
             if (!empty($manager) && $manager !== "Shubham Tyagi") {
@@ -648,7 +657,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
                 $joining_date_db_final = $joining_date_db === null ? null : $joining_date_db;
                 $date_of_birth_db_final = $date_of_birth_db === null ? null : $date_of_birth_db;
                 
-                mysqli_stmt_bind_param($stmt, "ssssisssss", $username, $name, $email, $param_password, $department_id, $user_type, $manager, $manager_id, $joining_date_db_final, $date_of_birth_db_final);
+                mysqli_stmt_bind_param($stmt, "ssssississ", $username, $name, $email, $param_password, $department_id, $user_type, $manager, $manager_id, $joining_date_db_final, $date_of_birth_db_final);
                 
                 try {
                     if(mysqli_stmt_execute($stmt)) {
@@ -675,8 +684,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
                 
                 mysqli_stmt_close($stmt);
             }
+            }
         }
         skip_update: // Label for skipping update when manager tries to update client account
+    } else {
+        // Collect validation errors into a visible message so the user gets feedback
+        $validation_errors = array();
+        if(!empty($username_err)) $validation_errors[] = $username_err;
+        if(!empty($name_err)) $validation_errors[] = $name_err;
+        if(!empty($email_err)) $validation_errors[] = $email_err;
+        if(!empty($department_err)) $validation_errors[] = $department_err;
+        if(!empty($user_type_err)) $validation_errors[] = $user_type_err;
+        if(!empty($manager_err)) $validation_errors[] = $manager_err;
+        if(!empty($joining_date_err)) $validation_errors[] = $joining_date_err;
+        if(!empty($date_of_birth_err)) $validation_errors[] = $date_of_birth_err;
+        if(!empty($password_err)) $validation_errors[] = $password_err;
+        if(!empty($confirm_password_err)) $validation_errors[] = $confirm_password_err;
+        if(!empty($validation_errors)) {
+            $error_msg = "Please fix the following: " . implode(", ", $validation_errors);
+        }
     }
 }
 
@@ -1110,7 +1136,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_client_user']) && 
                 $sql = "UPDATE users SET username = ?, name = ?, email = ?, password = ?, user_type = 'client', manager_id = ?, joining_date = ?, date_of_birth = ? WHERE id = ?";
                 if($stmt = mysqli_prepare($conn, $sql)) {
                     $param_password = password_hash($client_user_password, PASSWORD_DEFAULT);
-                    mysqli_stmt_bind_param($stmt, "sssssissi", $client_user_username, $client_user_name, $client_user_email, $param_password, $client_user_client_id, $client_user_joining_date_db, $client_user_date_of_birth_db, $edit_client_user_id);
+                    mysqli_stmt_bind_param($stmt, "ssssissi", $client_user_username, $client_user_name, $client_user_email, $param_password, $client_user_client_id, $client_user_joining_date_db, $client_user_date_of_birth_db, $edit_client_user_id);
                     
                     try {
                         if(mysqli_stmt_execute($stmt)) {
@@ -1166,12 +1192,29 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_client_user']) && 
             // Log: Before creating new client_user
             log_activity("CLIENT_USER_FLOW [CREATE]: Preparing to create new client_user - username '{$client_user_username}', name '{$client_user_name}', email '{$client_user_email}', client_id {$client_user_client_id}, joining_date: " . ($client_user_joining_date_db ?? 'NULL') . ", date_of_birth: " . ($client_user_date_of_birth_db ?? 'NULL'));
             
-            $sql = "INSERT INTO users (username, name, email, password, department_id, user_type, manager_id, joining_date, date_of_birth) VALUES (?, ?, ?, ?, NULL, 'client', ?, ?, ?)";
+            // Check if parent client account is inactive - if so, new user should also be inactive
+            $client_account_status = 'Active'; // Default to Active
+            $check_client_status_sql = "SELECT Status FROM users WHERE id = ? AND user_type = 'client' AND (password IS NULL OR password = '')";
+            if($check_status_stmt = mysqli_prepare($conn, $check_client_status_sql)) {
+                mysqli_stmt_bind_param($check_status_stmt, "i", $client_user_client_id);
+                mysqli_stmt_execute($check_status_stmt);
+                $check_status_result = mysqli_stmt_get_result($check_status_stmt);
+                if($status_row = mysqli_fetch_assoc($check_status_result)) {
+                    $client_account_status = ucfirst(strtolower(trim($status_row['Status'] ?? 'Active')));
+                    if($client_account_status !== 'Active' && $client_account_status !== 'Inactive') {
+                        $client_account_status = 'Active';
+                    }
+                }
+                mysqli_stmt_close($check_status_stmt);
+            }
+            
+            // If parent client account is inactive, set new user status to Inactive
+            $sql = "INSERT INTO users (username, name, email, password, department_id, user_type, manager_id, joining_date, date_of_birth, Status) VALUES (?, ?, ?, ?, NULL, 'client', ?, ?, ?, ?)";
             
             if($stmt = mysqli_prepare($conn, $sql)) {
                 $param_password = password_hash($client_user_password, PASSWORD_DEFAULT);
                 
-                mysqli_stmt_bind_param($stmt, "ssssiss", $client_user_username, $client_user_name, $client_user_email, $param_password, $client_user_client_id, $client_user_joining_date_db, $client_user_date_of_birth_db);
+                mysqli_stmt_bind_param($stmt, "ssssisss", $client_user_username, $client_user_name, $client_user_email, $param_password, $client_user_client_id, $client_user_joining_date_db, $client_user_date_of_birth_db, $client_account_status);
                 
                 // Log: Before executing INSERT query
                 log_activity("CLIENT_USER_FLOW [CREATE]: Executing INSERT query for username '{$client_user_username}', email '{$client_user_email}', name '{$client_user_name}', client_id {$client_user_client_id}");
@@ -1346,6 +1389,11 @@ if($can_manage_clients) {
                            FROM users 
                            WHERE user_type = 'client'
                            AND (password IS NULL OR password = '')";
+    // If Manager, only count client accounts assigned to them
+    if($is_manager && !$is_admin) {
+        $current_manager_id = $_SESSION['id'];
+        $clients_stats_query .= " AND manager_id = $current_manager_id";
+    }
     $clients_stats_result = mysqli_query($conn, $clients_stats_query);
     if($clients_stats_result && $row = mysqli_fetch_assoc($clients_stats_result)) {
         $total_clients_for_stats = (int)$row['total'];
@@ -1513,6 +1561,53 @@ if($can_manage_clients) {
         width: 100% !important;
         font-size: 0.8rem !important;
         padding: 0.25rem 0.5rem !important;
+    }
+    
+    /* Sortable table headers */
+    .sortable {
+        user-select: none;
+        position: relative;
+    }
+    
+    .sortable:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .sort-icon {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 0.7em;
+        opacity: 0.3;
+        transition: opacity 0.2s, color 0.2s;
+    }
+    
+    /* Show faded chevron by default (▲) */
+    .sort-icon::after {
+        content: ' ▲';
+        opacity: 0.3;
+        color: currentColor;
+    }
+    
+    .sortable:hover .sort-icon {
+        opacity: 0.6;
+    }
+    
+    .sortable:hover .sort-icon::after {
+        opacity: 0.6;
+    }
+    
+    /* Active sort - ascending */
+    .sortable.sort-asc .sort-icon::after {
+        content: ' ▲';
+        opacity: 1;
+        color: #ffffff;
+    }
+    
+    /* Active sort - descending */
+    .sortable.sort-desc .sort-icon::after {
+        content: ' ▼';
+        opacity: 1;
+        color: #ffffff;
     }
     
     /* Ensure table fits container */
@@ -2220,15 +2315,33 @@ if($can_manage_clients) {
                                 <table class="table table-bordered table-striped table-sm" style="width: 100%; table-layout: auto;">
                                     <thead>
                                         <tr>
-                                            <th style="white-space: nowrap;">Username</th>
-                                            <th style="white-space: nowrap;">Name</th>
-                                            <th style="white-space: nowrap;">Email</th>
-                                            <th style="white-space: nowrap;">Department</th>
-                                            <th style="white-space: nowrap;">Profile</th>
-                                            <th style="white-space: nowrap;">Manager</th>
-                                            <th style="white-space: nowrap;">Joining Date</th>
-                                            <th style="white-space: nowrap;">Date of Birth</th>
-                                            <th style="white-space: nowrap;">Status</th>
+                                            <th class="sortable" data-column="0" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                Username <span class="sort-icon"></span>
+                                            </th>
+                                            <th class="sortable" data-column="1" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                Name <span class="sort-icon"></span>
+                                            </th>
+                                            <th class="sortable" data-column="2" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                Email <span class="sort-icon"></span>
+                                            </th>
+                                            <th class="sortable" data-column="3" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                Department <span class="sort-icon"></span>
+                                            </th>
+                                            <th class="sortable" data-column="4" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                Profile <span class="sort-icon"></span>
+                                            </th>
+                                            <th class="sortable" data-column="5" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                Manager <span class="sort-icon"></span>
+                                            </th>
+                                            <th class="sortable" data-column="6" data-type="date" style="white-space: nowrap; cursor: pointer;">
+                                                Joining Date <span class="sort-icon"></span>
+                                            </th>
+                                            <th class="sortable" data-column="7" data-type="date" style="white-space: nowrap; cursor: pointer;">
+                                                Date of Birth <span class="sort-icon"></span>
+                                            </th>
+                                            <th class="sortable" data-column="8" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                Status <span class="sort-icon"></span>
+                                            </th>
                                             <th style="white-space: nowrap;">Actions</th>
                                         </tr>
                                     </thead>
@@ -2441,11 +2554,21 @@ if($can_manage_clients) {
                                 <table class="table table-bordered table-striped table-sm mb-0" style="width: 100%; table-layout: auto; margin-bottom: 0;">
                                     <thead>
                                         <tr>
-                                                <th style="white-space: nowrap;">Account Name</th>
-                                                <th style="white-space: nowrap;">Manager</th>
-                                                <th style="white-space: nowrap;">On-Boarding</th>
-                                                <th style="white-space: nowrap;">Users</th>
-                                                <th style="white-space: nowrap;">Status</th>
+                                                <th class="sortable" data-column="0" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                    Account Name <span class="sort-icon"></span>
+                                                </th>
+                                                <th class="sortable" data-column="1" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                    Manager <span class="sort-icon"></span>
+                                                </th>
+                                                <th class="sortable" data-column="2" data-type="date" style="white-space: nowrap; cursor: pointer;">
+                                                    On-Boarding <span class="sort-icon"></span>
+                                                </th>
+                                                <th class="sortable" data-column="3" data-type="number" style="white-space: nowrap; cursor: pointer;">
+                                                    Users <span class="sort-icon"></span>
+                                                </th>
+                                                <th class="sortable" data-column="4" data-type="text" style="white-space: nowrap; cursor: pointer;">
+                                                    Status <span class="sort-icon"></span>
+                                                </th>
                                                 <th style="white-space: nowrap;">Action</th>
                                         </tr>
                                     </thead>
@@ -2477,7 +2600,7 @@ if($can_manage_clients) {
                                             }
                                             $actual_user_count = count($client_users);
                                             ?>
-                                            <tr>
+                                            <tr data-client-account-id="<?php echo $client['id']; ?>">
                                                 <td style="white-space: normal;">
                                                     <strong><?php echo htmlspecialchars($client['name']); ?></strong>
                                                 </td>
@@ -2524,12 +2647,6 @@ if($can_manage_clients) {
                                                             </button>
                                                         </form>
                                                         <?php endif; ?>
-                                                        
-                                                    <a href="manage_client_users.php?client_id=<?php echo $client['id']; ?>" 
-                                                       class="btn btn-sm btn-primary" 
-                                                           title="Manage Client Users">
-                                                            <i class="fas fa-users"></i>
-                                                        </a>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -2548,11 +2665,21 @@ if($can_manage_clients) {
                                     <table class="table table-bordered table-striped table-sm mb-0" style="width: 100%; table-layout: auto; margin-bottom: 0;">
                                         <thead>
                                             <tr>
-                                                <th style="white-space: nowrap; width: 15%;">Account</th>
-                                                <th style="white-space: nowrap; width: 15%;">Full Name</th>
-                                                <th style="white-space: nowrap; width: 12%;">Username</th>
-                                                <th style="white-space: nowrap; width: 18%;">Email</th>
-                                                <th style="white-space: nowrap; width: 8%;">Status</th>
+                                                <th class="sortable" data-column="0" data-type="text" style="white-space: nowrap; width: 15%; cursor: pointer;">
+                                                    Account <span class="sort-icon"></span>
+                                                </th>
+                                                <th class="sortable" data-column="1" data-type="text" style="white-space: nowrap; width: 15%; cursor: pointer;">
+                                                    Full Name <span class="sort-icon"></span>
+                                                </th>
+                                                <th class="sortable" data-column="2" data-type="text" style="white-space: nowrap; width: 12%; cursor: pointer;">
+                                                    Username <span class="sort-icon"></span>
+                                                </th>
+                                                <th class="sortable" data-column="3" data-type="text" style="white-space: nowrap; width: 18%; cursor: pointer;">
+                                                    Email <span class="sort-icon"></span>
+                                                </th>
+                                                <th class="sortable" data-column="4" data-type="text" style="white-space: nowrap; width: 8%; cursor: pointer;">
+                                                    Status <span class="sort-icon"></span>
+                                                </th>
                                                 <th style="white-space: nowrap; width: 8%;">Actions</th>
                                             </tr>
                                         </thead>
@@ -2580,7 +2707,7 @@ if($can_manage_clients) {
                                                         break;
                                                 }
                                                 ?>
-                                                <tr>
+                                                <tr data-client-account-id="<?php echo $user['client_id'] ?? $user['manager_id']; ?>">
                                                     <td style="white-space: normal;">
                                                         <strong><?php echo htmlspecialchars($user['client_name'] ?? 'N/A'); ?></strong>
                                                     </td>
@@ -3090,8 +3217,14 @@ if($can_manage_clients) {
                             }
                         }
                         
+                        // If this is a client account and client users were updated, update them in real-time
+                        if (userType === 'client_account' && data.client_users_updated > 0) {
+                            updateClientUsersStatusInRealTime(userId, newStatus);
+                        }
+                        
                         // Show success message
-                        alert('User status updated successfully!');
+                        const message = data.message || 'User status updated successfully!';
+                        alert(message);
                     } else {
                         alert('Error: ' + (data.message || 'Failed to update user status'));
                         // Revert to original value
@@ -3113,6 +3246,155 @@ if($can_manage_clients) {
                 });
             });
         });
+        
+        // Function to update client users status in real-time when client account status changes
+        function updateClientUsersStatusInRealTime(clientAccountId, newStatus) {
+            // Find all client user rows that belong to this client account
+            const clientUserRows = document.querySelectorAll(`tr[data-client-account-id="${clientAccountId}"]`);
+            
+            let updatedCount = 0;
+            
+            clientUserRows.forEach(row => {
+                // Find the status dropdown in this row
+                const statusDropdown = row.querySelector('.user-status-dropdown[data-user-type="client_user"]');
+                
+                if (statusDropdown) {
+                    // Only update if status is different
+                    if (statusDropdown.value !== newStatus) {
+                        // Update the dropdown value
+                        statusDropdown.value = newStatus;
+                        
+                        // Update the data-original-status attribute
+                        statusDropdown.dataset.originalStatus = newStatus;
+                        
+                        // Update the row's data-user-status attribute if it exists
+                        row.setAttribute('data-user-status', newStatus);
+                        
+                        // Add visual highlight animation
+                        row.style.transition = 'background-color 0.3s ease';
+                        row.style.backgroundColor = newStatus === 'Active' ? 'rgba(40, 167, 69, 0.1)' : 'rgba(220, 53, 69, 0.1)';
+                        
+                        // Remove highlight after animation
+                        setTimeout(() => {
+                            row.style.backgroundColor = '';
+                        }, 1000);
+                        
+                        updatedCount++;
+                    }
+                    
+                    // Update the visual appearance (badge if exists)
+                    const statusCell = statusDropdown.closest('td');
+                    if (statusCell) {
+                        // Remove old badge classes and add new ones if needed
+                        const badges = statusCell.querySelectorAll('.badge');
+                        badges.forEach(badge => {
+                            badge.classList.remove('badge-success', 'badge-danger');
+                            badge.classList.add(newStatus === 'Active' ? 'badge-success' : 'badge-danger');
+                            if (badge.textContent.trim() !== newStatus) {
+                                badge.textContent = newStatus;
+                            }
+                        });
+                    }
+                }
+            });
+            
+            // Refresh the filter if active
+            if (typeof filterUsersByStatus === 'function') {
+                const activeRadio = document.querySelector('input[name="user_status_filter"][value="Active"]');
+                if (activeRadio && activeRadio.checked) {
+                    filterUsersByStatus('Active');
+                } else {
+                    const inactiveRadio = document.querySelector('input[name="user_status_filter"][value="Inactive"]');
+                    if (inactiveRadio && inactiveRadio.checked) {
+                        filterUsersByStatus('Inactive');
+                    }
+                }
+            }
+            
+            // Log update for debugging
+            if (updatedCount > 0) {
+                console.log(`Real-time update: ${updatedCount} client user(s) status updated to '${newStatus}' for client account ID ${clientAccountId}`);
+            }
+        }
+        
+        // Table Sorting Functionality
+        function initializeTableSorting() {
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.addEventListener('click', function() {
+                    const table = this.closest('table');
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+                    const columnIndex = parseInt(this.dataset.column);
+                    const dataType = this.dataset.type || 'text';
+                    
+                    // Determine sort direction
+                    const isAsc = !this.classList.contains('sort-asc');
+                    
+                    // Remove sort classes from all headers in this table
+                    table.querySelectorAll('.sortable').forEach(th => {
+                        th.classList.remove('sort-asc', 'sort-desc');
+                    });
+                    
+                    // Add sort class to current header
+                    this.classList.add(isAsc ? 'sort-asc' : 'sort-desc');
+                    
+                    // Sort rows
+                    rows.sort((a, b) => {
+                        const aCell = a.cells[columnIndex];
+                        const bCell = b.cells[columnIndex];
+                        
+                        if (!aCell || !bCell) return 0;
+                        
+                        let aValue = aCell.textContent.trim();
+                        let bValue = bCell.textContent.trim();
+                        
+                        // Handle different data types
+                        if (dataType === 'number') {
+                            aValue = parseFloat(aValue) || 0;
+                            bValue = parseFloat(bValue) || 0;
+                            return isAsc ? aValue - bValue : bValue - aValue;
+                        } else if (dataType === 'date') {
+                            // Parse date strings (format: DD-MM-YYYY or YYYY-MM-DD)
+                            const parseDate = (str) => {
+                                if (!str || str === 'N/A') return 0;
+                                const parts = str.split(/[-\/]/);
+                                if (parts.length === 3) {
+                                    // Try DD-MM-YYYY first
+                                    if (parts[0].length === 2) {
+                                        return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+                                    }
+                                    // Try YYYY-MM-DD
+                                    return new Date(parts[0], parts[1] - 1, parts[2]).getTime();
+                                }
+                                return new Date(str).getTime() || 0;
+                            };
+                            aValue = parseDate(aValue);
+                            bValue = parseDate(bValue);
+                            return isAsc ? aValue - bValue : bValue - aValue;
+                        } else {
+                            // Text sorting (case-insensitive)
+                            aValue = aValue.toLowerCase();
+                            bValue = bValue.toLowerCase();
+                            if (isAsc) {
+                                return aValue.localeCompare(bValue);
+                            } else {
+                                return bValue.localeCompare(aValue);
+                            }
+                        }
+                    });
+                    
+                    // Re-append sorted rows
+                    rows.forEach(row => tbody.appendChild(row));
+                });
+            });
+        }
+        
+        // Initialize sorting when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeTableSorting);
+        } else {
+            initializeTableSorting();
+        }
     });
     </script>
 
@@ -3129,7 +3411,7 @@ if($can_manage_clients) {
                 </button>
             </div>
             <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" id="newUserForm">
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>?section=team" method="post" id="newUserForm">
                     <input type="hidden" name="save_user" value="1">
                     <input type="hidden" name="edit_id" id="editUserId" value="">
                     <div class="row">
@@ -3161,7 +3443,6 @@ if($can_manage_clients) {
                                 <option value="admin">Admin</option>
                                 <option value="manager">Manager</option>
                                 <option value="doer">Doer</option>
-                                <option value="client">Client</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -3210,7 +3491,7 @@ if($can_manage_clients) {
 <!-- Client Account Modal (Admin - Clients Section) -->
 <?php if($is_admin): ?>
 <div class="modal" id="newClientAccountModal" tabindex="-1" role="dialog" aria-labelledby="newClientAccountModalLabel" aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog modal-lg" role="document" style="margin: 0; position: fixed; top: 50%; left: calc(250px + (100vw - 250px) / 2); transform: translate(-50%, -50%); max-width: 90%; width: auto;">
+    <div class="modal-dialog modal-lg" role="document" style="margin: 0; position: fixed; top: 50%; left: calc(250px + (100vw - 250px) / 2); transform: translate(-50%, -50%); max-width: 95%; min-width: 800px; width: auto;">
         <div class="modal-content" style="background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.1);">
             <div class="modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
                 <h5 class="modal-title text-white" id="newClientAccountModalLabel"><i class="fas fa-building"></i> Add Client Account</h5>
@@ -3223,13 +3504,13 @@ if($can_manage_clients) {
                     <input type="hidden" name="save_client_account" value="1">
                     <input type="hidden" name="edit_id" id="editClientAccountId" value="">
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3" style="min-width: 220px;">
                             <label class="text-white">Account Name <span class="text-danger">*</span></label>
-                            <input type="text" name="client_username" id="modalClientUsername" class="form-control bg-slate-700 text-white border-slate-600" placeholder="Enter account name" required>
+                            <input type="text" name="client_username" id="modalClientUsername" class="form-control bg-slate-700 text-white border-slate-600" placeholder="Enter account name" required style="min-width: 200px; width: 100%;">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3" style="min-width: 220px;">
                             <label class="text-white">Manager <span class="text-danger">*</span></label>
-                            <select name="client_manager" id="modalClientManager" class="form-control bg-slate-700 text-white border-slate-600" required>
+                            <select name="client_manager" id="modalClientManager" class="form-control bg-slate-700 text-white border-slate-600" required style="min-width: 200px; width: 100%;">
                                 <option value="">Select Manager</option>
                                 <option value="Shubham Tyagi">Shubham Tyagi</option>
                                 <?php 
@@ -3243,9 +3524,9 @@ if($can_manage_clients) {
                                 ?>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3" style="min-width: 220px;">
                             <label class="text-white">On-boarding Date <span class="text-danger">*</span></label>
-                            <input type="date" name="client_joining_date" id="modalClientJoiningDate" class="form-control bg-slate-700 text-white border-slate-600 date-picker-clickable" required>
+                            <input type="date" name="client_joining_date" id="modalClientJoiningDate" class="form-control bg-slate-700 text-white border-slate-600 date-picker-clickable" required style="min-width: 200px; width: 100%;">
                         </div>
                     </div>
                     <div class="alert alert-info mt-3" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;">

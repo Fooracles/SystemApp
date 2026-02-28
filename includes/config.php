@@ -1,4 +1,10 @@
 <?php
+
+// Load centralized error handler FIRST (before any potential errors)
+require_once __DIR__ . '/error_handler.php';
+
+// Load centralized secure file upload handler
+require_once __DIR__ . '/file_uploader.php';
 // Set global timezone for consistent time calculations across the application
 date_default_timezone_set('Asia/Kolkata');
 
@@ -53,11 +59,37 @@ define('LEAVE_SHEET_ID', '1uLjlLs1Nd1eumtP3XjCWa0BEa4yPqev1ato5kGr5UY0');
 define('LEAVE_TAB_REQUESTS', 'Leave_Requests');
 define('LEAVE_TAB_STATUS_APP', 'Leave_Status(Approve/Reject) via App');
 
-// Attempt to connect to MySQL database
-$conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+// Attempt to connect to MySQL database with retry logic for "Too many connections"
+$conn = null;
+$max_retries = 3;
+$retry_delay_ms = 500; // milliseconds
 
-// Check connection
-if(!$conn) {
+for ($attempt = 1; $attempt <= $max_retries; $attempt++) {
+    try {
+        $conn = @mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+        if ($conn) {
+            break;
+        }
+    } catch (mysqli_sql_exception $e) {
+        if (strpos($e->getMessage(), 'Too many connections') !== false && $attempt < $max_retries) {
+            usleep($retry_delay_ms * 1000);
+            $retry_delay_ms *= 2;
+            continue;
+        }
+        throw $e;
+    }
+
+    if (!$conn && $attempt < $max_retries) {
+        $error = mysqli_connect_error();
+        if (strpos($error, 'Too many connections') !== false) {
+            usleep($retry_delay_ms * 1000);
+            $retry_delay_ms *= 2;
+            continue;
+        }
+    }
+}
+
+if (!$conn) {
     die("ERROR: Could not connect. " . mysqli_connect_error());
 }
 
@@ -66,6 +98,24 @@ mysqli_set_charset($conn, "utf8mb4");
 
 // Set MySQL timezone to match PHP timezone for consistent time calculations
 mysqli_query($conn, "SET time_zone = '+05:30'");
+
+// ============================================================================
+// AUTO-CLOSE DATABASE CONNECTION ON SCRIPT END
+// Ensures the MySQL connection is released back to the pool when the script
+// finishes, regardless of how it exits (normal end, exit(), die(), fatal error).
+// This prevents "Too many connections" errors on shared hosting.
+// ============================================================================
+register_shutdown_function(function () {
+    global $conn;
+    if (isset($conn) && $conn instanceof mysqli) {
+        try {
+            mysqli_close($conn);
+        } catch (\Error $e) {
+            // Connection already closed — nothing to do
+        }
+    }
+});
+
 
 // Include database utility functions
 require_once __DIR__ . '/db_functions.php';
@@ -78,6 +128,13 @@ $verbose_db_check = isset($_GET['show_db_status']) && $_GET['show_db_status'] ==
 // Use the new createDatabaseTables function from db_schema.php
 if (function_exists('createDatabaseTables')) {
     createDatabaseTables($conn, $verbose_db_check);
+    // Run non-destructive migration guards for existing installations.
+    if (function_exists('ensureFmsFlowNodeTypes')) {
+        ensureFmsFlowNodeTypes($conn);
+    }
+    if (function_exists('ensureFmsFlowExecutionSchema')) {
+        ensureFmsFlowExecutionSchema($conn);
+    }
 } else {
     // Fallback to old function if new one doesn't exist
     ensureDatabaseTables($conn, $verbose_db_check);

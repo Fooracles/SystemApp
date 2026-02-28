@@ -1,18 +1,22 @@
 <?php
-session_start();
+// Always keep JSON responses clean (no PHP warning HTML in output)
+ob_start();
+ini_set('display_errors', '0');
+ini_set('html_errors', '0');
+
+// IMPORTANT: include config BEFORE starting session (config sets session ini values)
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
 
 // Set JSON header
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Check if user is logged in
 if (!isLoggedIn()) {
-    echo json_encode([
-        'success' => false,
-        'error' => 'User not authenticated'
-    ]);
-    exit;
+    if (ob_get_length()) {
+        ob_clean();
+    }
+    jsonError('User not authenticated', 500);
 }
 
 // Get user information from request
@@ -49,7 +53,7 @@ try {
     $employee_names = [];
     if ($stmt = mysqli_prepare($conn, $sql)) {
         if (!empty($types) && !empty($params)) {
-            mysqli_stmt_bind_param($stmt, $types, ...$params);
+            mysqliBindParams($stmt, $types, $params);
         }
         
         if (mysqli_stmt_execute($stmt)) {
@@ -67,22 +71,30 @@ try {
     $employee_names = array_unique($employee_names);
     sort($employee_names);
     
+    // Ensure no stray output corrupts JSON
+    if (ob_get_length()) {
+        ob_clean();
+    }
+
     echo json_encode([
         'success' => true,
         'data' => $employee_names,
         'count' => count($employee_names)
     ]);
     
-} catch (Exception $e) {
+} catch (Throwable $e) {
     error_log("Error fetching employee names: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Failed to fetch employee names: ' . $e->getMessage()
-    ]);
+    if (ob_get_length()) {
+        ob_clean();
+    }
+    handleException($e, 'leave_fetch_employee_names');
 } finally {
     if (isset($conn)) {
         mysqli_close($conn);
+    }
+    if (ob_get_level()) {
+        ob_end_flush();
     }
 }
 ?>

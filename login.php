@@ -18,6 +18,9 @@ if(isLoggedIn()) {
     redirectToDashboard();
 }
 
+// Generate CSRF token for login forms
+generateCsrfToken();
+
 // Define variables and initialize with empty values
 $username = $password = "";
 $username_err = $password_err = $login_err = "";
@@ -28,8 +31,13 @@ $reset_login_success = "";
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     
+    // Validate CSRF token
+    $csrf_token = $_POST['csrf_token'] ?? '';
+    if (!validateCsrfToken($csrf_token)) {
+        $login_err = "Invalid request. Please refresh the page and try again.";
+    }
     // Check if this is a password reset request
-    if(isset($_POST["reset_password"])) {
+    else if(isset($_POST["reset_password"])) {
         // Validate username and email
         if(empty($_POST["reset_username"])) {
             $login_err = "Please enter username for password reset.";
@@ -424,6 +432,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="tab-content mt-3" id="loginTabsContent">
                             <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
                                 <form id="loginForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                                    <?php echo csrfTokenField(); ?>
                                     <div class="form-group">
                                         <label>Username</label>
                                         <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>" placeholder="Enter your username">
@@ -452,6 +461,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             <div class="tab-pane fade" id="forgot" role="tabpanel" aria-labelledby="forgot-tab">
                                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                                    <?php echo csrfTokenField(); ?>
                                     <div class="form-group">
                                         <label>Username</label>
                                         <input type="text" name="reset_username" class="form-control" placeholder="Enter your username" required>

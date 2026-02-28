@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_checklist_task'
             
             if (isAdmin()) {
                 // Admin can assign to all users
-                $users_query = "SELECT id, username, name, manager_id FROM users WHERE Status = 'Active' ORDER BY username";
+                $users_query = "SELECT id, username, name, manager_id FROM users WHERE Status = 'Active' AND user_type != 'client' ORDER BY username";
                 $users_result = mysqli_query($conn, $users_query);
                 if ($users_result) {
                     while ($row = mysqli_fetch_assoc($users_result)) {
@@ -417,7 +417,7 @@ if (isAdmin()) {
     $sql = "SELECT u.id, u.username, u.name, u.email, u.user_type, u.manager, u.manager_id, d.name AS department_name 
             FROM users u 
             LEFT JOIN departments d ON u.department_id = d.id 
-            WHERE u.Status = 'Active'
+            WHERE u.Status = 'Active' AND u.user_type != 'client'
             ORDER BY u.username ASC";
     $result = mysqli_query($conn, $sql);
     if ($result) {
@@ -497,7 +497,7 @@ if (empty($all_users)) {
     $fallback_sql = "SELECT u.id, u.username, u.name, u.email, u.user_type, u.manager, d.name AS department_name 
                      FROM users u 
                      LEFT JOIN departments d ON u.department_id = d.id 
-                     WHERE u.Status = 'Active'
+                     WHERE u.Status = 'Active' AND u.user_type != 'client'
                      ORDER BY u.username ASC";
     $fallback_result = mysqli_query($conn, $fallback_sql);
     if ($fallback_result) {
@@ -785,7 +785,7 @@ if ($stmt_select = mysqli_prepare($conn, $sql_select_subtasks)) {
     mysqli_stmt_close($stmt_select);
 } else {
     if (empty($error_msg_create) && empty($error_msg)) { // Avoid overwriting other errors
-         $error_msg = "Error fetching checklist subtasks: " . mysqli_error($conn);
+         error_log("[DB Error] " . mysqli_error($conn)); $error_msg = "A database error occurred. Please try again.";
     }
 }
 
@@ -3768,4 +3768,4 @@ $duration_options = [
     </div> <!-- End checklist-tasks-page -->
     </div>
 </body>
-</html>   
+</html>

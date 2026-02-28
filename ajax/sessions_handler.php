@@ -5,9 +5,11 @@ require_once "../includes/functions.php";
 
 // Check if user is logged in and is admin
 if (!isLoggedIn() || !isAdmin()) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
@@ -30,7 +32,7 @@ try {
             break;
     }
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Server error: ' . $e->getMessage()]);
+    handleException($e, 'sessions_handler');
 }
 
 /**
@@ -163,7 +165,7 @@ function getSessions() {
             'current_page' => $page
         ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Database error: ' . mysqli_error($conn)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/sessions_handler.php');
     }
 }
 
@@ -296,6 +298,9 @@ function getUsers() {
     ]);
     exit;
 }
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}
 ?>
-
-

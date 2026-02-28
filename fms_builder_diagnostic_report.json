@@ -1,0 +1,301 @@
+{
+    "generated_at": "2026-02-26T17:12:24+05:30",
+    "project_root": "C:\\xampp\\htdocs\\app-v8.3",
+    "summary": {
+        "total": 38,
+        "passed": 38,
+        "failed": 0,
+        "warnings": 0,
+        "elapsed_ms": 606
+    },
+    "results": [
+        {
+            "name": "File exists: pages\/fms_builder.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: includes\/sidebar.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: ajax\/fms_flow_handler.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: ajax\/fms_execution_handler.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: ajax\/fms_form_handler.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: fms-flow-builder\/src\/App.jsx",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: fms-flow-builder\/src\/components\/TopBar.jsx",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: fms-flow-builder\/src\/components\/ExecutionsPanel.jsx",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: fms-flow-builder\/src\/components\/TestsPanel.jsx",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: fms-flow-builder\/src\/services\/executionApi.js",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "File exists: fms-flow-builder\/src\/services\/formApi.js",
+            "status": "pass",
+            "severity": "info",
+            "details": "Found",
+            "meta": []
+        },
+        {
+            "name": "PHP lint runner",
+            "status": "pass",
+            "severity": "info",
+            "details": "Using PHP CLI binary: C:\\xampp\\php\\php.exe",
+            "meta": []
+        },
+        {
+            "name": "PHP lint: pages\/fms_builder.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "No syntax errors detected in C:\\xampp\\htdocs\\app-v8.3\\pages\\fms_builder.php",
+            "meta": {
+                "exit_code": 0
+            }
+        },
+        {
+            "name": "PHP lint: includes\/sidebar.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "No syntax errors detected in C:\\xampp\\htdocs\\app-v8.3\\includes\\sidebar.php",
+            "meta": {
+                "exit_code": 0
+            }
+        },
+        {
+            "name": "PHP lint: ajax\/fms_flow_handler.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "No syntax errors detected in C:\\xampp\\htdocs\\app-v8.3\\ajax\\fms_flow_handler.php",
+            "meta": {
+                "exit_code": 0
+            }
+        },
+        {
+            "name": "PHP lint: ajax\/fms_execution_handler.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "No syntax errors detected in C:\\xampp\\htdocs\\app-v8.3\\ajax\\fms_execution_handler.php",
+            "meta": {
+                "exit_code": 0
+            }
+        },
+        {
+            "name": "PHP lint: ajax\/fms_form_handler.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "No syntax errors detected in C:\\xampp\\htdocs\\app-v8.3\\ajax\\fms_form_handler.php",
+            "meta": {
+                "exit_code": 0
+            }
+        },
+        {
+            "name": "Full-view support in fms_builder.php",
+            "status": "pass",
+            "severity": "info",
+            "details": "All expected markers found.",
+            "meta": []
+        },
+        {
+            "name": "TopBar dropdown z-index hardening",
+            "status": "pass",
+            "severity": "info",
+            "details": "All expected markers found.",
+            "meta": []
+        },
+        {
+            "name": "App.jsx wired with Executions\/Tests",
+            "status": "pass",
+            "severity": "info",
+            "details": "All expected markers found.",
+            "meta": []
+        },
+        {
+            "name": "Sidebar keeps single FMS Builder navigation",
+            "status": "pass",
+            "severity": "info",
+            "details": "All expected markers found.",
+            "meta": []
+        },
+        {
+            "name": "Old FMS submenu removed",
+            "status": "pass",
+            "severity": "info",
+            "details": "Legacy FMS suite submenu not found.",
+            "meta": []
+        },
+        {
+            "name": "Build asset: fms-flow-builder\/dist\/assets\/fms-builder.js",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": {
+                "bytes": 418277
+            }
+        },
+        {
+            "name": "Build asset: fms-flow-builder\/dist\/assets\/fms-builder.css",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": {
+                "bytes": 21075
+            }
+        },
+        {
+            "name": "Database connection",
+            "status": "pass",
+            "severity": "info",
+            "details": "Connected",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flows",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flow_nodes",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flow_edges",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flow_versions",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flow_forms",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flow_form_fields",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flow_form_step_map",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flow_runs",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB table exists: fms_flow_run_steps",
+            "status": "pass",
+            "severity": "info",
+            "details": "Present",
+            "meta": []
+        },
+        {
+            "name": "DB metric: fms_flows",
+            "status": "pass",
+            "severity": "info",
+            "details": "Row count collected",
+            "meta": {
+                "count": 1
+            }
+        },
+        {
+            "name": "DB metric: fms_flow_forms",
+            "status": "pass",
+            "severity": "info",
+            "details": "Row count collected",
+            "meta": {
+                "count": 1
+            }
+        },
+        {
+            "name": "DB metric: fms_flow_runs",
+            "status": "pass",
+            "severity": "info",
+            "details": "Row count collected",
+            "meta": {
+                "count": 0
+            }
+        },
+        {
+            "name": "DB metric: fms_flow_run_steps",
+            "status": "pass",
+            "severity": "info",
+            "details": "Row count collected",
+            "meta": {
+                "count": 0
+            }
+        }
+    ]
+}

@@ -10,21 +10,21 @@ require_once '../includes/functions.php';
 // Check if user is admin
 if (!isAdmin()) {
     http_response_code(403);
-    echo json_encode(['status' => 'error', 'message' => 'Access denied']);
-    exit;
+    jsonError('Access denied', 403);
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
-    exit;
+    jsonError('Method not allowed', 405);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $request_id = $_POST['request_id'] ?? null;
 
 if (!$request_id) {
-    echo json_encode(['status' => 'error', 'message' => 'Request ID is required']);
-    exit;
+    jsonError('Request ID is required', 400);
 }
 
 // Update the password reset request status to rejected
@@ -58,11 +58,16 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
             echo json_encode(['status' => 'error', 'message' => 'Request not found or already processed']);
         }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . mysqli_stmt_error($stmt)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/reject_password_reset.php');
     }
     
     mysqli_stmt_close($stmt);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Database error: ' . mysqli_error($conn)]);
+    handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/reject_password_reset.php');
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>

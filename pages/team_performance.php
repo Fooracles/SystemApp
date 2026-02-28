@@ -177,6 +177,8 @@ if($target_user && !empty($target_user['department_id'])) {
         </div>
     </div>
 
+    <p class="text-center text-muted small fst-italic" style="margin: 1rem 1.5rem 0 1.5rem;">Weekly Performance is Frozen Every Sunday at Midnight.<br>Ensure all pending tasks are marked as Done On-time.</p>
+
     <!-- Graph Section -->
     <div class="graph-section">
         <div class="graph-header">
@@ -872,92 +874,11 @@ if($target_user && !empty($target_user['department_id'])) {
 <script>
 // Global variables
 let currentUsername = '<?php echo !empty($target_username) ? htmlspecialchars($target_username, ENT_QUOTES) : ""; ?>';
-let currentDateRange = { type: 'last_week', fromDate: null, toDate: null };
+let currentWeeks = 1;
+let currentRangeType = 'last_week';
 let accessibleUsers = [];
 let performanceChart = null;
 let currentPerformanceData = null;
-
-// Helper function to get Monday of a given week
-function getMondayOfWeek(date) {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    const monday = new Date(d);
-    monday.setDate(diff);
-    return monday;
-}
-
-// Helper function to format date in local timezone as YYYY-MM-DD
-function formatDateLocal(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-// Calculate date range based on time range type
-function calculateDateRange(rangeType) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const thisWeekMonday = getMondayOfWeek(today);
-    
-    let fromDate, toDate;
-    
-    switch(rangeType) {
-        case 'last_week':
-            const lastWeekMonday = new Date(thisWeekMonday);
-            lastWeekMonday.setDate(thisWeekMonday.getDate() - 7);
-            toDate = new Date(lastWeekMonday);
-            toDate.setDate(lastWeekMonday.getDate() + 6);
-            fromDate = lastWeekMonday;
-            break;
-        case '2w':
-            const twoWeeksAgoMonday = new Date(thisWeekMonday);
-            twoWeeksAgoMonday.setDate(thisWeekMonday.getDate() - 14);
-            const lastWeekSunday2w = new Date(thisWeekMonday);
-            lastWeekSunday2w.setDate(thisWeekMonday.getDate() - 1);
-            fromDate = twoWeeksAgoMonday;
-            toDate = lastWeekSunday2w;
-            break;
-        case '4w':
-            const fourWeeksAgoMonday = new Date(thisWeekMonday);
-            fourWeeksAgoMonday.setDate(thisWeekMonday.getDate() - 28);
-            const lastWeekSunday = new Date(thisWeekMonday);
-            lastWeekSunday.setDate(thisWeekMonday.getDate() - 1);
-            fromDate = fourWeeksAgoMonday;
-            toDate = lastWeekSunday;
-            break;
-        case '8w':
-            const eightWeeksAgoMonday = new Date(thisWeekMonday);
-            eightWeeksAgoMonday.setDate(thisWeekMonday.getDate() - 56);
-            const lastWeekSunday8w = new Date(thisWeekMonday);
-            lastWeekSunday8w.setDate(thisWeekMonday.getDate() - 1);
-            fromDate = eightWeeksAgoMonday;
-            toDate = lastWeekSunday8w;
-            break;
-        case '12w':
-            const twelveWeeksAgoMonday = new Date(thisWeekMonday);
-            twelveWeeksAgoMonday.setDate(thisWeekMonday.getDate() - 84);
-            const lastWeekSunday12w = new Date(thisWeekMonday);
-            lastWeekSunday12w.setDate(thisWeekMonday.getDate() - 1);
-            fromDate = twelveWeeksAgoMonday;
-            toDate = lastWeekSunday12w;
-            break;
-        default:
-            // Default to last week
-            const defaultLastWeekMonday = new Date(thisWeekMonday);
-            defaultLastWeekMonday.setDate(thisWeekMonday.getDate() - 7);
-            toDate = new Date(defaultLastWeekMonday);
-            toDate.setDate(defaultLastWeekMonday.getDate() + 6);
-            fromDate = defaultLastWeekMonday;
-    }
-    
-    return {
-        from: formatDateLocal(fromDate),
-        to: formatDateLocal(toDate)
-    };
-}
 
 // Get time range label
 function getTimeRangeLabel(rangeType) {
@@ -1022,10 +943,21 @@ function initializeTimeRangeSelector() {
             this.classList.add('active');
             
             const range = this.getAttribute('data-range');
-            currentDateRange.type = range;
-            currentDateRange.fromDate = null;
-            currentDateRange.toDate = null;
-            
+            currentRangeType = range;
+            switch(range) {
+                case 'last_week': currentWeeks = 1;  break;
+                case '2w':        currentWeeks = 2;  break;
+                case '4w':        currentWeeks = 4;  break;
+                case '8w':        currentWeeks = 8;  break;
+                case '12w':       currentWeeks = 12; break;
+                default:          currentWeeks = 1;
+            }
+
+            if (!currentUsername) {
+                showEmptyState();
+                return;
+            }
+
             loadUserPerformance();
         });
     });
@@ -1060,9 +992,14 @@ function initializeUserSelector() {
                     <?php endif; ?>
                 }
             }
+            else {
+                accessibleUsers = [];
+                populateUserSelector();
+            }
         })
         .catch(error => {
-            console.error('Error loading users:', error);
+            accessibleUsers = [];
+            populateUserSelector();
         });
     
     // Handle user selection change - load data instantly
@@ -1075,6 +1012,9 @@ function initializeUserSelector() {
             // Load performance data instantly
             loadUserPerformance();
         } else {
+            currentUsername = '';
+            // Remove username from URL without reload
+            window.history.pushState({}, '', 'team_performance.php');
             showEmptyState();
         }
     });
@@ -1133,13 +1073,7 @@ function showEmptyState() {
     const headerDateRange = document.getElementById('headerDateRange');
     if (headerUsername) headerUsername.textContent = 'Select User';
     if (headerScore) headerScore.textContent = '0%';
-    
-    // Show date range even when no user is selected
-    if (headerDateRange) {
-        const dateRange = calculateDateRange(currentDateRange.type);
-        const dateRangeText = formatDateRange(dateRange.from, dateRange.to);
-        headerDateRange.textContent = dateRangeText;
-    }
+    if (headerDateRange) headerDateRange.textContent = '';
     
     // Clear graph
     if (performanceChart) {
@@ -1178,16 +1112,15 @@ function initializeGraphToggle() {
 // Load user performance data
 async function loadUserPerformance() {
     try {
+        if (!currentUsername) {
+            showEmptyState();
+            return;
+        }
+
         showLoadingState();
         
-        // Calculate date range
-        const dateRange = calculateDateRange(currentDateRange.type);
-        currentDateRange.fromDate = dateRange.from;
-        currentDateRange.toDate = dateRange.to;
-        
-        // Build URL
-        let url = `../ajax/team_performance_data.php?username=${encodeURIComponent(currentUsername)}`;
-            url += `&date_from=${currentDateRange.fromDate}&date_to=${currentDateRange.toDate}`;
+        // Build URL — fetch from frozen snapshots only
+        let url = `../ajax/team_performance_data.php?username=${encodeURIComponent(currentUsername)}&weeks=${currentWeeks}`;
         
         const response = await fetch(url);
         const result = await response.json();
@@ -1199,7 +1132,6 @@ async function loadUserPerformance() {
             showErrorState(result.error || 'Failed to load performance data');
         }
     } catch (error) {
-        console.error('Error loading user performance:', error);
         showErrorState('Error loading performance data. Please try again later.');
     }
 }
@@ -1237,22 +1169,18 @@ function displayPerformanceData(data) {
     const wnd = stats.wnd || 0;
     const wndOnTime = stats.wnd_on_time || 0;
     
-    // Calculate Performance Rate (same logic as leaderboard)
-    const wndScore = wnd !== null && wnd != 0 ? 100 - Math.abs(wnd) : null;
-    const wndOnTimeScore = wndOnTime !== null && wndOnTime != 0 ? 100 - Math.abs(wndOnTime) : null;
+    // Convert WND and WNDOT to positive scores (always included, even when 0 → 100)
+    const convertedWnd = 100 - Math.abs(wnd);
+    const convertedWndot = 100 - Math.abs(wndOnTime);
     const rqcValid = (rqcScore !== null && rqcScore > 0);
     
-    const availableScores = [];
-    if (rqcValid) availableScores.push(rqcScore);
-    if (wndScore !== null) availableScores.push(wndScore);
-    if (wndOnTimeScore !== null) availableScores.push(wndOnTimeScore);
+    // Performance Score: with RQC → /3, without RQC → /2
+    const performanceScore = rqcValid
+        ? (convertedWnd + convertedWndot + rqcScore) / 3
+        : (convertedWnd + convertedWndot) / 2;
     
-    const performanceScore = availableScores.length > 0 
-        ? availableScores.reduce((a, b) => a + b, 0) / availableScores.length 
-        : 0;
-    
-    // Update header
-    updateHeader(user.name, currentDateRange.type, performanceScore);
+    // Update header (date range comes from the backend snapshot data)
+    updateHeader(user.name, currentRangeType, performanceScore, data.date_range);
     
     // Display stat cards
     displayStatCards(stats, wnd, wndOnTime, rqcScore);
@@ -1262,7 +1190,7 @@ function displayPerformanceData(data) {
 }
 
 // Update header
-function updateHeader(username, timeRange, score) {
+function updateHeader(username, timeRange, score, dateRange) {
     const headerUsername = document.getElementById('headerUsername');
     const headerTimeRange = document.getElementById('headerTimeRange');
     const headerScore = document.getElementById('headerScore');
@@ -1272,15 +1200,11 @@ function updateHeader(username, timeRange, score) {
     if (headerTimeRange) headerTimeRange.textContent = getTimeRangeLabel(timeRange);
     if (headerScore) headerScore.textContent = score.toFixed(1) + '%';
     
-    // Update date range display
-    if (headerDateRange && currentDateRange.fromDate && currentDateRange.toDate) {
-        const dateRangeText = formatDateRange(currentDateRange.fromDate, currentDateRange.toDate);
-        headerDateRange.textContent = dateRangeText;
+    // Date range comes from frozen snapshot data (earliest week_start → latest week_end)
+    if (headerDateRange && dateRange && dateRange.from && dateRange.to) {
+        headerDateRange.textContent = formatDateRange(dateRange.from, dateRange.to);
     } else if (headerDateRange) {
-        // Calculate date range if not already set
-        const dateRange = calculateDateRange(timeRange);
-        const dateRangeText = formatDateRange(dateRange.from, dateRange.to);
-        headerDateRange.textContent = dateRangeText;
+        headerDateRange.textContent = '';
     }
 }
 
@@ -1361,6 +1285,34 @@ function displayStatCards(stats, wnd, wndOnTime, rqcScore) {
             </div>
         </div>
     `;
+    
+    // Apply color-coded glow to WND and WND on Time cards
+    applyWndGlow('wnd', wnd);
+    applyWndGlow('wnd_on_time', wndOnTime);
+}
+
+// Color Coding Logic for WND & WNDOT cards
+// Values are negative: <= -20.6% → RED, -20.5% to -10.6% → ORANGE, > -10% → GREY (default)
+function applyWndGlow(statType, value) {
+    const card = document.querySelector(`.stat-card[data-stat="${statType}"]`);
+    if (!card) return;
+    
+    // Remove existing glow classes
+    card.classList.remove('orange-glow', 'red-glow');
+    
+    // Parse value to number
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return;
+    
+    // Apply glow based on value thresholds
+    // If value <= -20.6%: RED glow
+    // If value between -20.5% and -10.6%: ORANGE glow
+    // Otherwise (> -10%): no glow (default GREY)
+    if (numValue <= -20.6) {
+        card.classList.add('red-glow');
+    } else if (numValue <= -10.6 && numValue >= -20.5) {
+        card.classList.add('orange-glow');
+    }
 }
 
 // Update graph
@@ -1561,4 +1513,5 @@ style.textContent = `
 document.head.appendChild(style);
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once "../includes/footer.php";
+?>

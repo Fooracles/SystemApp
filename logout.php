@@ -13,7 +13,12 @@ if (isLoggedIn() && isset($_SESSION["username"])) {
 // Destroy the session
 session_destroy();
  
+// Close database connection before redirecting
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}
+
 // Redirect to login page
 header("location: login.php");
 exit;
-?> 
+?>

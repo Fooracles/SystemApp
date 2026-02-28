@@ -90,15 +90,19 @@ function triggerMeetingRescheduledNotification($conn, $meeting_id, $user_id, $ne
 }
 
 /**
- * Create notification for day special events (birthdays, work anniversaries)
+ * Create notification for day special events (birthdays, work anniversaries, joining)
+ * Notifications are scoped by user group: no cross-group delivery.
+ * - Staff group (admin, manager, doer): receive these events for other staff (not clients).
+ * - Clients: do NOT receive notifications about others' events; they only get congratulations
+ *   on their OWN joining, work anniversary, and birthday.
+ * Task, ticket, and report-update notifications are unchanged and not affected.
  */
 function triggerDaySpecialNotifications($conn) {
     $today = date('m-d');
     $year = date('Y');
     
-    // Get all users with birthdays or work anniversaries today
-    // Cast DATE_FORMAT to ensure consistent collation for comparison
-    $query = "SELECT id, name, date_of_birth, joining_date FROM users WHERE 
+    // Get all users with birthdays or work anniversaries today, including user_type for scoping
+    $query = "SELECT id, name, date_of_birth, joining_date, user_type FROM users WHERE 
               (CAST(DATE_FORMAT(date_of_birth, '%m-%d') AS CHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci) = ? AND date_of_birth IS NOT NULL) OR
               (CAST(DATE_FORMAT(joining_date, '%m-%d') AS CHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci) = ? AND joining_date IS NOT NULL)";
     $stmt = mysqli_prepare($conn, $query);
@@ -115,56 +119,94 @@ function triggerDaySpecialNotifications($conn) {
         return;
     }
     
-    // Get all user IDs to notify
-    $all_users_query = "SELECT id FROM users";
-    $all_users_result = mysqli_query($conn, $all_users_query);
-    $all_user_ids = [];
-    while ($user = mysqli_fetch_assoc($all_users_result)) {
-        $all_user_ids[] = $user['id'];
+    // Pre-fetch staff recipient IDs (only staff get notifications about other staff events)
+    $staff_user_ids = [];
+    $staff_result = mysqli_query($conn, "SELECT id FROM users WHERE user_type IN ('admin', 'manager', 'doer')");
+    if ($staff_result) {
+        while ($row = mysqli_fetch_assoc($staff_result)) {
+            $staff_user_ids[] = $row['id'];
+        }
     }
     
-    // Create notifications for each special event
     // Use a flag file to ensure we only run once per day
     $flag_file = sys_get_temp_dir() . '/day_special_notifications_' . date('Y-m-d') . '.flag';
     
-    // Check if we've already run today
     if (file_exists($flag_file)) {
         return; // Already processed today
     }
     
     foreach ($special_users as $special_user) {
+        $subject_is_client = ($special_user['user_type'] === 'client');
         $is_birthday = ($special_user['date_of_birth'] && date('m-d', strtotime($special_user['date_of_birth'])) === $today);
         $is_anniversary = ($special_user['joining_date'] && date('m-d', strtotime($special_user['joining_date'])) === $today);
         
-        foreach ($all_user_ids as $user_id) {
+        if ($subject_is_client) {
+            // Clients only get congratulations on their OWN events (no notifications about other clients)
+            $recipient_id = (int) $special_user['id'];
             if ($is_birthday) {
-                // createNotification will check for duplicates internally
                 createNotification(
                     $conn,
-                    $user_id,
+                    $recipient_id,
                     'day_special',
-                    'Birthday Today 🎉',
-                    "Today is {$special_user['name']}'s Birthday 🎉",
+                    'Happy Birthday! 🎉',
+                    "Wishing you a wonderful birthday, {$special_user['name']}!",
                     $special_user['id'],
                     'user',
                     false,
                     null
                 );
             }
-            
             if ($is_anniversary) {
                 $years = $year - date('Y', strtotime($special_user['joining_date']));
-                // createNotification will check for duplicates internally
-                
-                // Handle 0 year anniversary with a welcoming message
+                if ($years == 0) {
+                    $anniversary_message = "Welcome, {$special_user['name']}! Today marks your first day with us. We're excited to have you on board!";
+                    $anniversary_title = 'Welcome! 🎉';
+                } else {
+                    $anniversary_message = "Congratulations on your {$years} year" . ($years > 1 ? 's' : '') . " with us! Happy Work Anniversary, {$special_user['name']}!";
+                    $anniversary_title = 'Happy Work Anniversary! 🎉';
+                }
+                createNotification(
+                    $conn,
+                    $recipient_id,
+                    'day_special',
+                    $anniversary_title,
+                    $anniversary_message,
+                    $special_user['id'],
+                    'user',
+                    false,
+                    null
+                );
+            }
+            continue;
+        }
+        
+        // Staff: notify all staff about this staff member's events
+        if (empty($staff_user_ids)) {
+            continue;
+        }
+        foreach ($staff_user_ids as $user_id) {
+            if ($is_birthday) {
+                createNotification(
+                    $conn,
+                    $user_id,
+                    'day_special',
+                    'Birthday Today 🎉',
+                    "Today is {$special_user['name']}'s Birthday",
+                    $special_user['id'],
+                    'user',
+                    false,
+                    null
+                );
+            }
+            if ($is_anniversary) {
+                $years = $year - date('Y', strtotime($special_user['joining_date']));
                 if ($years == 0) {
                     $anniversary_message = "Welcome {$special_user['name']}! 🎉 Today marks your first day with us. We're excited to have you on board!";
                     $anniversary_title = 'Welcome! 🎉';
                 } else {
-                    $anniversary_message = "Today is {$special_user['name']}'s Work Anniversary 🎉 ({$years} year" . ($years > 1 ? 's' : '') . ")";
+                    $anniversary_message = "Today is {$special_user['name']}'s Work Anniversary ({$years} year" . ($years > 1 ? 's' : '') . ")";
                     $anniversary_title = 'Work Anniversary 🎉';
                 }
-                
                 createNotification(
                     $conn,
                     $user_id,
@@ -180,7 +222,6 @@ function triggerDaySpecialNotifications($conn) {
         }
     }
     
-    // Create flag file to mark that we've processed today
     file_put_contents($flag_file, date('Y-m-d H:i:s'));
 }
 
@@ -735,5 +776,377 @@ function checkOverdueChecklistTasks($conn) {
     if (!empty($errors)) {
         error_log("Errors while checking overdue checklist tasks: " . implode('; ', $errors));
     }
+}
+
+/**
+ * Create notification for client users when manager/admin creates an update for them
+ */
+function triggerClientUpdateNotification($conn, $update_id, $client_user_id, $title, $created_by_name) {
+    if (!$client_user_id || $client_user_id <= 0) {
+        return false;
+    }
+    
+    // Verify client user exists
+    $user_check = "SELECT id, name FROM users WHERE id = ? AND user_type = 'client'";
+    $user_stmt = mysqli_prepare($conn, $user_check);
+    if (!$user_stmt) {
+        error_log("Failed to prepare user check query: " . mysqli_error($conn));
+        return false;
+    }
+    
+    mysqli_stmt_bind_param($user_stmt, 'i', $client_user_id);
+    mysqli_stmt_execute($user_stmt);
+    $user_result = mysqli_stmt_get_result($user_stmt);
+    $client_user = mysqli_fetch_assoc($user_result);
+    mysqli_stmt_close($user_stmt);
+    
+    if (!$client_user) {
+        error_log("Client user not found: {$client_user_id}");
+        return false;
+    }
+    
+    $notification_title = "New Update from {$created_by_name}";
+    $notification_message = "You have a new update: {$title}";
+    
+    return createNotification(
+        $conn,
+        $client_user_id,
+        'client_update',
+        $notification_title,
+        $notification_message,
+        (string)$update_id,
+        'update',
+        false,
+        null
+    );
+}
+
+/**
+ * Create notification for client users when manager/admin creates a requirement for them
+ */
+function triggerClientRequirementNotification($conn, $requirement_id, $client_user_id, $title, $created_by_name) {
+    if (!$client_user_id || $client_user_id <= 0) {
+        return false;
+    }
+    
+    // Verify client user exists
+    $user_check = "SELECT id, name FROM users WHERE id = ? AND user_type = 'client'";
+    $user_stmt = mysqli_prepare($conn, $user_check);
+    if (!$user_stmt) {
+        error_log("Failed to prepare user check query: " . mysqli_error($conn));
+        return false;
+    }
+    
+    mysqli_stmt_bind_param($user_stmt, 'i', $client_user_id);
+    mysqli_stmt_execute($user_stmt);
+    $user_result = mysqli_stmt_get_result($user_stmt);
+    $client_user = mysqli_fetch_assoc($user_result);
+    mysqli_stmt_close($user_stmt);
+    
+    if (!$client_user) {
+        error_log("Client user not found: {$client_user_id}");
+        return false;
+    }
+    
+    $notification_title = "New Requirement from {$created_by_name}";
+    $notification_message = "You have a new requirement: {$title}";
+    
+    return createNotification(
+        $conn,
+        $client_user_id,
+        'client_requirement',
+        $notification_title,
+        $notification_message,
+        (string)$requirement_id,
+        'requirement',
+        false,
+        null
+    );
+}
+
+/**
+ * Create notification for client users when manager/admin uploads a report for them
+ */
+function triggerClientReportNotification($conn, $report_id, $client_user_id, $title, $created_by_name) {
+    if (!$client_user_id || $client_user_id <= 0) {
+        return false;
+    }
+    
+    // Verify client user exists
+    $user_check = "SELECT id, name FROM users WHERE id = ? AND user_type = 'client'";
+    $user_stmt = mysqli_prepare($conn, $user_check);
+    if (!$user_stmt) {
+        error_log("Failed to prepare user check query: " . mysqli_error($conn));
+        return false;
+    }
+    
+    mysqli_stmt_bind_param($user_stmt, 'i', $client_user_id);
+    mysqli_stmt_execute($user_stmt);
+    $user_result = mysqli_stmt_get_result($user_stmt);
+    $client_user = mysqli_fetch_assoc($user_result);
+    mysqli_stmt_close($user_stmt);
+    
+    if (!$client_user) {
+        error_log("Client user not found: {$client_user_id}");
+        return false;
+    }
+    
+    $notification_title = "New Report from {$created_by_name}";
+    $notification_message = "A new report has been shared with you: {$title}";
+    
+    return createNotification(
+        $conn,
+        $client_user_id,
+        'client_report',
+        $notification_title,
+        $notification_message,
+        (string)$report_id,
+        'report',
+        false,
+        null
+    );
+}
+
+/**
+ * Notify admin and manager when client user creates a ticket
+ */
+function triggerClientTicketNotification($conn, $ticket_id, $client_user_id, $title, $client_name) {
+    $notifications_created = 0;
+    
+    // Get all admin user IDs
+    $admin_query = "SELECT id FROM users WHERE user_type = 'admin'";
+    $admin_result = mysqli_query($conn, $admin_query);
+    
+    while ($admin = mysqli_fetch_assoc($admin_result)) {
+        $notification_id = createNotification(
+            $conn,
+            $admin['id'],
+            'client_ticket',
+            "New Ticket from {$client_name}",
+            "Client {$client_name} has raised a new ticket: {$title}",
+            (string)$ticket_id,
+            'ticket',
+            false,
+            null
+        );
+        if ($notification_id) {
+            $notifications_created++;
+        }
+    }
+    
+    // Get manager assigned to this client user's account
+    // Client user -> manager_id points to client account
+    // Client account -> manager_id points to manager
+    $client_user_sql = "SELECT manager_id FROM users WHERE id = ? AND user_type = 'client'";
+    $client_user_stmt = mysqli_prepare($conn, $client_user_sql);
+    if ($client_user_stmt) {
+        mysqli_stmt_bind_param($client_user_stmt, 'i', $client_user_id);
+        mysqli_stmt_execute($client_user_stmt);
+        $client_user_result = mysqli_stmt_get_result($client_user_stmt);
+        if ($client_user_row = mysqli_fetch_assoc($client_user_result)) {
+            $client_account_id = $client_user_row['manager_id'];
+            
+            if ($client_account_id) {
+                // Get manager_id from client account
+                $account_sql = "SELECT manager_id FROM users WHERE id = ? AND user_type = 'client' AND (password IS NULL OR password = '')";
+                $account_stmt = mysqli_prepare($conn, $account_sql);
+                if ($account_stmt) {
+                    mysqli_stmt_bind_param($account_stmt, 'i', $client_account_id);
+                    mysqli_stmt_execute($account_stmt);
+                    $account_result = mysqli_stmt_get_result($account_stmt);
+                    if ($account_row = mysqli_fetch_assoc($account_result)) {
+                        $manager_id = $account_row['manager_id'];
+                        
+                        if ($manager_id) {
+                            // Verify manager exists
+                            $manager_check_sql = "SELECT id FROM users WHERE id = ? AND user_type = 'manager'";
+                            $manager_check_stmt = mysqli_prepare($conn, $manager_check_sql);
+                            if ($manager_check_stmt) {
+                                mysqli_stmt_bind_param($manager_check_stmt, 'i', $manager_id);
+                                mysqli_stmt_execute($manager_check_stmt);
+                                $manager_check_result = mysqli_stmt_get_result($manager_check_stmt);
+                                if (mysqli_num_rows($manager_check_result) > 0) {
+                                    $notification_id = createNotification(
+                                        $conn,
+                                        $manager_id,
+                                        'client_ticket',
+                                        "New Ticket from {$client_name}",
+                                        "Client {$client_name} has raised a new ticket: {$title}",
+                                        (string)$ticket_id,
+                                        'ticket',
+                                        false,
+                                        null
+                                    );
+                                    if ($notification_id) {
+                                        $notifications_created++;
+                                    }
+                                }
+                                mysqli_stmt_close($manager_check_stmt);
+                            }
+                        }
+                    }
+                    mysqli_stmt_close($account_stmt);
+                }
+            }
+        }
+        mysqli_stmt_close($client_user_stmt);
+    }
+    
+    return $notifications_created;
+}
+
+/**
+ * Notify manager when client user creates a task
+ */
+function triggerClientTaskNotification($conn, $task_id, $client_user_id, $title, $client_name) {
+    $notifications_created = 0;
+    
+    // Get manager assigned to this client user's account
+    // Client user -> manager_id points to client account
+    // Client account -> manager_id points to manager
+    $client_user_sql = "SELECT manager_id FROM users WHERE id = ? AND user_type = 'client'";
+    $client_user_stmt = mysqli_prepare($conn, $client_user_sql);
+    if ($client_user_stmt) {
+        mysqli_stmt_bind_param($client_user_stmt, 'i', $client_user_id);
+        mysqli_stmt_execute($client_user_stmt);
+        $client_user_result = mysqli_stmt_get_result($client_user_stmt);
+        if ($client_user_row = mysqli_fetch_assoc($client_user_result)) {
+            $client_account_id = $client_user_row['manager_id'];
+            
+            if ($client_account_id) {
+                // Get manager_id from client account
+                $account_sql = "SELECT manager_id FROM users WHERE id = ? AND user_type = 'client' AND (password IS NULL OR password = '')";
+                $account_stmt = mysqli_prepare($conn, $account_sql);
+                if ($account_stmt) {
+                    mysqli_stmt_bind_param($account_stmt, 'i', $client_account_id);
+                    mysqli_stmt_execute($account_stmt);
+                    $account_result = mysqli_stmt_get_result($account_stmt);
+                    if ($account_row = mysqli_fetch_assoc($account_result)) {
+                        $manager_id = $account_row['manager_id'];
+                        
+                        if ($manager_id) {
+                            // Verify manager exists
+                            $manager_check_sql = "SELECT id FROM users WHERE id = ? AND user_type = 'manager'";
+                            $manager_check_stmt = mysqli_prepare($conn, $manager_check_sql);
+                            if ($manager_check_stmt) {
+                                mysqli_stmt_bind_param($manager_check_stmt, 'i', $manager_id);
+                                mysqli_stmt_execute($manager_check_stmt);
+                                $manager_check_result = mysqli_stmt_get_result($manager_check_stmt);
+                                if (mysqli_num_rows($manager_check_result) > 0) {
+                                    $notification_id = createNotification(
+                                        $conn,
+                                        $manager_id,
+                                        'client_task',
+                                        "New Task from {$client_name}",
+                                        "Client {$client_name} has created a new task: {$title}",
+                                        (string)$task_id,
+                                        'task',
+                                        false,
+                                        null
+                                    );
+                                    if ($notification_id) {
+                                        $notifications_created++;
+                                    }
+                                }
+                                mysqli_stmt_close($manager_check_stmt);
+                            }
+                        }
+                    }
+                    mysqli_stmt_close($account_stmt);
+                }
+            }
+        }
+        mysqli_stmt_close($client_user_stmt);
+    }
+    
+    return $notifications_created;
+}
+
+/**
+ * Notify admin and manager when client user creates an update
+ */
+function triggerClientUpdateCreatedNotification($conn, $update_id, $client_user_id, $title, $client_name) {
+    $notifications_created = 0;
+    
+    // Get all admin user IDs
+    $admin_query = "SELECT id FROM users WHERE user_type = 'admin'";
+    $admin_result = mysqli_query($conn, $admin_query);
+    
+    while ($admin = mysqli_fetch_assoc($admin_result)) {
+        $notification_id = createNotification(
+            $conn,
+            $admin['id'],
+            'client_update_created',
+            "New Update from {$client_name}",
+            "Client {$client_name} has added a new update: {$title}",
+            (string)$update_id,
+            'update',
+            false,
+            null
+        );
+        if ($notification_id) {
+            $notifications_created++;
+        }
+    }
+    
+    // Get manager assigned to this client user's account
+    // Client user -> manager_id points to client account
+    // Client account -> manager_id points to manager
+    $client_user_sql = "SELECT manager_id FROM users WHERE id = ? AND user_type = 'client'";
+    $client_user_stmt = mysqli_prepare($conn, $client_user_sql);
+    if ($client_user_stmt) {
+        mysqli_stmt_bind_param($client_user_stmt, 'i', $client_user_id);
+        mysqli_stmt_execute($client_user_stmt);
+        $client_user_result = mysqli_stmt_get_result($client_user_stmt);
+        if ($client_user_row = mysqli_fetch_assoc($client_user_result)) {
+            $client_account_id = $client_user_row['manager_id'];
+            
+            if ($client_account_id) {
+                // Get manager_id from client account
+                $account_sql = "SELECT manager_id FROM users WHERE id = ? AND user_type = 'client' AND (password IS NULL OR password = '')";
+                $account_stmt = mysqli_prepare($conn, $account_sql);
+                if ($account_stmt) {
+                    mysqli_stmt_bind_param($account_stmt, 'i', $client_account_id);
+                    mysqli_stmt_execute($account_stmt);
+                    $account_result = mysqli_stmt_get_result($account_stmt);
+                    if ($account_row = mysqli_fetch_assoc($account_result)) {
+                        $manager_id = $account_row['manager_id'];
+                        
+                        if ($manager_id) {
+                            // Verify manager exists
+                            $manager_check_sql = "SELECT id FROM users WHERE id = ? AND user_type = 'manager'";
+                            $manager_check_stmt = mysqli_prepare($conn, $manager_check_sql);
+                            if ($manager_check_stmt) {
+                                mysqli_stmt_bind_param($manager_check_stmt, 'i', $manager_id);
+                                mysqli_stmt_execute($manager_check_stmt);
+                                $manager_check_result = mysqli_stmt_get_result($manager_check_stmt);
+                                if (mysqli_num_rows($manager_check_result) > 0) {
+                                    $notification_id = createNotification(
+                                        $conn,
+                                        $manager_id,
+                                        'client_update_created',
+                                        "New Update from {$client_name}",
+                                        "Client {$client_name} has added a new update: {$title}",
+                                        (string)$update_id,
+                                        'update',
+                                        false,
+                                        null
+                                    );
+                                    if ($notification_id) {
+                                        $notifications_created++;
+                                    }
+                                }
+                                mysqli_stmt_close($manager_check_stmt);
+                            }
+                        }
+                    }
+                    mysqli_stmt_close($account_stmt);
+                }
+            }
+        }
+        mysqli_stmt_close($client_user_stmt);
+    }
+    
+    return $notifications_created;
 }
 

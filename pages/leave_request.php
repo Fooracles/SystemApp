@@ -167,7 +167,7 @@ $total_total_items = 0;
 // Count pending requests
 if ($stmt_count = mysqli_prepare($conn, $pending_sql_count)) {
     if (!empty($pending_types) && !empty($pending_params)) {
-        mysqli_stmt_bind_param($stmt_count, $pending_types, ...$pending_params);
+        mysqliBindParams($stmt_count, $pending_types, $pending_params);
     }
     if (mysqli_stmt_execute($stmt_count)) {
         $result_count = mysqli_stmt_get_result($stmt_count);
@@ -180,7 +180,7 @@ if ($stmt_count = mysqli_prepare($conn, $pending_sql_count)) {
 // Count total requests
 if ($stmt_count = mysqli_prepare($conn, $total_sql_count)) {
     if (!empty($total_types) && !empty($total_params)) {
-        mysqli_stmt_bind_param($stmt_count, $total_types, ...$total_params);
+        mysqliBindParams($stmt_count, $total_types, $total_params);
     }
     if (mysqli_stmt_execute($stmt_count)) {
         $result_count = mysqli_stmt_get_result($stmt_count);

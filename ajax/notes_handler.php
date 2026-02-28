@@ -6,9 +6,11 @@ require_once '../includes/functions.php';
 // Check if user is logged in
 if (!isLoggedIn()) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $user_id = $_SESSION['id'];
 $action = $_POST['action'] ?? '';
@@ -79,7 +81,7 @@ try {
     }
 } catch (Exception $e) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    handleException($e, 'notes_handler');
 }
 
 function createNote($conn, $user_id) {
@@ -96,7 +98,7 @@ function createNote($conn, $user_id) {
     $stmt = mysqli_prepare($conn, $sql);
     
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     $reminder_datetime = $reminder_date ? date('Y-m-d H:i:s', strtotime($reminder_date)) : null;
@@ -132,7 +134,7 @@ function updateNote($conn, $user_id) {
     $stmt = mysqli_prepare($conn, $sql);
     
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     $reminder_datetime = $reminder_date ? date('Y-m-d H:i:s', strtotime($reminder_date)) : null;
@@ -506,7 +508,7 @@ function checkReminders($conn, $user_id) {
     
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, "iss", $user_id, $now, $five_minutes_ago);
@@ -638,7 +640,7 @@ function getAllUsers($conn, $user_id) {
     // Get all users except the current user
     $sql = "SELECT id, name, email, user_type, department_id 
             FROM users 
-            WHERE id != ? 
+            WHERE id != ? AND Status = 'Active' AND user_type IN ('admin', 'manager', 'doer') 
             ORDER BY user_type, name";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $user_id);
@@ -726,5 +728,10 @@ function updateSharedNote($conn, $user_id) {
     mysqli_stmt_close($stmt);
     
     echo json_encode(['success' => true, 'message' => 'Note updated successfully']);
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>

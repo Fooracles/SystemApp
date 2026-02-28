@@ -71,11 +71,22 @@ if (!empty($user_name)) {
 }
 
 // Get leaderboard data (using function from dashboard_components.php)
-// The function is already included above, so we can call it directly
-// Non-admin users will only see top 3 + current user
-// Default to "This Week" - last 7 days
-$date_to = date('Y-m-d');
-$date_from = date('Y-m-d', strtotime('-7 days'));
+// Default to "Last Week" (Monday–Sunday) to match the default active toggle button
+$today_dt = new DateTime();
+$today_dt->setTime(0, 0, 0);
+$dayOfWeek = (int)$today_dt->format('N');
+$mondayOfThisWeek = clone $today_dt;
+if ($dayOfWeek == 7) {
+    $mondayOfThisWeek->modify('-6 days');
+} else {
+    $mondayOfThisWeek->modify('-' . ($dayOfWeek - 1) . ' days');
+}
+$lastWeekMonday = clone $mondayOfThisWeek;
+$lastWeekMonday->modify('-7 days');
+$lastWeekSunday = clone $lastWeekMonday;
+$lastWeekSunday->modify('+6 days');
+$date_from = $lastWeekMonday->format('Y-m-d');
+$date_to = $lastWeekSunday->format('Y-m-d');
 $is_admin = isAdmin();
 $leaderboard_data = getLeaderboardData($conn, 0, null, $date_from, $date_to, $is_admin);
     
@@ -1527,10 +1538,7 @@ function initializeLeaderboard() {
             <div class="user-info">
                 <div class="user-avatar-wrapper">
                     <div class="user-avatar">
-                        <img src="../assets/uploads/profile_photos/user_${user.id}.png" 
-                             alt="${user.name}" 
-                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="avatar-initials" style="display: none;">${initials}</div>
+                        <div class="avatar-initials" style="display: flex;">${initials}</div>
                     </div>
                 </div>
                 <div class="user-details">
@@ -1906,10 +1914,7 @@ function populateTeamGrid(teamMembers) {
         
         memberElement.innerHTML = `
             <div class="member-avatar">
-                <img src="../assets/uploads/profile_photos/user_${member.id}.png" 
-                     alt="${member.name}" 
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <span style="display: none;">${firstLetter}</span>
+                <span style="display: flex;">${firstLetter}</span>
             </div>
             <div class="member-name">${member.name}</div>
             <div class="member-status ${statusClass}"></div>

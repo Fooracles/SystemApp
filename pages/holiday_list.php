@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Holiday List";
 require_once "../includes/header.php";
 
@@ -1978,14 +1978,12 @@ if($result_holidays && mysqli_num_rows($result_holidays) > 0) {
         function initializeReactApp() {
             const rootElement = document.getElementById('holiday-react-root');
             if (!rootElement) {
-                console.error('React root element #holiday-react-root not found');
                 setTimeout(initializeReactApp, 100);
                 return;
             }
             
             // Check if React is loaded
             if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
-                console.error('React or ReactDOM not loaded');
                 setTimeout(initializeReactApp, 100);
                 return;
             }
@@ -1999,10 +1997,8 @@ if($result_holidays && mysqli_num_rows($result_holidays) > 0) {
                     // Fallback to React 17 render
                     ReactDOM.render(React.createElement(HolidayListApp), rootElement);
                 } else {
-                    console.error('ReactDOM.createRoot and ReactDOM.render not available');
                 }
             } catch (error) {
-                console.error('Error initializing React app:', error);
             }
         }
 

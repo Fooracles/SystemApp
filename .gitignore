@@ -4,7 +4,4 @@ dist/
 .DS_Store    
 vendor/
 sessions/
-
 credentials.json
-**/credentials.json
-

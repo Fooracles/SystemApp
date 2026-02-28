@@ -1,102 +1,21 @@
 <?php
-// Start output buffering first to catch any errors
+// Start output buffering first to catch any stray output
 if (ob_get_level() == 0) {
     ob_start();
 } else {
     ob_clean();
 }
 
-// Enable error reporting for debugging (but don't display)
-error_reporting(E_ALL);
+// Include core files (functions.php auto-starts session)
+require_once "../includes/config.php";
+require_once "../includes/functions.php";
+require_once "../includes/dashboard_components.php";
+
+// Re-suppress error display AFTER config loads (error_handler.php overrides it in dev)
 ini_set('display_errors', 0);
-ini_set('log_errors', 1);
 
-// Set error handler to catch fatal errors
-register_shutdown_function(function() {
-    $error = error_get_last();
-    if ($error !== NULL && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
-        // Clean any output
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-        // Set headers
-        if (!headers_sent()) {
-            header('Content-Type: application/json');
-            http_response_code(500);
-        }
-        echo json_encode([
-            'success' => false,
-            'error' => $error['message'],
-            'file' => basename($error['file']),
-            'line' => $error['line'],
-            'type' => 'Fatal Error'
-        ]);
-        exit;
-    }
-});
-
-// Set custom error handler for non-fatal errors
-set_error_handler(function($errno, $errstr, $errfile, $errline) {
-    // Only handle fatal errors, let others pass through
-    if (in_array($errno, [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
-        if (ob_get_level() > 0) {
-            ob_clean();
-        }
-        if (!headers_sent()) {
-            header('Content-Type: application/json');
-            http_response_code(500);
-        }
-        echo json_encode([
-            'success' => false,
-            'error' => $errstr,
-            'file' => basename($errfile),
-            'line' => $errline,
-            'type' => 'Error'
-        ]);
-        exit;
-    }
-    return false; // Let PHP handle other errors
-});
-
-try {
-    session_start();
-} catch (Exception $e) {
-    if (ob_get_level() > 0) {
-        ob_clean();
-    }
-    if (!headers_sent()) {
-        header('Content-Type: application/json');
-        http_response_code(500);
-    }
-    echo json_encode(['success' => false, 'error' => 'Session error: ' . $e->getMessage()]);
-    exit;
-}
-
-try {
-    require_once "../includes/config.php";
-    // Include functions.php which contains isLoggedIn() and other helper functions
-    require_once "../includes/functions.php";
-} catch (Exception $e) {
-    if (ob_get_level() > 0) {
-        ob_clean();
-    }
-    if (!headers_sent()) {
-        header('Content-Type: application/json');
-        http_response_code(500);
-    }
-    echo json_encode(['success' => false, 'error' => 'Config error: ' . $e->getMessage()]);
-    exit;
-} catch (Error $e) {
-    if (ob_get_level() > 0) {
-        ob_clean();
-    }
-    if (!headers_sent()) {
-        header('Content-Type: application/json');
-        http_response_code(500);
-    }
-    echo json_encode(['success' => false, 'error' => 'Config fatal error: ' . $e->getMessage(), 'file' => basename($e->getFile()), 'line' => $e->getLine()]);
-    exit;
-}
+// Performance: increase execution time for large datasets
+set_time_limit(120);
 
 // Set proper headers for JSON response
 if (!headers_sent()) {
@@ -105,20 +24,8 @@ if (!headers_sent()) {
 }
 
 // Check if user is logged in
-if (!function_exists('isLoggedIn')) {
-    if (ob_get_level() > 0) {
-        ob_clean();
-    }
-    echo json_encode(['success' => false, 'error' => 'isLoggedIn function not found. functions.php may not be loaded.']);
-    exit;
-}
-
 if (!isLoggedIn()) {
-    if (ob_get_level() > 0) {
-        ob_clean();
-    }
-    echo json_encode(['success' => false, 'error' => 'Not logged in']);
-    exit;
+    jsonError('Not logged in', 401);
 }
 
 $current_user_id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? 1;
@@ -196,9 +103,6 @@ try {
         throw new Exception('Database connection not available');
     }
     
-    // Use the shared calculatePersonalStats function from dashboard_components.php
-    require_once "../includes/dashboard_components.php";
-    
     // Calculate personal stats using the fixed function
     $personal_stats = calculatePersonalStats($conn, $current_user_id, $current_username, $date_from, $date_to);
     
@@ -269,6 +173,9 @@ try {
                 lr.employee_name = u.name OR lr.employee_name = u.username
             )
             WHERE u.user_type IN ('doer', 'manager')
+                AND (u.username IS NULL OR LOWER(u.username) <> 'admin')
+                AND (u.name IS NULL OR LOWER(u.name) <> 'admin')
+                AND COALESCE(u.Status, 'Active') = 'Active'
                 AND lr.status IN ('PENDING', 'Approve')
                 AND lr.status NOT IN ('Reject', 'Cancelled')
                 AND (
@@ -294,6 +201,7 @@ try {
                         u.username, 
                         u.name, 
                         u.user_type,
+                        u.profile_photo,
                         MIN(lr.leave_type) as leave_type,
                         MIN(lr.duration) as duration,
                         MIN(lr.start_date) as start_date,
@@ -311,7 +219,10 @@ try {
                         )
                     )
                     WHERE u.user_type IN ('doer', 'manager')
-                    GROUP BY u.id, u.username, u.name, u.user_type";
+                    AND (u.username IS NULL OR LOWER(u.username) <> 'admin')
+                    AND (u.name IS NULL OR LOWER(u.name) <> 'admin')
+                    AND COALESCE(u.Status, 'Active') = 'Active'
+                    GROUP BY u.id, u.username, u.name, u.user_type, u.profile_photo";
     
     // Build ORDER BY clause based on on-leave users
     if (count($on_leave_user_ids) > 0) {
@@ -337,6 +248,7 @@ try {
                         'id' => $user_id,
                         'name' => $row['name'],
                         'username' => $row['username'],
+                        'profile_photo' => $row['profile_photo'] ?? '',
                         'status' => $is_on_leave ? 'on-leave' : 'available',
                         'leave_type' => $is_on_leave ? ($row['leave_type'] ?? '') : '',
                         'duration' => $is_on_leave ? ($row['duration'] ?? '') : '',
@@ -409,4 +321,9 @@ try {
         'type' => get_class($e)
     ]);
     exit;
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }

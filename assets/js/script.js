@@ -1,6 +1,5 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('FMS Script loaded successfully');
     
     // Cache frequently used DOM elements
     const DOM_CACHE = {
@@ -21,14 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const { body, toggleButton, logoImage } = DOM_CACHE;
         const SIDEBAR_COLLAPSED_KEY = 'fmsSidebarCollapsed';
 
-        console.log('Sidebar elements found:', {
-            toggleButton: !!toggleButton,
-            logoImage: !!logoImage,
-            twoFrameLayout: body.classList.contains('two-frame-layout')
-        });
-
         if (!toggleButton || !logoImage || !body.classList.contains('two-frame-layout')) {
-            console.warn('Sidebar initialization skipped - missing elements or wrong layout');
             return;
         }
 
@@ -45,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 localStorage.setItem(SIDEBAR_COLLAPSED_KEY, collapsed ? 'true' : 'false');
             } catch (error) {
-                console.warn('Unable to persist sidebar state:', error);
             }
         };
 
@@ -56,13 +47,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 applySidebarState(true);
             }
         } catch (error) {
-            console.warn('Unable to read sidebar state:', error);
         }
 
         toggleButton.addEventListener('click', function() {
-            console.log('Sidebar toggle clicked');
             const shouldCollapse = !body.classList.contains('sidebar-collapsed');
-            console.log('Should collapse:', shouldCollapse);
             applySidebarState(shouldCollapse);
         });
 
@@ -92,13 +80,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!submenu || !submenuItems) return;
                 
                 const isActive = submenu.classList.contains('active');
-                
-                if (isActive) {
-                    submenu.classList.remove('active');
-                } else {
-                    submenu.classList.add('active');
+
+                // In collapsed mode, close other open submenus before opening a new one
+                if (!isActive && document.body.classList.contains('sidebar-collapsed')) {
+                    document.querySelectorAll('.nav-submenu.active').forEach(openMenu => {
+                        if (openMenu !== submenu) openMenu.classList.remove('active');
+                    });
                 }
+                
+                submenu.classList.toggle('active', !isActive);
             });
+        });
+
+        // Close flyout submenus when clicking outside the sidebar
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.sidebar')) {
+                document.querySelectorAll('.nav-submenu.active').forEach(openMenu => {
+                    openMenu.classList.remove('active');
+                });
+            }
         });
     })();
 
@@ -221,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         })
                         .catch(error => {
-                            console.error('Error fetching doers:', error);
                         });
                 }
             });
@@ -340,7 +339,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 });
                             }
                         } catch (e) {
-                            console.error('Error parsing JSON:', e);
                         }
                     }
                 };
@@ -738,11 +736,9 @@ function initNotificationSystem() {
                     displayNotifications(response.notifications);
                     updateNotificationCount(response.count);
                 } else {
-                    console.error('Error loading notifications:', response.message);
                 }
             },
             error: function(xhr, status, error) {
-                console.error('AJAX Error loading notifications:', error);
             }
         });
     }
@@ -835,7 +831,6 @@ function initNotificationSystem() {
                 }
             },
             error: function(xhr, status, error) {
-                console.error('AJAX Error approving request:', error);
                 showToast('Error approving request. Please try again.', 'danger');
             }
         });
@@ -866,7 +861,6 @@ function initNotificationSystem() {
                 }
             },
             error: function(xhr, status, error) {
-                console.error('AJAX Error rejecting request:', error);
                 showToast('Error rejecting request. Please try again.', 'danger');
             }
         });
@@ -915,7 +909,6 @@ function initNotificationSystem() {
         if (audio) {
             audio.currentTime = 0;
             audio.play().catch(function(error) {
-                console.log('Audio play failed:', error);
             });
         }
     }

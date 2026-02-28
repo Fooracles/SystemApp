@@ -338,4 +338,3 @@ $(document).ready(function() {
 // Include the universal footer
 require_once "../includes/footer.php";
 ?>
-

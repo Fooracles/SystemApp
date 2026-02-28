@@ -1,0 +1,14 @@
+Brand color
+
+#b85042  brown
+#2f3c7e   blue
+#898d91   grey
+#fff2d7        yellow
+#101820        black
+
+Shivek / tejas / Prateek VE step 3
+Step 7 same 
+
+
+
+=sort({ifna(query({'Social Media(Reels)'!L7:L,'Social Media(Reels)'!N7:S},'Steps Directory'!E2),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!U7:U,'Social Media(Reels)'!W7:AB},'Steps Directory'!E3),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!AC7:AC,'Social Media(Reels)'!AE7:AJ},'Steps Directory'!E4),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!AK7:AK,'Social Media(Reels)'!AM7:AR},'Steps Directory'!E5),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!AS7:AS,'Social Media(Reels)'!AU7:AZ},'Steps Directory'!E6),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!BA7:BA,'Social Media(Reels)'!BC7:BH},'Steps Directory'!E7),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!BI7:BI,'Social Media(Reels)'!BK7:BP},'Steps Directory'!E8),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!BQ7:BQ,'Social Media(Reels)'!BS7:BX},'Steps Directory'!E9),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!BY7:BY,'Social Media(Reels)'!CA7:CF},'Steps Directory'!E10),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!CG7:CG,'Social Media(Reels)'!CI7:CN},'Steps Directory'!E11),{"","","","","","","",""});ifna(query({'Social Media(Reels)'!CO7:CO,'Social Media(Reels)'!CQ7:CV},'Steps Directory'!E12),{"","","","","","","",""});ifna(query({'A/c Manager FMS'!H7:H,'A/c Manager FMS'!J7:O},'Steps Directory'!E13),{"","","","","","","",""})},1,0)

@@ -612,7 +612,21 @@ class LeaveRequestManager {
             },
             credentials: 'same-origin'
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                return response.text().then(text => {
+                    console.error('Non-JSON response received:', text.substring(0, 500));
+                    throw new Error('Server returned non-JSON response. Check console for details.');
+                });
+            }
+
+            return response.json();
+        })
         .then(data => {
             if (data.success && data.data && Array.isArray(data.data)) {
                 // Use the employee names directly from the response
@@ -1618,7 +1632,21 @@ class LeaveRequestManager {
             },
             credentials: 'same-origin'
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                return response.text().then(text => {
+                    console.error('Non-JSON response received:', text.substring(0, 500));
+                    throw new Error('Server returned non-JSON response. Check console for details.');
+                });
+            }
+
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 console.log('Metrics response:', data);

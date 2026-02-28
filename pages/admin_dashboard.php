@@ -2951,7 +2951,6 @@ if($result) {
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
                             showToast('Error loading motivation data', 'error');
                             restoreMotivationContent();
                         });
@@ -3121,7 +3120,6 @@ if($result) {
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
                             showToast('Error updating motivation data', 'error');
                         })
                         .finally(() => {
@@ -3342,11 +3340,9 @@ if($result) {
                         if (result.success) {
                             updateDashboard(result.data);
                         } else {
-                            console.error('Failed to load dashboard data:', result.error);
                             hideLoadingOverlay();
                         }
                     } catch (error) {
-                        console.error('Error loading dashboard data:', error);
                         hideLoadingOverlay();
                     }
                 }
@@ -3354,7 +3350,6 @@ if($result) {
                 // Update dashboard with data
                 function updateDashboard(data) {
                     if (!data) {
-                        console.error('No data received');
                         hideLoadingOverlay();
                         return;
                     }
@@ -3370,10 +3365,8 @@ if($result) {
                     if (data.personal_stats) {
                         // Check if RQC score is valid (not 0 or null)
                         const rqcScore = (data.personal_rqc_score !== undefined ? data.personal_rqc_score : data.personal_completion_rate);
-                        console.log('RQC score from API:', rqcScore, 'personal_rqc_score:', data.personal_rqc_score, 'personal_completion_rate:', data.personal_completion_rate);
                         const numScore = parseFloat(rqcScore);
                         const validRqcScore = (!isNaN(numScore) && numScore > 0 && isFinite(numScore)) ? numScore : null;
-                        console.log('Valid RQC score:', validRqcScore);
                         updatePersonalStats(data.personal_stats, validRqcScore, isFirstLoad);
                     }
                     
@@ -3447,7 +3440,6 @@ if($result) {
                     if (!element) return;
                     
                     // Debug logging
-                    console.log('updatePersonalRqcScore called with:', rqcScore, 'type:', typeof rqcScore);
                     
                     // Handle null, undefined, empty string
                     if (rqcScore === null || rqcScore === undefined || rqcScore === '') {
@@ -3463,7 +3455,6 @@ if($result) {
                         element.textContent = Math.round(numScore) + '%';
                     } else {
                         // No RQC score - show N/A
-                        console.log('RQC score is invalid:', numScore, 'original:', rqcScore);
                         element.setAttribute('data-is-na', 'true');
                         element.textContent = 'N/A';
                     }
@@ -3719,17 +3710,13 @@ if($result) {
                         const response = await fetch(url);
                         const result = await response.json();
                         
-                        console.log('Leaderboard data loaded:', result);
                         if (result.success && result.data.leaderboard) {
                             leaderboardData = result.data.leaderboard || [];
-                            console.log('Leaderboard items:', leaderboardData.length);
                             if (leaderboardData.length > 0) {
-                                console.log('First user RQC score:', leaderboardData[0].rqc_score, 'Type:', typeof leaderboardData[0].rqc_score);
                             }
                             currentLeaderboardPage = 1; // Reset to first page when data changes
                             initializeLeaderboard();
                         } else {
-                            console.error('Failed to load leaderboard data:', result);
                             // Show empty state
                             const list = document.getElementById('topPerformersList');
                             if (list) {
@@ -3737,7 +3724,6 @@ if($result) {
                             }
                         }
                     } catch (error) {
-                        console.error('Error loading leaderboard data:', error);
                         // Show error state
                         const list = document.getElementById('topPerformersList');
                         if (list) {
@@ -3882,10 +3868,7 @@ if($result) {
                             <div class="user-info">
                                 <div class="user-avatar-wrapper">
                                     <div class="user-avatar">
-                                        <img src="../assets/uploads/profile_photos/user_${user.id}.png" 
-                                             alt="${user.name}" 
-                                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="avatar-initials" style="display: none;">${initials}</div>
+                                        <div class="avatar-initials" style="display: flex;">${initials}</div>
                                     </div>
                                 </div>
                                 <div class="user-details">
@@ -4150,10 +4133,7 @@ if($result) {
                         
                         memberElement.innerHTML = `
                             <div class="member-avatar">
-                                <img src="../assets/uploads/profile_photos/user_${member.id}.png" 
-                                     alt="${member.name}" 
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span style="display: none;">${firstLetter}</span>
+                                <span style="display: flex;">${firstLetter}</span>
                             </div>
                             <div class="member-name">${member.name}</div>
                             <div class="member-status ${statusClass}"></div>

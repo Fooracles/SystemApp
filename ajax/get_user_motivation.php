@@ -15,8 +15,7 @@ ob_clean();
 // Check if user is logged in
 if (!isLoggedIn()) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
 
 // Get user_id from request
@@ -28,21 +27,19 @@ $current_user_id = $_SESSION['id'] ?? $_SESSION['user_id'] ?? 0;
 // 2. User is viewing their own data
 if (!isAdmin() && $user_id != $current_user_id) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Unauthorized - You can only view your own motivation data']);
-    exit;
+    jsonError('Unauthorized - You can only view your own motivation data', 401);
 }
 
 if ($user_id <= 0) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Invalid user ID']);
-    exit;
+    jsonError('Invalid user ID', 400);
 }
 
 try {
     // Fetch user motivation data
     $stmt = mysqli_prepare($conn, "SELECT current_insights, areas_of_improvement, updated_at FROM user_motivation WHERE user_id = ?");
     if (!$stmt) {
-        throw new Exception('Database prepare error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, "i", $user_id);
@@ -76,7 +73,11 @@ try {
 } catch (Exception $e) {
     error_log("Get User Motivation Error: " . $e->getMessage());
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    handleException($e, 'get_user_motivation');
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>
-

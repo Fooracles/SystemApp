@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Logged-In Users";
 require_once "../includes/header.php";
 
@@ -834,7 +834,6 @@ function filterData() {
                     }
                 },
                 error: () => {
-                    console.error('Error loading users');
                 }
             });
         }
@@ -1202,5 +1201,3 @@ function showToast(message, type) {
 </script>
 
 <?php require_once "../includes/footer.php"; ?>
-
-

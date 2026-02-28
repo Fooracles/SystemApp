@@ -27,24 +27,19 @@ $is_admin = isAdmin();
 ?>
 
 <!-- Preconnect to CDNs for faster loading -->
-<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 
-<!-- Tailwind CSS - Load inline for instant styling -->
+<!-- Tailwind CSS v3 Play CDN - loaded synchronously before Alpine.js -->
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
-    // Inline minimal Tailwind config for faster initialization
-    (function() {
-        if (typeof window.tailwind === 'undefined') {
-            var script = document.createElement('script');
-            script.src = 'https://cdn.tailwindcss.com';
-            script.async = true;
-            document.head.appendChild(script);
+    tailwind.config = {
+        corePlugins: {
+            preflight: false
         }
-    })();
+    };
 </script>
 
 <!-- Alpine.js - Defer to not block rendering -->
@@ -52,7 +47,6 @@ $is_admin = isAdmin();
 
 <!-- Lucide Icons - Load asynchronously, only when needed -->
 <script>
-    // Lazy load Lucide icons
     window.loadLucideIcons = function() {
         if (typeof window.lucide === 'undefined') {
             var script = document.createElement('script');
@@ -68,7 +62,6 @@ $is_admin = isAdmin();
             lucide.createIcons();
         }
     };
-    // Load icons after page is interactive
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(window.loadLucideIcons, 100);
@@ -82,6 +75,88 @@ $is_admin = isAdmin();
     /* Hide content until Alpine is ready */
     [x-cloak] { 
         display: none !important; 
+    }
+    
+    /* Reset browser default button styling (needed since Tailwind Preflight is disabled to avoid Bootstrap conflicts) */
+    .task-ticket-container button {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        outline: none;
+    }
+    
+    .task-ticket-container button:focus {
+        outline: none;
+    }
+    
+    .task-ticket-container select {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+    }
+    
+    .task-ticket-container input {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+    }
+    
+    .task-ticket-container textarea {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+    }
+    
+    .task-ticket-container *,
+    .task-ticket-container *::before,
+    .task-ticket-container *::after {
+        box-sizing: border-box;
+    }
+    
+    .task-ticket-container img,
+    .task-ticket-container svg {
+        display: block;
+        max-width: 100%;
+    }
+    
+    /* Also reset for modals that are outside the container (fixed positioned) */
+    .requirement-modal button,
+    .modal-enter button,
+    [x-show="isModalOpen"] button,
+    [x-show="isDetailModalOpen"] button,
+    [x-show="isRequirementModalOpen"] button {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+    }
+    
+    .requirement-modal select,
+    .requirement-modal input,
+    .requirement-modal textarea {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: inherit;
     }
     
     /* Critical CSS - Prevent layout flicker with immediate styles */
@@ -536,6 +611,25 @@ $is_admin = isAdmin();
     .filter-section input[type="date"],
     .filter-section select {
         padding-left: 2.5rem !important;
+    }
+
+    /* Keep filter control text vertically centered and prevent clipping */
+    .filter-section .relative.h-\[34px\] {
+        min-height: 34px;
+    }
+
+    .filter-section .relative.h-\[34px\] > input[type="text"],
+    .filter-section .relative.h-\[34px\] > input[type="date"],
+    .filter-section .relative.h-\[34px\] > select {
+        height: 34px !important;
+        min-height: 34px;
+        box-sizing: border-box;
+        line-height: 32px;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-size: 0.75rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     /* Date input specific styling to prevent icon overlap */
@@ -1199,8 +1293,14 @@ $is_admin = isAdmin();
                                     <template x-if="(item.type === 'Task' || item.type === 'Ticket') && isAdmin && !item.assigned_to_name">
                                         <div class="text-sm text-slate-500">-</div>
                                     </template>
-                                    <!-- For Task/Ticket: Manager view - null/empty (only if not admin) -->
-                                    <template x-if="(item.type === 'Task' || item.type === 'Ticket') && isManager && !isAdmin">
+                                    <!-- For Task/Ticket: Manager view - Show "You" when assigned to current manager, else assigned_to_name (e.g. when client created task/ticket) -->
+                                    <template x-if="(item.type === 'Task' || item.type === 'Ticket') && isManager && !isAdmin && item.assigned_to != null && currentUserId != null && String(item.assigned_to) === String(currentUserId)">
+                                        <div class="text-sm font-medium text-purple-300">You</div>
+                                    </template>
+                                    <template x-if="(item.type === 'Task' || item.type === 'Ticket') && isManager && !isAdmin && (item.assigned_to == null || currentUserId == null || String(item.assigned_to) !== String(currentUserId)) && item.assigned_to_name">
+                                        <div class="text-sm text-white" x-text="item.assigned_to_name"></div>
+                                    </template>
+                                    <template x-if="(item.type === 'Task' || item.type === 'Ticket') && isManager && !isAdmin && !item.assigned_to_name">
                                         <div class="text-sm text-slate-500">-</div>
                                     </template>
                                     <!-- For Task/Ticket: Client view - Show assigned manager name -->
@@ -2558,6 +2658,8 @@ $is_admin = isAdmin();
             isManager: <?php echo $is_manager ? 'true' : 'false'; ?>,
             isClient: <?php echo $is_client ? 'true' : 'false'; ?>,
             isAdmin: <?php echo $is_admin ? 'true' : 'false'; ?>,
+            isEditingTitle: false,
+            editingTitle: '',
             isEditingRequired: false,
             isEditingProvided: false,
             isEditingRequiredAttachments: false,
@@ -2762,7 +2864,6 @@ $is_admin = isAdmin();
                         // Try showPicker() first (modern browsers), fallback to click()
                         if (hiddenInput.showPicker) {
                             hiddenInput.showPicker().catch((err) => {
-                                console.log('showPicker failed, using click fallback:', err);
                                 hiddenInput.click();
                             });
                         } else {
@@ -2911,11 +3012,9 @@ $is_admin = isAdmin();
                     if (result.success) {
                         this.clientAccounts = result.client_accounts || [];
                     } else {
-                        console.error('Error fetching client accounts:', result.message);
                         this.clientAccounts = [];
                     }
                 } catch (error) {
-                    console.error('Error fetching client accounts:', error);
                     this.clientAccounts = [];
                 }
             },
@@ -2935,11 +3034,9 @@ $is_admin = isAdmin();
                         // Reset selected users when account changes
                         this.formData.selectedClientUsers = [];
                     } else {
-                        console.error('Error fetching client users:', result.message);
                         this.clientUsers = [];
                     }
                 } catch (error) {
-                    console.error('Error fetching client users:', error);
                     this.clientUsers = [];
                 }
             },
@@ -3098,7 +3195,6 @@ $is_admin = isAdmin();
                         // Check if response is OK
                         if (!response.ok) {
                             const text = await response.text();
-                            console.error('HTTP Error:', response.status, text);
                             alert('Server error: ' + response.status + '. Please check console for details.');
                             return;
                         }
@@ -3107,7 +3203,6 @@ $is_admin = isAdmin();
                         const contentType = response.headers.get('content-type');
                         if (!contentType || !contentType.includes('application/json')) {
                             const text = await response.text();
-                            console.error('Response is not JSON:', text.substring(0, 500));
                             alert('Server returned invalid response. Please check console for details.');
                             return;
                         }
@@ -3123,7 +3218,6 @@ $is_admin = isAdmin();
                         }
                     }
                 } catch (error) {
-                    console.error('Error submitting form:', error);
                     // Try to get response text for debugging
                     try {
                         const response = await fetch('../ajax/task_ticket_handler.php?action=create_item', {
@@ -3131,9 +3225,7 @@ $is_admin = isAdmin();
                             body: new FormData()
                         });
                         const text = await response.text();
-                        console.error('Response text:', text.substring(0, 500));
                     } catch (e) {
-                        console.error('Could not fetch response text:', e);
                     }
                     alert('An error occurred: ' + error.message);
                 }
@@ -3151,7 +3243,6 @@ $is_admin = isAdmin();
                         this.assignedToFilterOptions = result.assigned_to_options || [];
                     }
                 } catch (error) {
-                    console.error('Error fetching filter options:', error);
                     this.assignerFilterOptions = [];
                     this.assignedToFilterOptions = [];
                 }
@@ -3165,7 +3256,6 @@ $is_admin = isAdmin();
                     // Check if response is OK
                     if (!response.ok) {
                         const text = await response.text();
-                        console.error('HTTP Error:', response.status, text);
                         this.items = [];
                         this.isLoading = false;
                         return;
@@ -3175,7 +3265,6 @@ $is_admin = isAdmin();
                     const contentType = response.headers.get('content-type');
                     if (!contentType || !contentType.includes('application/json')) {
                         const text = await response.text();
-                        console.error('Response is not JSON:', text.substring(0, 200));
                         this.items = [];
                         this.isLoading = false;
                         return;
@@ -3183,8 +3272,6 @@ $is_admin = isAdmin();
                     
                     const result = await response.json();
                     
-                    console.log('API Response:', result);
-                    console.log('Items count:', result.items ? result.items.length : 0);
                     
                     if (result.success && result.items) {
                         // Store current user ID from response
@@ -3255,21 +3342,15 @@ $is_admin = isAdmin();
                         
                         // Log ticket count for debugging
                         const ticketCount = this.items.filter(item => item.type === 'Ticket').length;
-                        console.log('Tickets loaded:', ticketCount);
-                        console.log('All items loaded:', this.items.length);
                     } else {
-                        console.error('Failed to load items:', result.message);
                         this.items = [];
                     }
                 } catch (error) {
-                    console.error('Error loading items:', error);
                     // Try to get response text for debugging
                     try {
                         const response = await fetch('../ajax/task_ticket_handler.php?action=get_items');
                         const text = await response.text();
-                        console.error('Response text:', text.substring(0, 500));
                     } catch (e) {
-                        console.error('Could not fetch response text:', e);
                     }
                     this.items = [];
                 } finally {
@@ -3359,7 +3440,6 @@ $is_admin = isAdmin();
             },
             
             downloadAttachment(attachment, index) {
-                console.log('Downloading attachment:', attachment);
                 
                 // Method 1: Check if attachment has file data (base64) stored in localStorage
                 if (attachment.fileData) {
@@ -3382,7 +3462,6 @@ $is_admin = isAdmin();
                         URL.revokeObjectURL(url);
                         return;
                     } catch (e) {
-                        console.error('Error creating blob from stored data:', e);
                         alert('Error processing file data. Please try again.');
                     }
                 }
@@ -3416,16 +3495,13 @@ $is_admin = isAdmin();
                 }
                 
                 // Method 4: For default items without fileData, show informative message
-                console.warn('Attachment missing file data:', attachment);
                 alert('This attachment is a demo item and doesn\'t contain actual file data. Real attachments uploaded through the form will be downloadable.');
             },
             
             previewAttachment(attachment, index) {
-                console.log('Previewing attachment:', attachment);
                 
                 // Validate attachment has required properties
                 if (!attachment) {
-                    console.error('Invalid attachment object:', attachment);
                     alert('Cannot preview: Attachment data is missing');
                     return;
                 }
@@ -3437,7 +3513,6 @@ $is_admin = isAdmin();
                 const hasItemId = attachment.item_id && attachment.index !== undefined;
                 
                 if (!hasPath && !hasFileData && !hasFile && !hasItemId) {
-                    console.error('Invalid attachment object - no valid data source:', attachment);
                     alert('Cannot preview: Attachment data is missing');
                     return;
                 }
@@ -3453,7 +3528,6 @@ $is_admin = isAdmin();
                         window.open(previewUrl, '_blank');
                         return;
                     } catch (e) {
-                        console.error('Error creating preview from base64:', e);
                     }
                 }
                 
@@ -3483,7 +3557,6 @@ $is_admin = isAdmin();
                 }
                 
                 // Fallback: Cannot preview
-                console.error('No valid preview method found for attachment:', attachment);
                 alert('Cannot preview this attachment. Please try downloading it instead.');
             },
             
@@ -3724,7 +3797,6 @@ $is_admin = isAdmin();
                         alert(result.message || 'Failed to update title');
                     }
                 } catch (error) {
-                    console.error('Error updating title:', error);
                     alert('An error occurred. Please try again.');
                 }
             },
@@ -3772,7 +3844,6 @@ $is_admin = isAdmin();
                         alert(result.message || 'Failed to update description');
                     }
                 } catch (error) {
-                    console.error('Error updating required description:', error);
                     alert('An error occurred. Please try again.');
                 }
             },
@@ -3907,7 +3978,6 @@ $is_admin = isAdmin();
                         alert(result.message || 'Failed to update attachments');
                     }
                 } catch (error) {
-                    console.error('Error updating required attachments:', error);
                     alert('An error occurred. Please try again.');
                 }
             },
@@ -3955,7 +4025,6 @@ $is_admin = isAdmin();
                         alert(result.message || 'Failed to update provided description');
                     }
                 } catch (error) {
-                    console.error('Error updating provided description:', error);
                     alert('An error occurred. Please try again.');
                 }
             },
@@ -4089,7 +4158,6 @@ $is_admin = isAdmin();
                         alert(result.message || 'Failed to update provided attachments');
                     }
                 } catch (error) {
-                    console.error('Error updating provided attachments:', error);
                     alert('An error occurred. Please try again.');
                 }
             },
@@ -4125,7 +4193,6 @@ $is_admin = isAdmin();
                         
                         if (!response.ok) {
                             const text = await response.text();
-                            console.error('HTTP Error:', response.status, text);
                             alert('Server error: ' + response.status);
                             return;
                         }
@@ -4133,7 +4200,6 @@ $is_admin = isAdmin();
                         const contentType = response.headers.get('content-type');
                         if (!contentType || !contentType.includes('application/json')) {
                             const text = await response.text();
-                            console.error('Response is not JSON:', text.substring(0, 500));
                             alert('Server returned invalid response');
                             return;
                         }
@@ -4148,7 +4214,6 @@ $is_admin = isAdmin();
                             alert('Error: ' + (result.message || 'Failed to drop item'));
                         }
                     } catch (error) {
-                        console.error('Error dropping item:', error);
                         alert('An error occurred. Please try again.');
                     }
                 }
@@ -4173,7 +4238,6 @@ $is_admin = isAdmin();
                     
                     if (!response.ok) {
                         const text = await response.text();
-                        console.error('HTTP Error:', response.status, text);
                         alert('Server error: ' + response.status);
                         return;
                     }
@@ -4181,7 +4245,6 @@ $is_admin = isAdmin();
                     const contentType = response.headers.get('content-type');
                     if (!contentType || !contentType.includes('application/json')) {
                         const text = await response.text();
-                        console.error('Response is not JSON:', text.substring(0, 500));
                         alert('Server returned invalid response');
                         return;
                     }
@@ -4196,7 +4259,6 @@ $is_admin = isAdmin();
                         alert('Error: ' + (result.message || 'Failed to approve item'));
                     }
                 } catch (error) {
-                    console.error('Error approving item:', error);
                     alert('An error occurred. Please try again.');
                 }
             },
@@ -4368,7 +4430,6 @@ $is_admin = isAdmin();
                     // Check if response is OK
                     if (!response.ok) {
                         const text = await response.text();
-                        console.error('HTTP Error:', response.status, text);
                         alert('Server error: ' + response.status);
                         return;
                     }
@@ -4377,7 +4438,6 @@ $is_admin = isAdmin();
                     const contentType = response.headers.get('content-type');
                     if (!contentType || !contentType.includes('application/json')) {
                         const text = await response.text();
-                        console.error('Response is not JSON:', text.substring(0, 500));
                         alert('Server returned invalid response');
                         return;
                     }
@@ -4394,7 +4454,6 @@ $is_admin = isAdmin();
                         alert('Error: ' + (result.message || 'Failed to update status'));
                     }
                 } catch (error) {
-                    console.error('Error updating status:', error);
                     alert('An error occurred. Please try again.');
                 }
             },
@@ -4577,21 +4636,10 @@ $is_admin = isAdmin();
                                     const fileInput = modal.querySelector('#requirementFileInput') || modal.querySelector('input[type="file"]');
                                     const fileDropZone = modal.querySelector('#requirementFileDropZone') || modal.querySelector('.drop-zone');
                                     
-                                    console.log('=== File Upload Handler Setup ===');
-                                    console.log('Modal element:', modal);
-                                    console.log('Modal display:', window.getComputedStyle(modal).display);
-                                    console.log('File input found:', !!fileInput, fileInput);
-                                    console.log('File input parent:', fileInput ? fileInput.parentElement : null);
-                                    console.log('File input display:', fileInput ? window.getComputedStyle(fileInput).display : 'N/A');
-                                    console.log('File drop zone found:', !!fileDropZone, fileDropZone);
-                                    console.log('File drop zone display:', fileDropZone ? window.getComputedStyle(fileDropZone).display : 'N/A');
                                     
                                     if (!fileInput) {
-                                        console.error('❌ File input element not found in modal!');
-                                        console.error('Modal HTML:', modal.innerHTML.substring(0, 500));
                                     }
                                     if (!fileDropZone) {
-                                        console.error('❌ File drop zone element not found in modal!');
                                     }
                                 
                                 // Find submit button by text content
@@ -4621,9 +4669,6 @@ $is_admin = isAdmin();
                                         fileInput._changeHandler = (e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
-                                            console.log('✅ File input change event fired', e);
-                                            console.log('File input element:', fileInput);
-                                            console.log('Files:', e.target ? e.target.files : 'no target');
                                             
                                             if (e.target && e.target.files && e.target.files.length > 0) {
                                                 self.handleRequirementFileSelect(e);
@@ -4636,7 +4681,6 @@ $is_admin = isAdmin();
                                                 };
                                                 self.handleRequirementFileSelect(syntheticEvent);
                                             } else {
-                                                console.warn('No files in change event');
                                             }
                                         };
                                         fileInput.addEventListener('change', fileInput._changeHandler, false);
@@ -4645,18 +4689,8 @@ $is_admin = isAdmin();
                                         fileInput.addEventListener('click', (e) => {
                                             e.stopPropagation();
                                         }, true);
-                                        console.log('✅ File input change handler attached');
                                         
-                                        // Test if file input is clickable
-                                        console.log('File input clickable test:', {
-                                            disabled: fileInput.disabled,
-                                            readOnly: fileInput.readOnly,
-                                            display: window.getComputedStyle(fileInput).display,
-                                            visibility: window.getComputedStyle(fileInput).visibility,
-                                            pointerEvents: window.getComputedStyle(fileInput).pointerEvents
-                                        });
                                     } else {
-                                        console.error('❌ Cannot attach file input handler - element not found');
                                     }
                                 
                                 // Drag and drop handlers
@@ -4700,7 +4734,6 @@ $is_admin = isAdmin();
                                     e.preventDefault();
                                     e.stopPropagation();
                                     e.stopImmediatePropagation(); // Prevent other handlers
-                                    console.log('File drop event fired', e.dataTransfer.files);
                                     self.isRequirementDragging = false;
                                     fileDropZone.classList.remove('drag-over');
                                     fileDropZone.style.backgroundColor = '';
@@ -4713,7 +4746,6 @@ $is_admin = isAdmin();
                                     e.preventDefault();
                                     e.stopPropagation();
                                     e.stopImmediatePropagation();
-                                    console.log('Drop zone clicked, triggering file input');
                                     if (fileInput) {
                                         // Ensure file input is accessible
                                         fileInput.style.pointerEvents = 'auto';
@@ -4729,7 +4761,6 @@ $is_admin = isAdmin();
                                                 fileInput.click();
                                             }, 10);
                                         } catch (err) {
-                                            console.error('Error clicking file input:', err);
                                             // Fallback: create a synthetic click
                                             const clickEvent = new MouseEvent('click', {
                                                 bubbles: false,
@@ -4739,13 +4770,10 @@ $is_admin = isAdmin();
                                             fileInput.dispatchEvent(clickEvent);
                                         }
                                     } else {
-                                        console.error('File input not found when clicking drop zone');
                                     }
                                 };
                                 fileDropZone.addEventListener('click', fileDropZone._clickHandler, false);
-                                console.log('✅ File drop zone click handler attached');
                             } else {
-                                console.error('Cannot attach drop zone handlers - element not found');
                             }
                                 
                                 // Submit button handler
@@ -4764,21 +4792,16 @@ $is_admin = isAdmin();
                                         
                                         // Prevent multiple clicks
                                         if (self._isSubmitting) {
-                                            console.log('Submission already in progress, ignoring click');
                                             return;
                                         }
                                         
-                                        console.log('Submit button clicked, calling submitRequirement');
                                         self.submitRequirement();
                                     };
                                     
                                     // Use capture phase and only attach once
                                     submitBtn.addEventListener('click', submitBtn._submitHandler, true);
-                                    console.log('✅ Submit button handler attached');
                                 } else {
-                                    console.error('❌ Submit button not found');
                                 }
-                                console.log('=== File Upload Handler Setup Complete ===');
                                 });
                             });
                             
@@ -4840,7 +4863,6 @@ $is_admin = isAdmin();
                         }
                     }, 200);
                 } catch (error) {
-                    console.error('Error opening requirement modal:', error);
                 }
             },
             
@@ -4851,7 +4873,6 @@ $is_admin = isAdmin();
                 
                 // Prevent multiple submissions
                 if (this._isSubmitting) {
-                    console.log('Already submitting, ignoring duplicate call');
                     return;
                 }
                 this._isSubmitting = true;
@@ -4879,7 +4900,6 @@ $is_admin = isAdmin();
                         for (let file of this.requirementFiles) {
                             formData.append('attachments[]', file);
                         }
-                        console.log('Added', this.requirementFiles.length, 'files to FormData');
                     }
                     
                     // Note: We're NOT sending base64 JSON to avoid duplicate processing
@@ -4918,7 +4938,6 @@ $is_admin = isAdmin();
                         alert(result.message || 'Failed to submit requirement');
                     }
                 } catch (error) {
-                    console.error('Error submitting requirement:', error);
                     alert('An error occurred. Please try again.');
                 } finally {
                     // Reset submission flag
@@ -4939,7 +4958,6 @@ $is_admin = isAdmin();
             },
             
             handleRequirementFileSelect(event) {
-                console.log('handleRequirementFileSelect called', event);
                 
                 // Get files from event target or directly from the file input
                 let files = [];
@@ -4950,24 +4968,18 @@ $is_admin = isAdmin();
                 // Try multiple ways to get files
                 if (event && event.target && event.target.files && event.target.files.length > 0) {
                     files = Array.from(event.target.files);
-                    console.log('Got files from event.target:', files.length);
                 } else if (fileInput && fileInput.files && fileInput.files.length > 0) {
                     files = Array.from(fileInput.files);
-                    console.log('Got files from fileInput element:', files.length);
                 } else if (event && event.files) {
                     files = Array.from(event.files);
-                    console.log('Got files from event.files:', files.length);
                 } else {
-                    console.error('No files found. Event:', event, 'FileInput:', fileInput);
                     alert('No files selected. Please try again.');
                     return;
                 }
                 
-                console.log('Files to add:', files.length, files.map(f => f.name));
                 if (files.length > 0) {
                     this.addRequirementFiles(files);
                 } else {
-                    console.warn('No files to process');
                 }
                 
                 // Clear the input so same file can be selected again
@@ -4979,18 +4991,15 @@ $is_admin = isAdmin();
             },
             
             handleRequirementFileDrop(event) {
-                console.log('handleRequirementFileDrop called', event);
                 event.preventDefault();
                 event.stopPropagation();
                 this.isRequirementDragging = false;
                 
                 const files = Array.from(event.dataTransfer ? event.dataTransfer.files : []);
-                console.log('Files dropped:', files.length, files);
                 
                 if (files.length > 0) {
                     this.addRequirementFiles(files);
                 } else {
-                    console.warn('No files in event.dataTransfer.files');
                 }
             },
             
@@ -5012,7 +5021,6 @@ $is_admin = isAdmin();
                     // Check if file already exists
                     const fileKey = `${file.name}_${file.size}_${file.lastModified || file.type}`;
                     if (existingFiles.has(fileKey)) {
-                        console.log(`File "${file.name}" already added, skipping duplicate.`);
                         continue;
                     }
                     
@@ -5024,8 +5032,6 @@ $is_admin = isAdmin();
                 if (filesToAdd.length > 0) {
                     // Use spread operator to add files - this ensures Alpine.js reactivity
                     this.requirementFiles = [...this.requirementFiles, ...filesToAdd];
-                    console.log('✅ Files added to requirementFiles. Total:', this.requirementFiles.length);
-                    console.log('File names:', this.requirementFiles.map(f => f.name));
                     
                     // Force Alpine.js to update and show file previews
                     this.$nextTick(() => {
@@ -5048,11 +5054,9 @@ $is_admin = isAdmin();
                                             this.requirementFiles.map(f => `${f.name}_${f.size}_${f.lastModified || f.type}`)
                                         ).size;
                                         
-                                        console.log('File preview check - Existing:', existingPreviews.length, 'Expected:', uniqueFileCount);
                                         
                                         // Always manually render to ensure files show up
                                         if (existingPreviews.length !== uniqueFileCount || existingPreviews.length === 0) {
-                                            console.log('Manually rendering file previews');
                                             this.renderFilePreviews(filePreviewsContainer);
                                         } else {
                                             // Alpine rendered correctly, just re-initialize icons
@@ -5062,20 +5066,16 @@ $is_admin = isAdmin();
                                         }
                                     }
                                 } else {
-                                    console.error('❌ File previews container not found');
                                 }
                             } else {
-                                console.error('❌ Requirement modal not found');
                             }
                         }, 150);
                     });
                 } else {
-                    console.log('No files to add (all duplicates or invalid)');
                 }
             },
             
             renderFilePreviews(container) {
-                console.log('Rendering file previews for', this.requirementFiles.length, 'files');
                 
                 // Clear existing content first
                 container.innerHTML = '';
@@ -5156,7 +5156,6 @@ $is_admin = isAdmin();
                     lucide.createIcons();
                 }
                 
-                console.log('File previews rendered:', uniqueFiles.length);
             },
             
             removeRequirementFile(index) {
@@ -5607,7 +5606,6 @@ $is_admin = isAdmin();
                 lucide.createIcons();
                 iconsInitialized = true;
             } catch(e) {
-                console.warn('Icons not ready yet');
             }
         }
     }
@@ -5699,4 +5697,5 @@ $is_admin = isAdmin();
     }
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once "../includes/footer.php";
+?>

@@ -16,6 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// CSRF protection for POST requests
+csrfProtect();
+
 try {
     // Clear all password reset requests
     $sql = "DELETE FROM password_reset_requests";
@@ -28,11 +31,11 @@ try {
             'cleared_count' => $affected_rows
         ]);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . mysqli_error($conn)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/clear_all_notifications.php');
     }
     
 } catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Error: ' . $e->getMessage()]);
+    handleException($e, 'clear_all_notifications');
 }
 
 mysqli_close($conn);

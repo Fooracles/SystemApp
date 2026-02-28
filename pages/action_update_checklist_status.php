@@ -178,4 +178,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_id']) && isset($
 }
 
 echo json_encode($response);
-exit; // Ensure no further output 
+exit; // Ensure no further output

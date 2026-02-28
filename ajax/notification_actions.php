@@ -39,19 +39,20 @@ if (!function_exists('createNotification')) {
 // Check if user is logged in
 if (!isLoggedIn()) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
 
 header('Content-Type: application/json');
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $action = $_POST['action'] ?? '';
 $notification_id = $_POST['notification_id'] ?? null;
 $user_id = $_SESSION['id'] ?? null;
 
 if (!$user_id || !$notification_id) {
-    echo json_encode(['success' => false, 'error' => 'Missing required parameters']);
-    exit;
+    jsonError('Missing required parameters', 400);
 }
 
 // Get notification details
@@ -63,8 +64,7 @@ $result = mysqli_stmt_get_result($stmt);
 $notification = mysqli_fetch_assoc($result);
 
 if (!$notification) {
-    echo json_encode(['success' => false, 'error' => 'Notification not found']);
-    exit;
+    jsonError('Notification not found', 404);
 }
 
 $action_data = $notification['action_data'] ? json_decode($notification['action_data'], true) : null;
@@ -101,7 +101,7 @@ function approveMeeting($conn, $meeting_id, $user_id, $notification_id = null) {
     $user_query = "SELECT user_type FROM users WHERE id = ?";
     $user_stmt = mysqli_prepare($conn, $user_query);
     if (!$user_stmt) {
-        echo json_encode(['success' => false, 'error' => 'Database error: ' . mysqli_error($conn)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/notification_actions.php');
         exit;
     }
     mysqli_stmt_bind_param($user_stmt, 'i', $user_id);
@@ -111,8 +111,7 @@ function approveMeeting($conn, $meeting_id, $user_id, $notification_id = null) {
     mysqli_stmt_close($user_stmt);
     
     if (!$user || $user['user_type'] !== 'admin') {
-        echo json_encode(['success' => false, 'error' => 'Only admins can approve meetings']);
-        exit;
+        jsonError('Only admins can approve meetings', 500);
     }
     
     // Convert meeting_id to integer if it's a string
@@ -123,7 +122,7 @@ function approveMeeting($conn, $meeting_id, $user_id, $notification_id = null) {
     $check_query = "SELECT status, preferred_date, preferred_time FROM meeting_requests WHERE id = ?";
     $check_stmt = mysqli_prepare($conn, $check_query);
     if (!$check_stmt) {
-        echo json_encode(['success' => false, 'error' => 'Database error: ' . mysqli_error($conn)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/notification_actions.php');
         exit;
     }
     mysqli_stmt_bind_param($check_stmt, 'i', $meeting_id_int);
@@ -133,19 +132,16 @@ function approveMeeting($conn, $meeting_id, $user_id, $notification_id = null) {
     mysqli_stmt_close($check_stmt);
     
     if (!$existing_meeting) {
-        echo json_encode(['success' => false, 'error' => 'Meeting request not found']);
-        exit;
+        jsonError('Meeting request not found', 404);
     }
     
     if ($existing_meeting['status'] !== 'Pending') {
-        echo json_encode(['success' => false, 'error' => 'Only pending meetings can be approved']);
-        exit;
+        jsonError('Only pending meetings can be approved', 500);
     }
     
     // Check if preferred_date and preferred_time are available
     if (empty($existing_meeting['preferred_date'])) {
-        echo json_encode(['success' => false, 'error' => 'Preferred date is required to approve and schedule the meeting']);
-        exit;
+        jsonError('Preferred date is required to approve and schedule the meeting', 400);
     }
     
     // Use preferred_time if available, otherwise default to 09:00:00
@@ -161,8 +157,7 @@ function approveMeeting($conn, $meeting_id, $user_id, $notification_id = null) {
         if (strlen($preferred_time) == 5) {
             $scheduled_date = $existing_meeting['preferred_date'] . ' ' . $preferred_time . ':00';
         } else {
-            echo json_encode(['success' => false, 'error' => 'Invalid date/time format']);
-            exit;
+            jsonError('Invalid date/time format', 400);
         }
     }
     
@@ -170,20 +165,19 @@ function approveMeeting($conn, $meeting_id, $user_id, $notification_id = null) {
     $update_query = "UPDATE meeting_requests SET status = 'Scheduled', scheduled_date = ? WHERE id = ?";
     $update_stmt = mysqli_prepare($conn, $update_query);
     if (!$update_stmt) {
-        echo json_encode(['success' => false, 'error' => 'Database error: ' . mysqli_error($conn)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/notification_actions.php');
         exit;
     }
     mysqli_stmt_bind_param($update_stmt, 'si', $scheduled_date, $meeting_id_int);
     if (!mysqli_stmt_execute($update_stmt)) {
         mysqli_stmt_close($update_stmt);
-        echo json_encode(['success' => false, 'error' => 'Failed to approve meeting: ' . mysqli_stmt_error($update_stmt)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/notification_actions.php');
         exit;
     }
     
     if (mysqli_stmt_affected_rows($update_stmt) === 0) {
         mysqli_stmt_close($update_stmt);
-        echo json_encode(['success' => false, 'error' => 'Failed to update meeting request']);
-        exit;
+        jsonError('Failed to update meeting request', 500);
     }
     mysqli_stmt_close($update_stmt);
     
@@ -191,7 +185,7 @@ function approveMeeting($conn, $meeting_id, $user_id, $notification_id = null) {
     $get_query = "SELECT doer_email, scheduled_date FROM meeting_requests WHERE id = ?";
     $get_stmt = mysqli_prepare($conn, $get_query);
     if (!$get_stmt) {
-        echo json_encode(['success' => false, 'error' => 'Database error: ' . mysqli_error($conn)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/notification_actions.php');
         exit;
     }
     mysqli_stmt_bind_param($get_stmt, 'i', $meeting_id_int);
@@ -256,8 +250,7 @@ function approveLeave($conn, $leave_id, $user_id) {
     $leave = mysqli_fetch_assoc($leave_result);
     
     if (!$leave) {
-        echo json_encode(['success' => false, 'error' => 'Leave request not found']);
-        exit;
+        jsonError('Leave request not found', 404);
     }
     
     // Update leave status
@@ -304,8 +297,7 @@ function rejectLeave($conn, $leave_id, $user_id) {
     $leave = mysqli_fetch_assoc($leave_result);
     
     if (!$leave) {
-        echo json_encode(['success' => false, 'error' => 'Leave request not found']);
-        exit;
+        jsonError('Leave request not found', 404);
     }
     
     // Update leave status
@@ -353,13 +345,17 @@ function markNotificationAsRead($conn, $notification_id, $user_id) {
             echo json_encode(['success' => true, 'message' => 'Notification marked as read']);
         } else {
             mysqli_stmt_close($notif_stmt);
-            echo json_encode(['success' => false, 'error' => 'Failed to mark notification as read: ' . mysqli_error($conn)]);
+            handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/notification_actions.php');
         }
     } else {
-        echo json_encode(['success' => false, 'error' => 'Database error: ' . mysqli_error($conn)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/notification_actions.php');
     }
 }
 
 // Helper function to create notifications (using the one from functions.php)
 // This function is kept for backward compatibility but should use the one from includes/functions.php
 
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}

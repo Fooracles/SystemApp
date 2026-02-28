@@ -1,13 +1,14 @@
 <?php
 // Turn off error reporting and display for production
 error_reporting(E_ALL);
-ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/../logs/ajax_errors.log');
 
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
-session_start();
+
+// Re-suppress error display AFTER includes (error_handler.php enables it in dev)
+ini_set('display_errors', 0);
 
 header('Content-Type: application/json'); // Set this at the very beginning
 
@@ -177,4 +178,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_id'])) {
 echo json_encode($response);
 exit; // Ensure no further output
 ?>
-

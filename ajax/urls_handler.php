@@ -17,9 +17,11 @@ require_once "../includes/functions.php";
 
 // Check if user is logged in
 if (!isLoggedIn()) {
-    echo json_encode(['success' => false, 'message' => 'Not authenticated']);
-    exit;
+    jsonError('Not authenticated', 500);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 // Get the action from POST data
 $action = $_POST['action'] ?? '';
@@ -82,7 +84,7 @@ try {
             break;
     }
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Server error: ' . $e->getMessage()]);
+    handleException($e, 'urls_handler');
 }
 
 function get_all_urls() {
@@ -157,8 +159,7 @@ function get_admin_url() {
     global $conn;
     
     if (!isAdmin()) {
-        echo json_encode(['success' => false, 'message' => 'Access denied']);
-        return;
+        jsonError('Access denied', 403);
     }
     
     $url_id = $_POST['url_id'] ?? 0;
@@ -195,8 +196,7 @@ function create_personal_url() {
     $category = trim($_POST['category'] ?? '');
     
     if (empty($title) || empty($url)) {
-        echo json_encode(['success' => false, 'message' => 'Title and URL are required']);
-        return;
+        jsonError('Title and URL are required', 400);
     }
     
     // Remove https validation - allow URLs with or without protocol
@@ -207,8 +207,7 @@ function create_personal_url() {
     
     // Validate the URL (now with protocol)
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid URL format']);
-        return;
+        jsonError('Invalid URL format', 400);
     }
     
     $sql = "INSERT INTO personal_urls (user_id, title, url, description, category, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
@@ -226,8 +225,7 @@ function create_admin_url() {
     global $conn;
     
     if (!isAdmin()) {
-        echo json_encode(['success' => false, 'message' => 'Access denied']);
-        return;
+        jsonError('Access denied', 403);
     }
     
     $title = trim($_POST['title'] ?? '');
@@ -237,8 +235,7 @@ function create_admin_url() {
     $visible_for = trim($_POST['visible_for'] ?? 'all');
     
     if (empty($title) || empty($url)) {
-        echo json_encode(['success' => false, 'message' => 'Title and URL are required']);
-        return;
+        jsonError('Title and URL are required', 400);
     }
     
     // Normalize URL (add http:// if no protocol)
@@ -246,8 +243,7 @@ function create_admin_url() {
     
     // Validate the URL (now with protocol)
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid URL format']);
-        return;
+        jsonError('Invalid URL format', 400);
     }
     
     $sql = "INSERT INTO admin_urls (created_by, title, url, description, category, visible_for, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
@@ -271,8 +267,7 @@ function update_personal_url() {
     $category = trim($_POST['category'] ?? '');
     
     if (empty($title) || empty($url)) {
-        echo json_encode(['success' => false, 'message' => 'Title and URL are required']);
-        return;
+        jsonError('Title and URL are required', 400);
     }
     
     // Normalize URL (add http:// if no protocol)
@@ -280,8 +275,7 @@ function update_personal_url() {
     
     // Validate the URL (now with protocol)
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid URL format']);
-        return;
+        jsonError('Invalid URL format', 400);
     }
     
     $sql = "UPDATE personal_urls SET title = ?, url = ?, description = ?, category = ? WHERE id = ? AND user_id = ?";
@@ -299,8 +293,7 @@ function update_admin_url() {
     global $conn;
     
     if (!isAdmin()) {
-        echo json_encode(['success' => false, 'message' => 'Access denied']);
-        return;
+        jsonError('Access denied', 403);
     }
     
     $url_id = $_POST['url_id'] ?? 0;
@@ -311,8 +304,7 @@ function update_admin_url() {
     $visible_for = trim($_POST['visible_for'] ?? 'all');
     
     if (empty($title) || empty($url)) {
-        echo json_encode(['success' => false, 'message' => 'Title and URL are required']);
-        return;
+        jsonError('Title and URL are required', 400);
     }
     
     // Normalize URL (add http:// if no protocol)
@@ -320,8 +312,7 @@ function update_admin_url() {
     
     // Validate the URL (now with protocol)
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid URL format']);
-        return;
+        jsonError('Invalid URL format', 400);
     }
     
     $sql = "UPDATE admin_urls SET title = ?, url = ?, description = ?, category = ?, visible_for = ? WHERE id = ?";
@@ -355,8 +346,7 @@ function delete_admin_url() {
     global $conn;
     
     if (!isAdmin()) {
-        echo json_encode(['success' => false, 'message' => 'Access denied']);
-        return;
+        jsonError('Access denied', 403);
     }
     
     $url_id = $_POST['url_id'] ?? 0;
@@ -379,8 +369,7 @@ function update_order() {
     $url_ids = $_POST['url_ids'] ?? [];
     
     if (empty($url_ids) || !is_array($url_ids)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid URL IDs']);
-        return;
+        jsonError('Invalid URL IDs', 400);
     }
     
     // Update order for each URL
@@ -470,8 +459,7 @@ function share_url() {
     $permission = $_POST['permission'] ?? 'view';
     
     if (!$url_id || !$shared_with_user_id || !in_array($url_type, ['personal', 'admin'])) {
-        echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
-        return;
+        jsonError('Invalid parameters', 400);
     }
     
     // Check if sharing table exists, if not try to create it
@@ -528,20 +516,17 @@ function share_url() {
         mysqli_stmt_close($stmt);
         
         if (!$url || $url['user_id'] != $user_id) {
-            echo json_encode(['success' => false, 'message' => 'You can only share your own URLs']);
-            return;
+            jsonError('You can only share your own URLs', 400);
         }
     } else {
         // For admin URLs, only admins can share
         if (!isAdmin()) {
-            echo json_encode(['success' => false, 'message' => 'Access denied']);
-            return;
+            jsonError('Access denied', 403);
         }
     }
     
     if ($shared_with_user_id == $user_id) {
-        echo json_encode(['success' => false, 'message' => 'You cannot share a URL with yourself']);
-        return;
+        jsonError('You cannot share a URL with yourself', 400);
     }
     
     // Check if sharing already exists
@@ -559,7 +544,7 @@ function share_url() {
         $sql = "UPDATE $table_name SET permission = ? WHERE id = ?";
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
-            echo json_encode(['success' => false, 'message' => 'Database error: ' . mysqli_error($conn)]);
+            handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/urls_handler.php');
             return;
         }
         mysqli_stmt_bind_param($stmt, "si", $permission, $existing['id']);
@@ -568,7 +553,7 @@ function share_url() {
         $sql = "INSERT INTO $table_name (url_id, shared_with_user_id, permission, created_at) VALUES (?, ?, ?, NOW())";
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
-            echo json_encode(['success' => false, 'message' => 'Database error: ' . mysqli_error($conn)]);
+            handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/urls_handler.php');
             return;
         }
         mysqli_stmt_bind_param($stmt, "iis", $url_id, $shared_with_user_id, $permission);
@@ -577,8 +562,7 @@ function share_url() {
     if (mysqli_stmt_execute($stmt)) {
         echo json_encode(['success' => true, 'message' => 'URL shared successfully']);
     } else {
-        $error = mysqli_error($conn);
-        echo json_encode(['success' => false, 'message' => 'Failed to share URL: ' . $error]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/urls_handler.php');
     }
     mysqli_stmt_close($stmt);
 }
@@ -590,8 +574,7 @@ function get_sharing_list() {
     $url_type = $_POST['url_type'] ?? '';
     
     if (!$url_id || !in_array($url_type, ['personal', 'admin'])) {
-        echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
-        return;
+        jsonError('Invalid parameters', 400);
     }
     
     $user_id = $_SESSION['id'];
@@ -607,14 +590,12 @@ function get_sharing_list() {
         mysqli_stmt_close($stmt);
         
         if (!$url || $url['user_id'] != $user_id) {
-            echo json_encode(['success' => false, 'message' => 'Access denied']);
-            return;
+            jsonError('Access denied', 403);
         }
     } else {
         // For admin URLs, only admins can view sharing list
         if (!isAdmin()) {
-            echo json_encode(['success' => false, 'message' => 'Access denied']);
-            return;
+            jsonError('Access denied', 403);
         }
     }
     
@@ -648,8 +629,7 @@ function remove_sharing() {
     $sharing_id = (int)($_POST['sharing_id'] ?? 0);
     
     if (!$sharing_id) {
-        echo json_encode(['success' => false, 'message' => 'Invalid sharing ID']);
-        return;
+        jsonError('Invalid sharing ID', 400);
     }
     
     $user_id = $_SESSION['id'];
@@ -686,14 +666,12 @@ function remove_sharing() {
     }
     
     if (!$sharing) {
-        echo json_encode(['success' => false, 'message' => 'Sharing not found']);
-        return;
+        jsonError('Sharing not found', 404);
     }
     
     // Check if user owns the URL or is admin
     if ($sharing['url_owner_id'] != $user_id && !isAdmin()) {
-        echo json_encode(['success' => false, 'message' => 'Access denied']);
-        return;
+        jsonError('Access denied', 403);
     }
     
     $sql = "DELETE FROM $table_name WHERE id = ?";
@@ -713,8 +691,8 @@ function get_all_users() {
     
     $user_id = $_SESSION['id'];
     
-    // Get all users except the current user
-    $sql = "SELECT id, name, user_type FROM users WHERE id != ? ORDER BY name ASC";
+    // Get all users except the current user, excluding clients and inactive users
+    $sql = "SELECT id, name, user_type FROM users WHERE id != ? AND user_type != 'client' AND COALESCE(Status, 'Active') = 'Active' ORDER BY name ASC";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $user_id);
     mysqli_stmt_execute($stmt);
@@ -792,5 +770,10 @@ function get_shared_urls() {
     mysqli_stmt_close($stmt);
     
     echo json_encode(['success' => true, 'shared_urls' => $shared_urls]);
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>

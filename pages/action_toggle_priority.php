@@ -364,4 +364,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_id']) && isset($
     $GLOBALS['ajax_response_data']['message'] = 'Invalid request data.';
     send_ajax_json_response($GLOBALS['ajax_response_data']);
 }
-

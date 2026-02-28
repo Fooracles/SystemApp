@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Useful URLs";
 require_once "../includes/header.php";
 
@@ -2840,7 +2840,6 @@ function shareUrl() {
                     successCount++;
                 } else {
                     errorCount++;
-                    console.error('Share URL error:', response ? response.message : 'Unknown error');
                 }
                 
                 // Check if all requests are complete
@@ -2873,7 +2872,6 @@ function shareUrl() {
             },
             error: function(xhr, status, error) {
                 errorCount++;
-                console.error('AJAX error sharing URL:', status, error, xhr.responseText);
                 if (successCount + errorCount === selectedUsers.length) {
                     if (successCount === 0) {
                         let errorMsg = 'Failed to share URL with any users.';
@@ -3083,4 +3081,5 @@ function getPermissionText(permission) {
 }
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once "../includes/footer.php";
+?>

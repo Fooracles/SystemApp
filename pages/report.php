@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Reports";
 require_once "../includes/header.php";
 
@@ -265,6 +265,19 @@ $is_client = isClient();
     background: rgba(255, 193, 7, 0.25);
     color: #fcd34d;
     border-color: rgba(255, 193, 7, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-delete:hover {
+    background: rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.5);
     transform: translateY(-1px);
 }
 
@@ -628,7 +641,6 @@ function loadReports() {
             }
         })
         .catch(error => {
-            console.error('Error loading reports:', error);
             grid.innerHTML = '<div class="reports-empty"><i class="fas fa-exclamation-triangle"></i><h3>Error</h3><p>Failed to load reports. Please try again.</p></div>';
         });
 }
@@ -682,6 +694,9 @@ function displayReports(reports) {
                     ${<?php echo ($is_admin || $is_manager) ? 'true' : 'false'; ?> ? `
                         <button class="btn-report-action btn-edit" onclick="editReport(${report.id})" title="Edit Report">
                             <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-report-action btn-delete" onclick="deleteReport(${report.id}, '${escapeHtml(report.title)}')" title="Delete Report">
+                            <i class="fas fa-trash"></i>
                         </button>
                     ` : ''}
                 </div>
@@ -742,6 +757,33 @@ function downloadReport(reportId, filePath) {
     window.location.href = `../ajax/reports_handler.php?action=download&id=${reportId}`;
 }
 
+// Delete report (Admin/Manager only)
+function deleteReport(reportId, reportTitle) {
+    if (!confirm(`Are you sure you want to delete the report "${reportTitle}"?\n\nThis action cannot be undone.`)) {
+        return;
+    }
+    
+    fetch('../ajax/reports_handler.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=delete_report&report_id=${reportId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'Report deleted successfully!');
+            loadReports();
+        } else {
+            alert('Error: ' + (data.message || 'Failed to delete report'));
+        }
+    })
+    .catch(error => {
+        alert('Error deleting report. Please try again.');
+    });
+}
+
 // Edit report (Manager only)
 function editReport(reportId) {
     fetch(`../ajax/reports_handler.php?action=get_report&id=${reportId}`)
@@ -777,7 +819,6 @@ function editReport(reportId) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             alert('Error loading report. Please try again.');
         });
 }
@@ -851,57 +892,83 @@ if (fileUploadArea) {
 }
 
 // Form submission
-document.getElementById('uploadReportForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
+// Prevent duplicate event listener attachment
+let uploadFormHandlerAttached = false;
+
+function attachUploadFormHandler() {
+    if (uploadFormHandlerAttached) return;
     
-    // Validate client account and users selection
-    const clientAccountId = document.getElementById('clientAccount').value;
-    const selectedUsers = Array.from(document.querySelectorAll('input[name="client_user_ids[]"]:checked')).map(cb => cb.value);
+    const form = document.getElementById('uploadReportForm');
+    if (!form) return;
     
-    if (!clientAccountId) {
-        alert('Please select a client account');
-        return;
-    }
-    
-    if (selectedUsers.length === 0) {
-        alert('Please select at least one client user');
-        document.getElementById('clientUsersMessage').style.display = 'block';
-        return;
-    }
-    
-    const formData = new FormData(this);
-    formData.append('action', document.getElementById('reportId').value ? 'update_report' : 'upload_report');
-    formData.append('client_account_id', clientAccountId);
-    formData.append('client_user_ids', JSON.stringify(selectedUsers));
-    
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = 'Uploading...';
-    
-    fetch('../ajax/reports_handler.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message || 'Report uploaded successfully!');
-            closeUploadModal();
-            loadReports();
-        } else {
-            alert('Error: ' + (data.message || 'Failed to upload report'));
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Prevent double submission
+        const submitBtn = this.querySelector('button[type="submit"]');
+        if (submitBtn.disabled) {
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error uploading report. Please try again.');
-    })
-    .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
+        
+        // Validate client account and users selection
+        const clientAccountId = document.getElementById('clientAccount').value;
+        const selectedUsers = Array.from(document.querySelectorAll('input[name="client_user_ids[]"]:checked')).map(cb => parseInt(cb.value));
+        
+        // Remove duplicates
+        const uniqueUsers = [...new Set(selectedUsers.filter(id => id > 0))];
+        
+        if (!clientAccountId) {
+            alert('Please select a client account');
+            return;
+        }
+        
+        if (uniqueUsers.length === 0) {
+            alert('Please select at least one client user');
+            document.getElementById('clientUsersMessage').style.display = 'block';
+            return;
+        }
+        
+        const formData = new FormData(this);
+        formData.append('action', document.getElementById('reportId').value ? 'update_report' : 'upload_report');
+        formData.append('client_account_id', clientAccountId);
+        formData.append('client_user_ids', JSON.stringify(uniqueUsers));
+        
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Uploading...';
+        
+        fetch('../ajax/reports_handler.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message || 'Report uploaded successfully!');
+                closeUploadModal();
+                loadReports();
+            } else {
+                alert('Error: ' + (data.message || 'Failed to upload report'));
+            }
+        })
+        .catch(error => {
+            alert('Error uploading report. Please try again.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
     });
-});
+    
+    uploadFormHandlerAttached = true;
+}
+
+// Attach handler when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachUploadFormHandler);
+} else {
+    attachUploadFormHandler();
+}
 
 // Fetch client accounts
 function fetchClientAccounts() {
@@ -933,11 +1000,9 @@ function fetchClientAccounts() {
                     }
                 });
             } else {
-                console.error('Error fetching client accounts:', data.message);
             }
         })
         .catch(error => {
-            console.error('Error fetching client accounts:', error);
         });
 }
 
@@ -980,12 +1045,10 @@ function fetchClientUsers(clientAccountId) {
                     message.style.display = 'none';
                 }
             } else {
-                console.error('Error fetching client users:', data.message);
                 document.getElementById('clientUsersGroup').style.display = 'none';
             }
         })
         .catch(error => {
-            console.error('Error fetching client users:', error);
             document.getElementById('clientUsersGroup').style.display = 'none';
         });
 }
@@ -1018,4 +1081,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once "../includes/footer.php";
+?>

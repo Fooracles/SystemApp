@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Manage Forms";
 require_once "../includes/header.php";
 
@@ -24,10 +24,8 @@ if(!isset($_SESSION['id']) || !isset($_SESSION['user_type'])) {
 $success_msg = "";
 $error_msg = "";
 
-// Generate CSRF token if not exists
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
+// Generate CSRF token (using centralized function)
+generateCsrfToken();
 
 // Rate limiting: Check if user has made too many requests (only for POST requests)
 if (!isset($_SESSION['form_requests'])) {
@@ -57,8 +55,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($requests_in_last_minute >= 10) {
         $error_msg = "Too many requests. Please wait a moment before trying again.";
     } else {
-        // Verify CSRF token
-        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        // Verify CSRF token (using centralized validation)
+        $csrf_token = $_POST['csrf_token'] ?? '';
+        if (!validateCsrfToken($csrf_token)) {
             $error_msg = "Invalid request. Please try again.";
         } else {
             $action = $_POST['action'] ?? '';
@@ -295,7 +294,7 @@ if($user_result) {
                     <div class="card-body">
                         <form method="POST" id="addFormForm">
                             <input type="hidden" name="action" value="add_form">
-                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                            <?php echo csrfTokenField(); ?>
                             <div class="row align-items-end">
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -548,7 +547,7 @@ $(document).ready(function() {
             <form class="edit-form-inline" data-form-id="${formId}">
                 <input type="hidden" name="action" value="edit_form">
                 <input type="hidden" name="form_id" value="${formId}">
-                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                <?php echo csrfTokenField(); ?>
                 <div class="row">
                     <div class="col-md-3">
                         <input type="text" class="form-control form-control-sm" name="form_name" value="${formName}" required>
@@ -681,7 +680,7 @@ $(document).ready(function() {
                 <form method="POST" style="display: none;">
                     <input type="hidden" name="action" value="delete_form">
                     <input type="hidden" name="form_id" value="${formId}">
-                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                    <?php echo csrfTokenField(); ?>
                 </form>
             `;
             $('body').append(deleteForm);

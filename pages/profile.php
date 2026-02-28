@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "My Profile";
 require_once "../includes/header.php";
 
@@ -1014,9 +1014,9 @@ if(!empty($profile_photo) && file_exists("../assets/uploads/profile_photos/" . $
         document.getElementById('profile_photo').addEventListener('change', function(e) {
             const fileName = e.target.files[0]?.name;
             if (fileName) {
-                console.log('Selected file: ' + fileName);
             }
         });
     </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once "../includes/footer.php";
+?>

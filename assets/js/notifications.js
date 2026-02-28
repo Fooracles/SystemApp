@@ -14,7 +14,6 @@ window.NotificationsManager = {
     
     init: function() {
         if (typeof $ === 'undefined') {
-            console.warn('jQuery not available for NotificationsManager');
             return;
         }
         
@@ -172,7 +171,6 @@ window.NotificationsManager = {
                 }
             },
             error: (xhr, status, error) => {
-                console.error('Error loading notifications:', error);
                 if (!silent) {
                     $content.html('<div class="notification-empty">Error loading notifications</div>');
                 }
@@ -206,11 +204,6 @@ window.NotificationsManager = {
             
             // Debug: Log if notification should have redirect but doesn't
             if (notif.type && notif.type !== 'day_special' && !hasRedirect) {
-                console.warn('Notification type should have redirect but doesn\'t:', {
-                    type: notif.type,
-                    redirectUrl: redirectUrl,
-                    notification: notif
-                });
             }
             
             // Special handling for day_special notifications
@@ -402,7 +395,6 @@ window.NotificationsManager = {
     },
     
     handleAction: function(actionType, notificationId, relatedId, buttonElement) {
-        console.log('handleAction called:', { actionType, notificationId, relatedId });
         
         switch (actionType) {
             case 'approve_meeting':
@@ -423,29 +415,16 @@ window.NotificationsManager = {
                 }
                 break;
             default:
-                console.warn('Unknown action type:', actionType);
                 alert('Unknown action type: ' + actionType);
         }
     },
     
     openLeaveActionModal: function(actionType, notificationId, relatedId) {
-        console.log('openLeaveActionModal called:', { actionType, notificationId, relatedId });
-        console.log('Current leaveManager state:', {
-            exists: !!window.leaveManager,
-            hasShowActionModal: !!(window.leaveManager && typeof window.leaveManager.showActionModal === 'function')
-        });
-        
         // Ensure leaveManager is available (initialize minimal version if needed)
         this.ensureLeaveManager();
         
         // Check if LeaveRequestManager is available
         const leaveManager = window.leaveManager || window.leaveRequestManager;
-        
-        console.log('After ensureLeaveManager:', {
-            exists: !!leaveManager,
-            hasShowActionModal: !!(leaveManager && typeof leaveManager.showActionModal === 'function'),
-            type: typeof leaveManager
-        });
         
         if (leaveManager && typeof leaveManager.showActionModal === 'function') {
             // Convert action type to modal action format
@@ -454,20 +433,14 @@ window.NotificationsManager = {
             // Store notification context for later use
             leaveManager.currentNotificationId = notificationId;
             
-            console.log('Opening modal with:', { relatedId, modalAction, notificationId });
             
             // Open modal with leave ID and action
             try {
                 leaveManager.showActionModal(relatedId, modalAction, notificationId);
             } catch (error) {
-                console.error('Error opening modal:', error);
                 this.showInlineError('Error opening confirmation modal: ' + error.message);
             }
         } else {
-            console.error('LeaveRequestManager not found or showActionModal not available', {
-                leaveManager: leaveManager,
-                hasShowActionModal: leaveManager ? typeof leaveManager.showActionModal : 'N/A'
-            });
             this.showInlineError('Unable to open confirmation modal. Please refresh the page and try again.');
         }
     },
@@ -475,9 +448,6 @@ window.NotificationsManager = {
     ensureLeaveManager: function() {
         // If leaveManager doesn't exist, create minimal version
         if (!window.leaveManager && !window.leaveRequestManager) {
-            console.log('Creating minimal LeaveRequestManager for notification actions');
-            console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
-            console.log('Modal element exists:', !!document.getElementById('confirmationModal'));
             
             // Create minimal LeaveRequestManager
             window.leaveManager = {
@@ -486,7 +456,6 @@ window.NotificationsManager = {
                 currentNotificationId: null,
                 
                 showActionModal: function(uniqueServiceNo, action, notificationId = null) {
-                    console.log('showActionModal called (minimal):', { uniqueServiceNo, action, notificationId });
                     this.currentServiceNo = uniqueServiceNo;
                     this.currentAction = action;
                     this.currentNotificationId = notificationId;
@@ -496,7 +465,6 @@ window.NotificationsManager = {
                     const noteInput = document.getElementById('actionNote');
                     
                     if (!modalElement) {
-                        console.error('Modal element not found!');
                         alert('Confirmation modal not found. Please refresh the page.');
                         return;
                     }
@@ -518,7 +486,6 @@ window.NotificationsManager = {
                         if (e.target && (e.target.id === 'confirmAction' || e.target.closest('#confirmAction'))) {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log('Confirm button clicked in minimal manager');
                             self.executeAction();
                             // Remove listener after use to prevent duplicates
                             document.removeEventListener('click', handleConfirmClick, true);
@@ -529,7 +496,6 @@ window.NotificationsManager = {
                         if (e.target && (e.target.id === 'cancelAction' || e.target.closest('#cancelAction'))) {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log('Cancel button clicked in minimal manager');
                             self.closeModal();
                             // Remove listener after use to prevent duplicates
                             document.removeEventListener('click', handleCancelClick, true);
@@ -576,7 +542,6 @@ window.NotificationsManager = {
                         });
                         modal.show();
                     } else {
-                        console.error('Bootstrap not available!');
                         alert('Bootstrap library not loaded. Please refresh the page.');
                         return;
                     }
@@ -629,7 +594,6 @@ window.NotificationsManager = {
                                             modal.hide();
                                         }
                                     } catch (error) {
-                                        console.log('Bootstrap 5 modal error, using manual fallback:', error);
                                         // Manual fallback
                                         modalElement.classList.remove('show');
                                         modalElement.style.display = 'none';
@@ -661,7 +625,6 @@ window.NotificationsManager = {
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
                         alert('Failed to save action. Please try again.');
                         if (confirmBtn) {
                             confirmBtn.disabled = false;
@@ -685,16 +648,13 @@ window.NotificationsManager = {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            console.log('Notification marked as read');
                         }
                     })
                     .catch(error => {
-                        console.error('Error marking notification as read:', error);
                     });
                 },
                 
                 closeModal: function() {
-                    console.log('closeModal called in minimal manager');
                     const modalElement = document.getElementById('confirmationModal');
                     if (modalElement) {
                         // Try Bootstrap 5 method first (if available)
@@ -709,7 +669,6 @@ window.NotificationsManager = {
                                     newModal.hide();
                                 }
                             } catch (error) {
-                                console.log('Bootstrap 5 modal error, using jQuery fallback:', error);
                                 // Fallback to jQuery Bootstrap 4
                                 if (typeof $ !== 'undefined' && $.fn.modal) {
                                     $(modalElement).modal('hide');
@@ -751,14 +710,11 @@ window.NotificationsManager = {
                 }
             };
             
-            console.log('Minimal LeaveRequestManager created successfully');
         } else {
-            console.log('LeaveRequestManager already exists, using existing instance');
         }
     },
     
     performAction: function(actionType, notificationId, relatedId, buttonElement) {
-        console.log('Performing action:', actionType, 'for notification:', notificationId, 'related_id:', relatedId);
         
         // Show loading state on the button
         const $button = buttonElement ? $(buttonElement) : $(`.btn-action[data-notification-id="${notificationId}"][data-action-type="${actionType}"]`);
@@ -781,7 +737,6 @@ window.NotificationsManager = {
             },
             dataType: 'json',
             success: (response) => {
-                console.log('Action response:', response);
                 
                 if (response.success) {
                     this.playNotificationSound();
@@ -797,7 +752,6 @@ window.NotificationsManager = {
                     }, 500);
                 } else {
                     const errorMsg = response.error || 'Unknown error occurred';
-                    console.error('Action failed:', errorMsg);
                     this.showInlineError(errorMsg);
                     
                     // Restore button
@@ -809,8 +763,6 @@ window.NotificationsManager = {
                 }
             },
             error: (xhr, status, error) => {
-                console.error('AJAX Error performing action:', error);
-                console.error('Response:', xhr.responseText);
                 
                 let errorMsg = 'Error performing action. Please try again.';
                 try {
@@ -853,10 +805,8 @@ window.NotificationsManager = {
             }
             
             if (actionType && notificationId) {
-                console.log('Action button clicked:', { actionType, notificationId, relatedId });
                 self.handleAction(actionType, notificationId, relatedId, this);
             } else {
-                console.error('Missing action data:', { actionType, notificationId, relatedId });
                 self.showInlineError('Error: Missing action data. Please refresh and try again.');
             }
         });
@@ -1020,7 +970,6 @@ window.NotificationsManager = {
                 }
             },
             error: (xhr, status, error) => {
-                console.error('Error rescheduling meeting:', error);
                 let errorMsg = 'Error rescheduling meeting. Please try again.';
                 try {
                     const response = JSON.parse(xhr.responseText);
@@ -1088,7 +1037,6 @@ window.NotificationsManager = {
                 }
             },
             error: (xhr, status, error) => {
-                console.error('Error marking notification as read:', error);
             }
         });
     },
@@ -1111,7 +1059,6 @@ window.NotificationsManager = {
                 }
             },
             error: (xhr, status, error) => {
-                console.error('Error marking all as read:', error);
             }
         });
     },
@@ -1314,7 +1261,6 @@ window.NotificationsManager = {
             },
             error: (xhr, status, error) => {
                 // Silently fail - don't disrupt user experience
-                console.log('Notification check failed:', error);
             }
         });
     },
@@ -1324,7 +1270,6 @@ window.NotificationsManager = {
         try {
             sessionStorage.setItem('notifications_alerted_ids', JSON.stringify(this.alertedNotificationIds));
         } catch (e) {
-            console.log('Failed to save alerted notification IDs:', e);
         }
     },
     
@@ -1341,7 +1286,6 @@ window.NotificationsManager = {
                 }
             }
         } catch (e) {
-            console.log('Failed to load alerted notification IDs:', e);
             this.alertedNotificationIds = [];
         }
     },
@@ -1361,7 +1305,6 @@ window.NotificationsManager = {
         try {
             sessionStorage.removeItem('notifications_alerted_ids');
         } catch (e) {
-            console.log('Failed to clear alerted notification IDs:', e);
         }
     },
     
@@ -1378,7 +1321,6 @@ window.NotificationsManager = {
             audioPath = 'assets/audio/notification.mp3';
         }
         
-        console.log('Setting up audio notification with path:', audioPath);
         
         // Create audio element
         this.audioElement = new Audio(audioPath);
@@ -1387,35 +1329,28 @@ window.NotificationsManager = {
         
         // Handle successful load
         this.audioElement.addEventListener('loadeddata', () => {
-            console.log('✓ Notification audio file loaded successfully');
         });
         
         this.audioElement.addEventListener('canplaythrough', () => {
-            console.log('✓ Notification audio ready to play');
         });
         
         // Handle loading errors
         this.audioElement.addEventListener('error', (e) => {
-            console.error('✗ Failed to load audio from:', audioPath);
-            console.error('Error details:', e);
             
             // Try alternative path
             const altPath = currentPath.includes('/pages/') 
                 ? 'assets/audio/notification.mp3' 
                 : '../assets/audio/notification.mp3';
             
-            console.log('Trying alternative path:', altPath);
             const altAudio = new Audio(altPath);
             altAudio.preload = 'auto';
             altAudio.volume = 0.5;
             
             altAudio.addEventListener('loadeddata', () => {
-                console.log('✓ Notification audio loaded from alternative path:', altPath);
                 this.audioElement = altAudio;
             });
             
             altAudio.addEventListener('error', () => {
-                console.warn('✗ Both audio paths failed, will use fallback beep sound');
                 this.audioElement = null;
             });
         });
@@ -1435,7 +1370,6 @@ window.NotificationsManager = {
                         .then(() => {
                             this.audioElement.pause();
                             this.audioElement.currentTime = 0;
-                            console.log('Audio unlocked successfully');
                         })
                         .catch(() => {
                             // Audio will be unlocked on next user interaction
@@ -1453,11 +1387,9 @@ window.NotificationsManager = {
     
     playNotificationSound: function() {
         if (!this.audioEnabled) {
-            console.log('Audio notifications are disabled');
             return;
         }
         
-        console.log('Attempting to play notification sound...');
         
         try {
             // Try to play the audio element
@@ -1475,28 +1407,22 @@ window.NotificationsManager = {
                 if (playPromise !== undefined) {
                     playPromise
                         .then(() => {
-                            console.log('Notification sound played successfully');
                             // Clean up after audio finishes
                             audioClone.addEventListener('ended', () => {
                                 audioClone.remove();
                             });
                         })
                         .catch(error => {
-                            console.warn('Audio autoplay prevented:', error);
-                            console.log('Trying fallback beep sound');
                             this.playFallbackBeep();
                         });
                 } else {
                     // For older browsers
-                    console.log('Notification sound triggered (legacy browser)');
                 }
             } else {
                 // Fallback: Use Web Audio API to create a beep
-                console.log('No audio element available, using fallback beep');
                 this.playFallbackBeep();
             }
         } catch (e) {
-            console.error('Notification sound error:', e);
             // Try fallback on error
             this.playFallbackBeep();
         }
@@ -1507,7 +1433,6 @@ window.NotificationsManager = {
             // Fallback: Use Web Audio API to create a subtle beep
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) {
-                console.warn('Web Audio API not supported');
                 return;
             }
             
@@ -1516,7 +1441,6 @@ window.NotificationsManager = {
             // Resume audio context if suspended (required by some browsers)
             if (audioContext.state === 'suspended') {
                 audioContext.resume().then(() => {
-                    console.log('Audio context resumed');
                 });
             }
             
@@ -1535,9 +1459,7 @@ window.NotificationsManager = {
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.2);
             
-            console.log('Fallback beep sound played');
         } catch (e) {
-            console.error('Fallback beep also failed:', e);
         }
     },
     
@@ -1681,7 +1603,6 @@ window.NotificationsManager = {
     getNotificationRedirectUrl: function(notif) {
         // Debug: Log notification type
         if (!notif) {
-            console.warn('Notification missing:', notif);
             return null;
         }
         
@@ -1766,13 +1687,6 @@ window.NotificationsManager = {
         
         // Debug logging (can be removed later)
         if (redirectUrl) {
-            console.log('Notification redirect URL generated:', {
-                originalType: notif.type,
-                inferredType: notificationType,
-                related_type: notif.related_type,
-                redirectUrl: redirectUrl,
-                basePath: basePath
-            });
         }
         
         return redirectUrl;

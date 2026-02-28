@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "Client Dashboard";
 require_once "../includes/header.php";
 
@@ -1219,16 +1219,24 @@ $user_id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? 1;
                 toDate = new Date(today);
         }
 
+        // Helper function to format date as YYYY-MM-DD without timezone issues
+        const formatDateLocal = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+        
         // For last_7d, 2w, and 4w, add 1 day to toDate to ensure today is included in backend queries
-        let toDateString = toDate.toISOString().split('T')[0];
+        let toDateString = formatDateLocal(toDate);
         if (rangeType === 'last_7d' || rangeType === '2w' || rangeType === '4w') {
             const toDatePlusOne = new Date(toDate);
             toDatePlusOne.setDate(toDate.getDate() + 1);
-            toDateString = toDatePlusOne.toISOString().split('T')[0];
+            toDateString = formatDateLocal(toDatePlusOne);
         }
         
         return {
-            fromDate: fromDate.toISOString().split('T')[0],
+            fromDate: formatDateLocal(fromDate),
             toDate: toDateString
         };
     }
@@ -1299,15 +1307,19 @@ $user_id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? 1;
             currentDateRange.toDate = dateRange.toDate;
         }
         
-        // Parse the dates (they come as YYYY-MM-DD strings)
-        const fromDate = new Date(currentDateRange.fromDate);
-        const toDate = new Date(currentDateRange.toDate);
+        // Parse the dates manually to avoid timezone issues (dates come as YYYY-MM-DD strings)
+        const parseDateString = (dateStr) => {
+            const parts = dateStr.split('-');
+            return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        };
+        
+        const fromDate = parseDateString(currentDateRange.fromDate);
+        let toDate = parseDateString(currentDateRange.toDate);
         
         // For filters that add 1 day to toDate for backend queries, subtract it back for display
-        let displayToDate = toDate;
         if (currentDateRange.type === 'last_7d' || currentDateRange.type === '2w' || currentDateRange.type === '4w') {
-            displayToDate = new Date(toDate);
-            displayToDate.setDate(toDate.getDate() - 1); // Subtract the day we added for backend query
+            toDate = new Date(toDate);
+            toDate.setDate(toDate.getDate() - 1); // Subtract the day we added for backend query
         }
         
         // Format dates nicely
@@ -1316,14 +1328,14 @@ $user_id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? 1;
             day: 'numeric', 
             year: 'numeric' 
         });
-        const toFormatted = displayToDate.toLocaleDateString('en-US', { 
+        const toFormatted = toDate.toLocaleDateString('en-US', { 
             month: 'short', 
             day: 'numeric', 
             year: 'numeric' 
         });
         
         // Display the date range
-        dateRangeDisplay.textContent = `${fromFormatted} - ${toFormatted}`;
+        dateRangeDisplay.textContent = `${fromFormatted} to ${toFormatted}`;
     }
 
     // Load dashboard data based on date range

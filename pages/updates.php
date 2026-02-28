@@ -870,6 +870,8 @@ textarea.form-control {
     box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
+    position: relative;
+    transition: top 0.2s ease, left 0.2s ease;
 }
 
 .view-update-header {
@@ -1471,12 +1473,15 @@ textarea.form-control {
             </div>
             
             <div class="form-group" id="targetClientUserGroup" style="display: none;">
-                <label class="form-label" for="targetClientUser">
-                    Client User
+                <label class="form-label" id="targetClientUsersLabel">
+                    Client Users <span class="required">*</span>
                 </label>
-                <select class="form-control" id="targetClientUser" name="target_client_user">
-                    <option value="">Select Client User (Optional)</option>
-                </select>
+                <div id="targetClientUsersContainer" style="max-height: 200px; overflow-y: auto; background: rgba(6, 8, 14, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding: 0.75rem;">
+                    <!-- Client users checkboxes will be populated here -->
+                </div>
+                <p id="targetClientUsersMessage" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); margin-top: 0.5rem; display: none;">
+                    Please select at least one client user
+                </p>
             </div>
             <?php endif; ?>
             
@@ -1602,7 +1607,6 @@ function loadUpdates() {
             }
         })
         .catch(error => {
-            console.error('Error loading updates:', error);
             allUpdates = [];
             filteredUpdates = [];
             grid.innerHTML = '<div class="updates-empty"><i class="fas fa-exclamation-triangle"></i><h3>Error</h3><p>Failed to load updates. Please try again.</p></div>';
@@ -1629,7 +1633,6 @@ function loadClientFilter() {
                             return { account, users: userData.success ? userData.client_users : [] };
                         })
                         .catch(error => {
-                            console.error('Error loading client users:', error);
                             return { account, users: [] };
                         });
                 });
@@ -1654,7 +1657,6 @@ function loadClientFilter() {
             }
         })
         .catch(error => {
-            console.error('Error loading client accounts:', error);
         });
 }
 
@@ -2081,14 +2083,98 @@ function viewUpdate(updateId, event) {
                 }
                 
                 document.getElementById('viewUpdateContent').innerHTML = contentHtml;
-                document.getElementById('viewUpdateModal').classList.add('active');
+                
+                // Position modal near the clicked update bubble
+                const modal = document.getElementById('viewUpdateModal');
+                const modalContent = modal.querySelector('.view-update-modal-content');
+                
+                // Get the clicked update card position
+                let targetElement = null;
+                if (event && event.target) {
+                    // Find the update card element
+                    targetElement = event.target.closest('.update-card');
+                }
+                
+                // First, make modal visible (but off-screen) to get its dimensions
+                modalContent.style.visibility = 'hidden';
+                modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
+                
+                if (targetElement) {
+                    const cardRect = targetElement.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    const viewportWidth = window.innerWidth;
+                    const spacing = 15; // Space between card and modal
+                    
+                    // Get actual modal dimensions
+                    const modalRect = modalContent.getBoundingClientRect();
+                    const modalHeight = modalRect.height || 400;
+                    const modalWidth = Math.min(modalRect.width || 560, viewportWidth - 40);
+                    
+                    // Calculate vertical position (try to place below the card first)
+                    let topPosition = cardRect.bottom + spacing;
+                    
+                    // If modal would go below viewport, try placing it above the card
+                    if (topPosition + modalHeight > viewportHeight - 20) {
+                        const spaceAbove = cardRect.top;
+                        const spaceBelow = viewportHeight - cardRect.bottom;
+                        
+                        // If more space above, place it above
+                        if (spaceAbove > spaceBelow && spaceAbove >= modalHeight + spacing) {
+                            topPosition = cardRect.top - modalHeight - spacing;
+                        } else {
+                            // Not enough space either way, center vertically but keep near the card
+                            topPosition = Math.max(20, Math.min(cardRect.bottom - modalHeight / 2, viewportHeight - modalHeight - 20));
+                        }
+                    }
+                    
+                    // Ensure minimum top position
+                    if (topPosition < 20) {
+                        topPosition = 20;
+                    }
+                    
+                    // Ensure maximum bottom position
+                    if (topPosition + modalHeight > viewportHeight - 20) {
+                        topPosition = viewportHeight - modalHeight - 20;
+                    }
+                    
+                    // Center horizontally in the viewport (content area)
+                    const leftPosition = (viewportWidth - modalWidth) / 2;
+                    
+                    // Set modal position
+                    modalContent.style.position = 'absolute';
+                    modalContent.style.top = topPosition + 'px';
+                    modalContent.style.left = leftPosition + 'px';
+                    modalContent.style.margin = '0';
+                    modalContent.style.transform = 'none';
+                    modalContent.style.maxWidth = modalWidth + 'px';
+                    modalContent.style.visibility = 'visible';
+                } else {
+                    // Fallback: center the modal if we can't find the card
+                    modalContent.style.position = '';
+                    modalContent.style.top = '';
+                    modalContent.style.left = '';
+                    modalContent.style.margin = '';
+                    modalContent.style.transform = '';
+                    modalContent.style.maxWidth = '';
+                    modalContent.style.visibility = 'visible';
+                }
+                
+                // Final check to ensure modal is visible in viewport
+                requestAnimationFrame(() => {
+                    const finalRect = modalContent.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    if (finalRect.top < 0 || finalRect.bottom > viewportHeight) {
+                        // Adjust if modal went out of bounds
+                        const adjustedTop = Math.max(20, Math.min(finalRect.top, viewportHeight - finalRect.height - 20));
+                        modalContent.style.top = adjustedTop + 'px';
+                    }
+                });
             } else {
                 alert('Error loading update: ' + data.message);
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             alert('Error loading update. Please try again.');
         });
 }
@@ -2139,7 +2225,6 @@ function editUpdate(updateId) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             alert('Error loading update. Please try again.');
         });
 }
@@ -2192,7 +2277,6 @@ function deleteUpdate(updateId) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
         alert('Error deleting update. Please try again.');
     });
 }
@@ -2245,14 +2329,18 @@ function clearUpdateForm() {
     
     // Reset client dropdowns (Admin/Manager only)
     const accountSelect = document.getElementById('targetClientAccount');
-    const userSelect = document.getElementById('targetClientUser');
+    const usersContainer = document.getElementById('targetClientUsersContainer');
+    const usersMessage = document.getElementById('targetClientUsersMessage');
     const userGroup = document.getElementById('targetClientUserGroup');
     
     if (accountSelect) {
         accountSelect.value = '';
     }
-    if (userSelect) {
-        userSelect.innerHTML = '<option value="">Select Client User (Optional)</option>';
+    if (usersContainer) {
+        usersContainer.innerHTML = '';
+    }
+    if (usersMessage) {
+        usersMessage.style.display = 'none';
     }
     if (userGroup) {
         userGroup.style.display = 'none';
@@ -2273,7 +2361,19 @@ function closeModalOnBackdrop(event) {
 }
 
 function closeViewUpdateModal() {
-    document.getElementById('viewUpdateModal').classList.remove('active');
+    const modal = document.getElementById('viewUpdateModal');
+    const modalContent = modal.querySelector('.view-update-modal-content');
+    
+    // Reset modal position and styles
+    modalContent.style.position = '';
+    modalContent.style.top = '';
+    modalContent.style.left = '';
+    modalContent.style.margin = '';
+    modalContent.style.transform = '';
+    modalContent.style.maxWidth = '';
+    modalContent.style.visibility = '';
+    
+    modal.classList.remove('active');
     document.body.style.overflow = '';
 }
 
@@ -2286,8 +2386,6 @@ function closeViewModalOnBackdrop(event) {
 // Load client accounts for dropdown (Admin/Manager only)
 function loadClientAccountsForModal() {
     const accountSelect = document.getElementById('targetClientAccount');
-    const userSelect = document.getElementById('targetClientUser');
-    const userGroup = document.getElementById('targetClientUserGroup');
     
     if (!accountSelect) return;
     
@@ -2306,14 +2404,13 @@ function loadClientAccountsForModal() {
             }
         })
         .catch(error => {
-            console.error('Error loading client accounts:', error);
         });
 }
 
 // Populate client dropdowns when editing an update
 function populateClientDropdownsForEdit(targetClientId) {
     const targetClientAccount = document.getElementById('targetClientAccount');
-    const targetClientUser = document.getElementById('targetClientUser');
+    const targetClientUsersContainer = document.getElementById('targetClientUsersContainer');
     const targetClientUserGroup = document.getElementById('targetClientUserGroup');
     
     if (!targetClientAccount) return;
@@ -2365,10 +2462,11 @@ function populateClientDropdownsForEdit(targetClientId) {
                             if (foundUser) {
                                 // Load users for this account first
                                 handleClientAccountChange();
-                                // Wait for dropdown to populate, then set the user
+                                // Wait for checkboxes to populate, then check the target user
                                 setTimeout(() => {
-                                    if (targetClientUser) {
-                                        targetClientUser.value = foundUser.id;
+                                    const checkbox = document.getElementById(`target_client_user_${foundUser.id}`);
+                                    if (checkbox) {
+                                        checkbox.checked = true;
                                     }
                                 }, 500);
                             } else {
@@ -2376,78 +2474,114 @@ function populateClientDropdownsForEdit(targetClientId) {
                                 if (targetClientUserGroup) {
                                     targetClientUserGroup.style.display = 'none';
                                 }
-                                if (targetClientUser) {
-                                    targetClientUser.innerHTML = '<option value="">Select Client User (Optional)</option>';
-                                    targetClientUser.value = '';
+                                if (targetClientUsersContainer) {
+                                    targetClientUsersContainer.innerHTML = '';
                                 }
                             }
                         } else {
                             // Target not found, clear dropdowns
                             if (targetClientAccount) targetClientAccount.value = '';
-                            if (targetClientUser) {
-                                targetClientUser.innerHTML = '<option value="">Select Client User (Optional)</option>';
-                                targetClientUser.value = '';
+                            if (targetClientUsersContainer) {
+                                targetClientUsersContainer.innerHTML = '';
                             }
                             if (targetClientUserGroup) targetClientUserGroup.style.display = 'none';
                         }
                     })
                     .catch(error => {
-                        console.error('Error loading client data for edit:', error);
                     });
                 }
             })
             .catch(error => {
-                console.error('Error loading client accounts for edit:', error);
             });
     } else {
         // No target, clear dropdowns
         if (targetClientAccount) targetClientAccount.value = '';
-        if (targetClientUser) {
-            targetClientUser.innerHTML = '<option value="">Select Client User (Optional)</option>';
-            targetClientUser.value = '';
+        if (targetClientUsersContainer) {
+            targetClientUsersContainer.innerHTML = '';
         }
         if (targetClientUserGroup) targetClientUserGroup.style.display = 'none';
     }
 }
 
-// Handle client account change - load users
+// Handle client account change - load users as checkboxes
 function handleClientAccountChange() {
     const accountSelect = document.getElementById('targetClientAccount');
-    const userSelect = document.getElementById('targetClientUser');
+    const usersContainer = document.getElementById('targetClientUsersContainer');
+    const usersMessage = document.getElementById('targetClientUsersMessage');
     const userGroup = document.getElementById('targetClientUserGroup');
     
-    if (!accountSelect || !userSelect || !userGroup) return;
+    if (!accountSelect || !usersContainer || !userGroup) return;
     
     const accountId = accountSelect.value;
     
     if (accountId) {
+        // Update label to show required
+        const usersLabel = document.getElementById('targetClientUsersLabel');
+        if (usersLabel) {
+            usersLabel.innerHTML = 'Client Users <span class="required">*</span>';
+        }
+        
         fetch(`../ajax/updates_handler.php?action=get_client_users&client_account_id=${accountId}`)
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    userSelect.innerHTML = '<option value="">Select Client User (Optional)</option>';
+                if (data.success && data.client_users && data.client_users.length > 0) {
+                    usersContainer.innerHTML = '';
                     
                     data.client_users.forEach(user => {
-                        const option = document.createElement('option');
-                        option.value = user.id;
-                        option.textContent = user.name || user.username;
-                        userSelect.appendChild(option);
+                        const label = document.createElement('label');
+                        label.style.cssText = 'display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 0.375rem; transition: background 0.2s;';
+                        label.onmouseover = function() { this.style.background = 'rgba(255, 255, 255, 0.05)'; };
+                        label.onmouseout = function() { this.style.background = 'transparent'; };
+                        
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.name = 'target_client_user_ids[]';
+                        checkbox.value = user.id;
+                        checkbox.id = `target_client_user_${user.id}`;
+                        checkbox.style.cssText = 'width: 1rem; height: 1rem; cursor: pointer; accent-color: #8b5cf6;';
+                        
+                        const span = document.createElement('span');
+                        span.textContent = user.name || user.username;
+                        span.style.cssText = 'color: rgba(255, 255, 255, 0.9); font-size: 0.875rem;';
+                        
+                        label.appendChild(checkbox);
+                        label.appendChild(span);
+                        usersContainer.appendChild(label);
                     });
                     
                     userGroup.style.display = 'block';
+                    usersMessage.style.display = 'none';
+                    
+                    // Add event listeners to checkboxes to hide validation message when checked
+                    const checkboxes = usersContainer.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', function() {
+                            const checkedCount = usersContainer.querySelectorAll('input[type="checkbox"]:checked').length;
+                            if (checkedCount > 0 && usersMessage) {
+                                usersMessage.style.display = 'none';
+                            }
+                        });
+                    });
                 } else {
-                    userSelect.innerHTML = '<option value="">No users found</option>';
+                    usersContainer.innerHTML = '<p style="color: rgba(255, 255, 255, 0.5); font-size: 0.875rem; font-style: italic; padding: 0.5rem;">No users found for this account</p>';
                     userGroup.style.display = 'block';
+                    usersMessage.style.display = 'none';
                 }
             })
             .catch(error => {
-                console.error('Error loading client users:', error);
-                userSelect.innerHTML = '<option value="">Error loading users</option>';
+                usersContainer.innerHTML = '<p style="color: rgba(255, 255, 255, 0.5); font-size: 0.875rem; font-style: italic; padding: 0.5rem;">Error loading users</p>';
                 userGroup.style.display = 'block';
+                usersMessage.style.display = 'none';
             });
     } else {
-        userSelect.innerHTML = '<option value="">Select Client User (Optional)</option>';
+        // Update label to show optional
+        const usersLabel = document.getElementById('targetClientUsersLabel');
+        if (usersLabel) {
+            usersLabel.innerHTML = 'Client Users <span style="color: rgba(255, 255, 255, 0.5); font-size: 0.75rem;">(Optional)</span>';
+        }
+        usersContainer.innerHTML = '';
         userGroup.style.display = 'none';
+        usersMessage.style.display = 'none';
     }
 }
 
@@ -2458,10 +2592,31 @@ document.getElementById('updateForm')?.addEventListener('submit', function(e) {
     const formData = new FormData(this);
     formData.append('action', document.getElementById('updateId').value ? 'update_update' : 'create_update');
     
-    // Add target_client_id if client user is selected (Admin/Manager only)
-    const targetClientUser = document.getElementById('targetClientUser');
-    if (targetClientUser && targetClientUser.value) {
-        formData.append('target_client_id', targetClientUser.value);
+    // Add target_client_id if client users are selected (Admin/Manager only)
+    // Get all checked client user checkboxes
+    const accountSelect = document.getElementById('targetClientAccount');
+    const checkedUsers = document.querySelectorAll('input[name="target_client_user_ids[]"]:checked');
+    const usersMessage = document.getElementById('targetClientUsersMessage');
+    
+    // Validate: if client account is selected, at least one user must be selected
+    if (accountSelect && accountSelect.value && (!checkedUsers || checkedUsers.length === 0)) {
+        if (usersMessage) {
+            usersMessage.style.display = 'block';
+        }
+        e.preventDefault();
+        alert('Please select at least one client user when a client account is selected.');
+        return;
+    }
+    
+    if (checkedUsers && checkedUsers.length > 0) {
+        // For now, use the first selected user (backend currently supports single target_client_id)
+        // If backend is updated to support multiple, we can send all IDs
+        formData.append('target_client_id', checkedUsers[0].value);
+    }
+    
+    // Hide validation message if users are selected
+    if (usersMessage && checkedUsers && checkedUsers.length > 0) {
+        usersMessage.style.display = 'none';
     }
     
     const submitBtn = this.querySelector('button[type="submit"]');
@@ -2484,7 +2639,6 @@ document.getElementById('updateForm')?.addEventListener('submit', function(e) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
         alert('Error saving update. Please try again.');
     })
     .finally(() => {
@@ -2531,5 +2685,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
-
+<?php require_once "../includes/footer.php";
+?>

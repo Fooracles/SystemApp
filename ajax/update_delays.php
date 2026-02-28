@@ -5,6 +5,9 @@ require_once "../includes/functions.php";
 // Set header for JSON response
 header('Content-Type: application/json');
 
+// CSRF protection for POST requests
+csrfProtect();
+
 // Check if this is an AJAX request for updating delay status
 if(isset($_POST['update_delays'])) {
     // Update all task delays
@@ -37,4 +40,9 @@ echo json_encode([
     'success' => false,
     'message' => 'Invalid request'
 ]);
-?> 
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}
+?>

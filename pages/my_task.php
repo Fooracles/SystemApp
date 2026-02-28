@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $page_title = "My Tasks";
 require_once "../includes/header.php";
 require_once "../includes/status_column_helpers.php";
@@ -2282,4 +2282,4 @@ console.log('Current user session info:', {
 });
 </script>
 
-<?php require_once "../includes/footer.php"; ?> 
+<?php require_once "../includes/footer.php"; ?>

@@ -82,4 +82,9 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
 
 // Output the JSON data
 echo json_encode($doers);
-?> 
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}
+?>

@@ -73,7 +73,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             <a href="report.php" title="Report" class="nav-link <?php echo ($current_page == 'report.php') ? 'active' : ''; ?>">
                 <i class="fas fa-chart-bar"></i>
-                <span class="link-text">Reports</span>
+                <span class="link-text">Report</span>
             </a>
 
             <a href="updates.php" title="Updates" class="nav-link <?php echo ($current_page == 'updates.php') ? 'active' : ''; ?>">
@@ -222,6 +222,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     </a>
                 </div>
             </div>
+
+            <!-- FMS Builder (Admin Only) -->
+            <a href="fms_builder.php" title="FMS Builder" class="nav-link <?php echo ($current_page == 'fms_builder.php') ? 'active' : ''; ?>">
+                <i class="fas fa-project-diagram"></i>
+                <span class="link-text">FMS Builder</span>
+            </a>
         <?php endif; ?>
 
         <!-- My Meetings Link (All Users) -->

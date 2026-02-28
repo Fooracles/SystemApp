@@ -1,22 +1,31 @@
 <?php
-// Suppress all output except JSON
-error_reporting(0);
-ini_set('display_errors', 0);
-ob_clean();
+// Start output buffering first to catch any stray output
+if (ob_get_level() == 0) {
+    ob_start();
+} else {
+    ob_clean();
+}
 
-session_start();
+// Include core files (functions.php auto-starts session)
 require_once "../includes/config.php";
 require_once "../includes/functions.php";
 require_once "../includes/dashboard_components.php";
 
+// Re-suppress error display AFTER config loads (error_handler.php overrides it in dev)
+ini_set('display_errors', 0);
+
+// Performance: increase execution time for large datasets
+set_time_limit(120);
+
 // Set proper headers for JSON response
-header('Content-Type: application/json');
-header('Cache-Control: no-cache, must-revalidate');
+if (!headers_sent()) {
+    header('Content-Type: application/json');
+    header('Cache-Control: no-cache, must-revalidate');
+}
 
 // Check if user is logged in and is a manager or admin
 if (!isLoggedIn() || (!isManager() && !isAdmin())) {
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
 
 $current_user_id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? 1;
@@ -87,10 +96,36 @@ try {
         'data' => $team_performance
     ];
     
+    // Clean any stray output before sending JSON
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
+    
     echo json_encode($response);
     
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
+    handleException($e, 'team_performance_overview_data');
+} catch (Error $e) {
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+        http_response_code(500);
+    }
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage(),
+        'file' => basename($e->getFile()),
+        'line' => $e->getLine()
+    ]);
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>
-

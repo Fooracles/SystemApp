@@ -10,21 +10,41 @@
  * Get status icon HTML with tooltip (PHP Backend)
  */
 function get_status_icon($status) {
-    $status_val = strtolower($status ?? 'pending');
+    $status_val = strtolower(trim($status ?? 'pending'));
+    $status_val = preg_replace('/\s+/', ' ', $status_val);
     $status_text = get_status_display_text($status);
     
-    $icon_map = [
-        'pending' => '⏳',
-        'completed' => '✅',
-        'not_done' => '❌',
-        'not done' => '❌',
-        'cant_be_done' => '⛔',
-        'can not be done' => '⛔',
-        'shifted' => '🔁',
-        'priority' => '⭐'
+    // Check for "can't be done" variants first (before exact map lookup)
+    // Check for "can't be done" variants first (before exact map lookup)
+    $cant_be_done_patterns = [
+        '/^can\s*(?:not|\'?t)\s+be\s+done$/i',
+        '/^cannot\s+be\s+done$/i',
+        '/^cant\s+be\s+done$/i'
     ];
+    foreach ($cant_be_done_patterns as $pattern) {
+        if (preg_match($pattern, $status_val)) {
+            $icon = '⛔';
+            break;
+        }
+    }
     
-    $icon = $icon_map[$status_val] ?? '⏳';
+    if (!isset($icon)) {
+        $icon_map = [
+            'pending' => '⏳',
+            'completed' => '✅',
+            'not_done' => '❌',
+            'not done' => '❌',
+            'cant_be_done' => '⛔',
+            'can not be done' => '⛔',
+            "can't be done" => '⛔',
+            'cant be done' => '⛔',
+            'cannot be done' => '⛔',
+            'Can not be done' => '⛔',
+            'shifted' => '🔁',
+            'priority' => '⭐'
+        ];
+        $icon = $icon_map[$status_val] ?? '⏳';
+    }
     $css_class = 'status-' . str_replace(['_', ' '], '-', $status_val);
     
     return '<span class="status-icon ' . $css_class . '" title="' . htmlspecialchars($status_text) . '">' . $icon . '</span>';
@@ -34,11 +54,24 @@ function get_status_icon($status) {
  * Get status display text (PHP Backend)
  */
 function get_status_display_text($status) {
-    $status_val = strtolower($status ?? 'pending');
+    $status_val = strtolower(trim($status ?? 'pending'));
+    $status_val = preg_replace('/\s+/', ' ', $status_val);
     $status_text = ucfirst(str_replace('_', ' ', $status_val));
     
     if ($status_val === 'not_done' || $status_val === 'not done') $status_text = 'Not Done';
-    if ($status_val === 'cant_be_done' || $status_val === 'can not be done') $status_text = "Can't be done";
+    // Check for "can't be done" variants using regex (more robust than exact match)
+    // Check for "can't be done" variants first (before exact map lookup)
+    $cant_be_done_patterns = [
+        '/^can\s*(?:not|\'?t)\s+be\s+done$/i',
+        '/^cannot\s+be\s+done$/i',
+        '/^cant\s+be\s+done$/i'
+    ];
+    foreach ($cant_be_done_patterns as $pattern) {
+        if (preg_match($pattern, $status_val)) {
+            $status_text = "Can't be done";
+            break;
+        }
+    }
     
     return $status_text;
 }

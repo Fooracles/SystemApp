@@ -3,6 +3,7 @@
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
 require_once '../includes/db_functions.php';
+require_once '../includes/notification_triggers.php';
 
 // Ensure updates table has correct columns (run migration if needed)
 if (tableExists($conn, 'updates')) {
@@ -15,16 +16,17 @@ ensureUsersColumns($conn);
 // Check if user is logged in
 if (!isLoggedIn()) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
 
 // Check if user is Admin, Manager, or Client
 if (!isAdmin() && !isManager() && !isClient()) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Access denied']);
-    exit;
+    jsonError('Access denied', 403);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $user_id = $_SESSION['id'];
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
@@ -84,7 +86,7 @@ try {
 } catch (Exception $e) {
     if ($action !== 'download_attachment' && $action !== 'play_voice') {
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        handleException($e, 'updates_handler');
     } else {
         http_response_code(404);
         echo 'File not found';
@@ -261,8 +263,9 @@ function getUpdates($conn, $user_id) {
             $param_types = str_repeat('i', count($client_ids));
         }
     } elseif ($is_client) {
-        // Client can see updates from their assigned manager, own updates, and updates targeted to them
-        // Get user info including password to determine if client user or client account
+        // Client can only see: own updates, updates targeted to them or their account,
+        // and updates from their manager/account that are either untargeted or targeted to them.
+        // Do NOT show admin/manager updates that are targeted to another client account.
         $user_info_sql = "SELECT manager_id, password FROM users WHERE id = ?";
         $user_info_stmt = mysqli_prepare($conn, $user_info_sql);
         mysqli_stmt_bind_param($user_info_stmt, 'i', $user_id);
@@ -276,13 +279,8 @@ function getUpdates($conn, $user_id) {
         $actual_manager_id = null;
         $client_account_id = null;
         
-        // Determine if this is a client user (has password) or client account (no password)
         if ($has_password && $client_manager_id) {
-            // This is a client user - manager_id points to client account
             $client_account_id = $client_manager_id;
-            
-            // Get the actual manager/admin from the client account
-            // Client accounts have user_type='client' and (password IS NULL OR password = '')
             $account_sql = "SELECT manager_id, user_type FROM users WHERE id = ?";
             $account_stmt = mysqli_prepare($conn, $account_sql);
             mysqli_stmt_bind_param($account_stmt, 'i', $client_account_id);
@@ -290,66 +288,53 @@ function getUpdates($conn, $user_id) {
             $account_result = mysqli_stmt_get_result($account_stmt);
             $account_data = mysqli_fetch_assoc($account_result);
             mysqli_stmt_close($account_stmt);
-            
-            // Verify this is actually a client account (not a client user)
-            if ($account_data && $account_data['user_type'] == 'client') {
-                if ($account_data['manager_id']) {
-                    $actual_manager_id = $account_data['manager_id'];
-                }
+            if ($account_data && $account_data['user_type'] == 'client' && $account_data['manager_id']) {
+                $actual_manager_id = $account_data['manager_id'];
             }
         } else if ($client_manager_id) {
-            // This is a client account - manager_id points directly to manager/admin
             $actual_manager_id = $client_manager_id;
         }
         
-        // Build list of user IDs to show updates from
-        $user_ids_to_show = array($user_id); // Always show own updates
-        
+        // Manager and account IDs only (for condition 4 - not including current user)
+        $manager_account_ids = array();
         if ($actual_manager_id) {
-            $user_ids_to_show[] = $actual_manager_id; // Show updates from manager/admin
+            $manager_account_ids[] = $actual_manager_id;
         }
-        
         if ($client_account_id && $client_account_id != $user_id) {
-            $user_ids_to_show[] = $client_account_id; // Show updates from client account
+            $manager_account_ids[] = $client_account_id;
         }
+        $manager_account_ids = array_values(array_unique($manager_account_ids));
         
-        // Remove duplicates and re-index
-        $user_ids_to_show = array_values(array_unique($user_ids_to_show));
-        
-        // Build WHERE clause conditions
-        // Key: Show ALL updates from manager/admin (regardless of target_client_id)
-        //      + updates targeted to this client or client account
-        //      + own updates
         $where_conditions = array();
         $params = array();
         $param_types = '';
         
-        // Condition 1: Show updates created by client themselves, their manager/admin, or their client account
-        // This includes ALL updates from manager/admin, even if target_client_id is NULL
-        if (count($user_ids_to_show) > 0) {
-            $placeholders = implode(',', array_fill(0, count($user_ids_to_show), '?'));
-            $where_conditions[] = "u.created_by IN ($placeholders)";
-            $params = array_merge($params, $user_ids_to_show);
-            $param_types .= str_repeat('i', count($user_ids_to_show));
-        }
+        // 1. Own updates
+        $where_conditions[] = "u.created_by = ?";
+        $params[] = $user_id;
+        $param_types .= 'i';
         
-        // Condition 2: Show updates explicitly targeted to this client user
+        // 2. Updates explicitly targeted to this client user
         $where_conditions[] = "u.target_client_id = ?";
         $params[] = $user_id;
         $param_types .= 'i';
         
-        // Condition 3: Show updates explicitly targeted to client account (if client user)
+        // 3. Updates explicitly targeted to this client account (if client user)
         if ($client_account_id && $client_account_id != $user_id) {
             $where_conditions[] = "u.target_client_id = ?";
             $params[] = $client_account_id;
             $param_types .= 'i';
         }
         
-        // Fallback: at least show own updates
-        if (empty($where_conditions)) {
-            $where_conditions[] = "u.created_by = ?";
-            $params = array($user_id);
-            $param_types = 'i';
+        // 4. Updates from their manager or client account only when targeted to this client/account or untargeted (not to other accounts)
+        if (!empty($manager_account_ids)) {
+            $placeholders = implode(',', array_fill(0, count($manager_account_ids), '?'));
+            $where_conditions[] = "(u.created_by IN ($placeholders) AND (u.target_client_id IS NULL OR u.target_client_id = ? OR u.target_client_id = ?))";
+            $params = array_merge($params, $manager_account_ids);
+            $param_types .= str_repeat('i', count($manager_account_ids));
+            $params[] = $user_id;
+            $params[] = $client_account_id ? $client_account_id : $user_id;
+            $param_types .= 'ii';
         }
         
         $where_clause = '(' . implode(' OR ', $where_conditions) . ')';
@@ -364,9 +349,7 @@ function getUpdates($conn, $user_id) {
         if (!$stmt) {
             throw new Exception('Database error: ' . mysqli_error($conn) . ' - SQL: ' . $sql);
         }
-        
         if (!empty($params)) {
-            // Bind parameters - handle variable number of parameters correctly
             $refs = array();
             foreach ($params as $key => $value) {
                 $refs[$key] = &$params[$key];
@@ -374,24 +357,19 @@ function getUpdates($conn, $user_id) {
             $bind_params = array_merge(array($param_types), $refs);
             call_user_func_array(array($stmt, 'bind_param'), $bind_params);
         }
-        
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        
         if (!$result) {
             mysqli_stmt_close($stmt);
-            throw new Exception('Database error: ' . mysqli_error($conn));
+            error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
         }
-        
         $updates = [];
         while ($row = mysqli_fetch_assoc($result)) {
             $updates[] = $row;
         }
-        
         mysqli_stmt_close($stmt);
-        
         echo json_encode(['success' => true, 'updates' => $updates]);
-        return; // Exit early for client case
+        return;
     } else {
         // Fallback: only own updates
         $sql = "SELECT u.*, usr.name as created_by_name, usr.user_type as created_by_user_type, usr.profile_photo as created_by_photo
@@ -406,7 +384,7 @@ function getUpdates($conn, $user_id) {
     // Execute query for non-client cases
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     if (!empty($params)) {
@@ -424,7 +402,7 @@ function getUpdates($conn, $user_id) {
     
     if (!$result) {
         mysqli_stmt_close($stmt);
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     $updates = [];
@@ -464,7 +442,7 @@ function getUpdate($conn, $user_id) {
     
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, 'i', $update_id);
@@ -504,14 +482,50 @@ function getUpdate($conn, $user_id) {
             mysqli_stmt_close($check_client_stmt);
         }
     } elseif ($is_client) {
-        // Client can see updates from their manager or their own
+        // Client can only see: own updates, updates targeted to them or their account,
+        // or updates from their manager/account that are untargeted or targeted to them (not to other accounts)
+        $user_info_sql = "SELECT manager_id, password FROM users WHERE id = ?";
+        $user_info_stmt = mysqli_prepare($conn, $user_info_sql);
+        mysqli_stmt_bind_param($user_info_stmt, 'i', $user_id);
+        mysqli_stmt_execute($user_info_stmt);
+        $user_info_result = mysqli_stmt_get_result($user_info_stmt);
+        $user_info = mysqli_fetch_assoc($user_info_result);
+        mysqli_stmt_close($user_info_stmt);
+        
+        $client_manager_id = $user_info['manager_id'] ?? null;
+        $has_password = !empty($user_info['password']);
+        $actual_manager_id = null;
+        $client_account_id = null;
+        
+        if ($has_password && $client_manager_id) {
+            $client_account_id = $client_manager_id;
+            $account_sql = "SELECT manager_id, user_type FROM users WHERE id = ?";
+            $account_stmt = mysqli_prepare($conn, $account_sql);
+            mysqli_stmt_bind_param($account_stmt, 'i', $client_account_id);
+            mysqli_stmt_execute($account_stmt);
+            $account_result = mysqli_stmt_get_result($account_stmt);
+            $account_data = mysqli_fetch_assoc($account_result);
+            mysqli_stmt_close($account_stmt);
+            if ($account_data && $account_data['user_type'] == 'client' && $account_data['manager_id']) {
+                $actual_manager_id = $account_data['manager_id'];
+            }
+        } else if ($client_manager_id) {
+            $actual_manager_id = $client_manager_id;
+        }
+        
+        $target_client_id = isset($row['target_client_id']) ? $row['target_client_id'] : null;
+        $target_ok = ($target_client_id === null || $target_client_id == $user_id || ($client_account_id && $client_account_id != $user_id && $target_client_id == $client_account_id));
+        
         if ($update_creator_id == $user_id) {
             $has_access = true;
-        } else {
-            $manager_id = $current_user['manager_id'] ?? null;
-            if ($manager_id && $update_creator_id == $manager_id) {
-                $has_access = true;
-            }
+        } elseif (isset($row['target_client_id']) && $row['target_client_id'] == $user_id) {
+            $has_access = true;
+        } elseif ($client_account_id && $client_account_id != $user_id && isset($row['target_client_id']) && $row['target_client_id'] == $client_account_id) {
+            $has_access = true;
+        } elseif ($actual_manager_id && $update_creator_id == $actual_manager_id && $target_ok) {
+            $has_access = true;
+        } elseif ($client_account_id && $client_account_id != $user_id && $update_creator_id == $client_account_id && $target_ok) {
+            $has_access = true;
         }
     }
     
@@ -640,7 +654,7 @@ function createUpdate($conn, $user_id) {
         // Clean up uploaded files if database insert fails
         if ($attachment_path) @unlink('../' . $attachment_path);
         if ($voice_recording_path) @unlink('../' . $voice_recording_path);
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, 'sssssii', $title, $content, $attachment_path, $attachment_name, $voice_recording_path, $user_id, $target_client_id);
@@ -649,7 +663,50 @@ function createUpdate($conn, $user_id) {
         // Clean up uploaded files if database insert fails
         if ($attachment_path) @unlink('../' . $attachment_path);
         if ($voice_recording_path) @unlink('../' . $voice_recording_path);
-        throw new Exception('Failed to create update: ' . mysqli_error($conn));
+        error_log("[DB Error] Failed to create update: " . mysqli_error($conn)); throw new Exception('A database error occurred');
+    }
+    
+    $update_id = mysqli_insert_id($conn);
+    
+    $is_client = isClient();
+    
+    // Send notification to client user if update is created by admin/manager for a specific client
+    if (($is_admin || $is_manager) && $target_client_id && $target_client_id > 0) {
+        // Get creator's name
+        $creator_sql = "SELECT name FROM users WHERE id = ?";
+        $creator_stmt = mysqli_prepare($conn, $creator_sql);
+        if ($creator_stmt) {
+            mysqli_stmt_bind_param($creator_stmt, 'i', $user_id);
+            mysqli_stmt_execute($creator_stmt);
+            $creator_result = mysqli_stmt_get_result($creator_stmt);
+            $creator = mysqli_fetch_assoc($creator_result);
+            $created_by_name = $creator ? $creator['name'] : 'Manager/Admin';
+            mysqli_stmt_close($creator_stmt);
+            
+            // Trigger notification
+            triggerClientUpdateNotification($conn, $update_id, $target_client_id, $title, $created_by_name);
+        }
+    }
+    
+    // Send notifications if client user created an update
+    if ($is_client) {
+        // Get client user's name
+        $client_sql = "SELECT name FROM users WHERE id = ?";
+        $client_stmt = mysqli_prepare($conn, $client_sql);
+        $client_name = 'Client';
+        if ($client_stmt) {
+            mysqli_stmt_bind_param($client_stmt, 'i', $user_id);
+            mysqli_stmt_execute($client_stmt);
+            $client_result = mysqli_stmt_get_result($client_stmt);
+            $client = mysqli_fetch_assoc($client_result);
+            if ($client) {
+                $client_name = $client['name'];
+            }
+            mysqli_stmt_close($client_stmt);
+        }
+        
+        // Trigger notifications to admin and manager
+        triggerClientUpdateCreatedNotification($conn, $update_id, $user_id, $title, $client_name);
     }
     
     echo json_encode(['success' => true, 'message' => 'Update created successfully']);
@@ -812,7 +869,7 @@ function updateUpdate($conn, $user_id) {
         $stmt = mysqli_prepare($conn, $sql);
         
         if (!$stmt) {
-            throw new Exception('Database error: ' . mysqli_error($conn));
+            error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
         }
         
         mysqli_stmt_bind_param($stmt, 'sssssi', $title, $content, $attachment_path, $attachment_name, $voice_recording_path, $update_id);
@@ -821,14 +878,14 @@ function updateUpdate($conn, $user_id) {
         $stmt = mysqli_prepare($conn, $sql);
         
         if (!$stmt) {
-            throw new Exception('Database error: ' . mysqli_error($conn));
+            error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
         }
         
         mysqli_stmt_bind_param($stmt, 'sssssii', $title, $content, $attachment_path, $attachment_name, $voice_recording_path, $target_client_id, $update_id);
     }
     
     if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('Failed to update update: ' . mysqli_error($conn));
+        error_log("[DB Error] Failed to update update: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     echo json_encode(['success' => true, 'message' => 'Update updated successfully']);
@@ -862,13 +919,13 @@ function deleteUpdate($conn, $user_id) {
     $stmt = mysqli_prepare($conn, $sql);
     
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, 'i', $update_id);
     
     if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('Failed to delete update: ' . mysqli_error($conn));
+        error_log("[DB Error] Failed to delete update: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     // Delete associated files
@@ -936,13 +993,34 @@ function downloadAttachment($conn, $user_id) {
             mysqli_stmt_close($check_client_stmt);
         }
     } elseif ($is_client) {
+        $client_manager_id = $current_user['manager_id'] ?? null;
+        $client_account_id = null;
+        $actual_manager_id = null;
+        if ($client_manager_id) {
+            $acc_sql = "SELECT manager_id, user_type FROM users WHERE id = ?";
+            $acc_stmt = mysqli_prepare($conn, $acc_sql);
+            mysqli_stmt_bind_param($acc_stmt, 'i', $client_manager_id);
+            mysqli_stmt_execute($acc_stmt);
+            $acc_res = mysqli_stmt_get_result($acc_stmt);
+            $acc = mysqli_fetch_assoc($acc_res);
+            mysqli_stmt_close($acc_stmt);
+            if ($acc && $acc['user_type'] == 'client') {
+                $client_account_id = $client_manager_id;
+                if (!empty($acc['manager_id'])) {
+                    $actual_manager_id = $acc['manager_id'];
+                }
+            } else {
+                $actual_manager_id = $client_manager_id;
+            }
+        }
+        $target_client_id = isset($row['target_client_id']) ? $row['target_client_id'] : null;
+        $target_ok = ($target_client_id === null || $target_client_id == $user_id || ($client_account_id && $target_client_id == $client_account_id));
         if ($update_creator_id == $user_id) {
             $has_access = true;
-        } else {
-            $manager_id = $current_user['manager_id'] ?? null;
-            if ($manager_id && $update_creator_id == $manager_id) {
-                $has_access = true;
-            }
+        } elseif ($target_client_id == $user_id || ($client_account_id && $target_client_id == $client_account_id)) {
+            $has_access = true;
+        } elseif (($actual_manager_id && $update_creator_id == $actual_manager_id || ($client_account_id && $update_creator_id == $client_account_id)) && $target_ok) {
+            $has_access = true;
         }
     }
     
@@ -1125,13 +1203,34 @@ function playVoiceRecording($conn, $user_id) {
             mysqli_stmt_close($check_client_stmt);
         }
     } elseif ($is_client) {
+        $client_manager_id = $current_user['manager_id'] ?? null;
+        $client_account_id = null;
+        $actual_manager_id = null;
+        if ($client_manager_id) {
+            $acc_sql = "SELECT manager_id, user_type FROM users WHERE id = ?";
+            $acc_stmt = mysqli_prepare($conn, $acc_sql);
+            mysqli_stmt_bind_param($acc_stmt, 'i', $client_manager_id);
+            mysqli_stmt_execute($acc_stmt);
+            $acc_res = mysqli_stmt_get_result($acc_stmt);
+            $acc = mysqli_fetch_assoc($acc_res);
+            mysqli_stmt_close($acc_stmt);
+            if ($acc && $acc['user_type'] == 'client') {
+                $client_account_id = $client_manager_id;
+                if (!empty($acc['manager_id'])) {
+                    $actual_manager_id = $acc['manager_id'];
+                }
+            } else {
+                $actual_manager_id = $client_manager_id;
+            }
+        }
+        $target_client_id = isset($row['target_client_id']) ? $row['target_client_id'] : null;
+        $target_ok = ($target_client_id === null || $target_client_id == $user_id || ($client_account_id && $target_client_id == $client_account_id));
         if ($update_creator_id == $user_id) {
             $has_access = true;
-        } else {
-            $manager_id = $current_user['manager_id'] ?? null;
-            if ($manager_id && $update_creator_id == $manager_id) {
-                $has_access = true;
-            }
+        } elseif ($target_client_id == $user_id || ($client_account_id && $target_client_id == $client_account_id)) {
+            $has_access = true;
+        } elseif (($actual_manager_id && $update_creator_id == $actual_manager_id || ($client_account_id && $update_creator_id == $client_account_id)) && $target_ok) {
+            $has_access = true;
         }
     }
     
@@ -1157,3 +1256,7 @@ function playVoiceRecording($conn, $user_id) {
     exit;
 }
 
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}

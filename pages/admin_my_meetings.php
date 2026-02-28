@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Set page title and include header (which handles session and config)
 $page_title = 'My Meetings';
 require_once '../includes/header.php';
@@ -773,7 +773,6 @@ function loadScheduledMeetings() {
     
     const tbody = document.querySelector('#scheduledMeetingsTable tbody');
     if (!tbody) {
-        console.error('Scheduled meetings table tbody not found');
         return;
     }
     tbody.innerHTML = '<tr id="loadingScheduledRow"><td colspan="6" class="text-center"><div class="spinner-border text-warning" role="status"></div><p class="mt-2">Loading...</p></td></tr>';
@@ -787,7 +786,6 @@ function loadScheduledMeetings() {
                 try {
                     return JSON.parse(text);
                 } catch (e) {
-                    console.error('Invalid JSON response:', text);
                     throw new Error('Invalid response from server');
                 }
             });
@@ -871,7 +869,6 @@ function loadScheduledMeetings() {
             }
         })
         .catch(error => {
-            console.error('Error loading scheduled:', error);
             tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading data: ' + error.message + '</td></tr>';
         });
 }
@@ -882,7 +879,6 @@ function loadHistoryMeetings() {
     
     const tbody = document.querySelector('#historyMeetingsTable tbody');
     if (!tbody) {
-        console.error('History meetings table tbody not found');
         return;
     }
     tbody.innerHTML = '<tr id="loadingHistoryRow"><td colspan="6" class="text-center"><div class="spinner-border text-secondary" role="status"></div><p class="mt-2">Loading...</p></td></tr>';
@@ -902,7 +898,6 @@ function loadHistoryMeetings() {
                 try {
                     return JSON.parse(text);
                 } catch (e) {
-                    console.error('Invalid JSON response:', text);
                     throw new Error('Invalid response from server');
                 }
             });
@@ -956,7 +951,6 @@ function loadHistoryMeetings() {
             }
         })
         .catch(error => {
-            console.error('Error loading history:', error);
             tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading data: ' + error.message + '</td></tr>';
         });
 }
@@ -967,7 +961,6 @@ function loadMyHistoryMeetings() {
     
     const tbody = document.querySelector('#myHistoryMeetingsTable tbody');
     if (!tbody) {
-        console.error('My history meetings table tbody not found');
         return;
     }
     tbody.innerHTML = '<tr id="loadingMyHistoryRow"><td colspan="5" class="text-center"><div class="spinner-border text-secondary" role="status"></div><p class="mt-2">Loading...</p></td></tr>';
@@ -988,7 +981,6 @@ function loadMyHistoryMeetings() {
                 try {
                     return JSON.parse(text);
                 } catch (e) {
-                    console.error('Invalid JSON response:', text);
                     throw new Error('Invalid response from server');
                 }
             });
@@ -1054,7 +1046,6 @@ function loadMyHistoryMeetings() {
             tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading data</td></tr>';
         }
     }).catch(error => {
-        console.error('Error:', error);
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading data</td></tr>';
     });
 }
@@ -1277,7 +1268,6 @@ if (window.MEETING.isAdmin) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             showToast('error', 'An error occurred while scheduling the meeting');
         })
         .finally(() => {
@@ -1314,7 +1304,6 @@ function approveMeeting(meetingId) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
         showToast('error', 'An error occurred while approving the meeting');
     });
 }
@@ -1490,7 +1479,6 @@ function initializeMeetingTables() {
     } else if (window.MEETING) {
         loadMyHistoryMeetings();
     } else {
-        console.error('MEETING object not initialized');
     }
 }
 

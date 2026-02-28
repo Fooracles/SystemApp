@@ -206,6 +206,7 @@ if (isset($_GET['debug_special_events'])) {
     <link rel="icon" type="image/png" sizes="192x192" href="../assets/images/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="../assets/images/android-chrome-512x512.png">
     
+    <?php echo csrfMetaTag(); ?>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Custom CSS -->
@@ -504,6 +505,75 @@ if (isset($_GET['debug_special_events'])) {
         </form>
     </div>
 </div>
+
+<script>
+// CSRF Token Auto-Attach for fetch() API
+// This must run BEFORE any fetch() calls on the page
+(function() {
+    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    if (csrfToken) {
+        window.CSRF_TOKEN = csrfToken;
+
+        var originalFetch = window.fetch;
+        window.fetch = function(url, options) {
+            options = options || {};
+            var method = (options.method || 'GET').toUpperCase();
+            var isJsonRequest = false;
+
+            if (options.headers instanceof Headers) {
+                var h = options.headers.get('Content-Type');
+                isJsonRequest = !!(h && h.toLowerCase().indexOf('application/json') !== -1);
+            } else if (options.headers && typeof options.headers === 'object') {
+                var ct = options.headers['Content-Type'] || options.headers['content-type'] || '';
+                isJsonRequest = String(ct).toLowerCase().indexOf('application/json') !== -1;
+            }
+
+            // Fallback heuristic for JSON-string bodies even when header is absent.
+            if (!isJsonRequest && typeof options.body === 'string') {
+                var trimmed = options.body.trim();
+                isJsonRequest = trimmed.startsWith('{') || trimmed.startsWith('[');
+            }
+
+            if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+                // Append token to FormData bodies
+                if (options.body instanceof FormData) {
+                    if (!options.body.has('csrf_token')) {
+                        options.body.append('csrf_token', csrfToken);
+                    }
+                }
+                // Append token to URLSearchParams bodies
+                else if (options.body instanceof URLSearchParams) {
+                    if (!options.body.has('csrf_token')) {
+                        options.body.append('csrf_token', csrfToken);
+                    }
+                }
+                // For string bodies (application/x-www-form-urlencoded)
+                else if (!isJsonRequest && typeof options.body === 'string' && options.body.indexOf('csrf_token=') === -1) {
+                    options.body += (options.body ? '&' : '') + 'csrf_token=' + encodeURIComponent(csrfToken);
+                }
+
+                // Also set the header as a fallback
+                if (!options.headers) {
+                    options.headers = {};
+                }
+                if (options.headers instanceof Headers) {
+                    if (!options.headers.has('X-CSRF-TOKEN')) {
+                        options.headers.set('X-CSRF-TOKEN', csrfToken);
+                    }
+                } else if (typeof options.headers === 'object') {
+                    if (!options.headers['X-CSRF-TOKEN']) {
+                        options.headers['X-CSRF-TOKEN'] = csrfToken;
+                    }
+                }
+            }
+
+            return originalFetch.call(this, url, options);
+        };
+    }
+})();
+</script>
 
 <script>
 // Global Meeting Booking Functionality
@@ -1183,6 +1253,24 @@ if (isset($_GET['debug_special_events'])) {
 <script>
 // Set current user type for notifications
 window.currentUserType = '<?php echo htmlspecialchars($_SESSION['user_type'] ?? 'doer', ENT_QUOTES); ?>';
+
+// CSRF Token Auto-Attach for jQuery AJAX
+(function() {
+    if (typeof $ !== 'undefined' && window.CSRF_TOKEN) {
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (settings.type && settings.type.toUpperCase() !== 'GET') {
+                    xhr.setRequestHeader('X-CSRF-TOKEN', window.CSRF_TOKEN);
+
+                    // Also append to data if it's a string (form-encoded)
+                    if (typeof settings.data === 'string' && settings.data.indexOf('csrf_token=') === -1) {
+                        settings.data += (settings.data ? '&' : '') + 'csrf_token=' + encodeURIComponent(window.CSRF_TOKEN);
+                    }
+                }
+            }
+        });
+    }
+})();
 </script>
 <script src="../assets/js/notifications.js?v=<?php echo filemtime('../assets/js/notifications.js'); ?>"></script>
 

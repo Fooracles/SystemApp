@@ -162,7 +162,7 @@ if (!function_exists('buildDateTimeTimestamp')) {
 }
 
 if (!function_exists('classifyTaskForStats')) {
-    function classifyTaskForStats($status, $planned_date, $planned_time, $actual_date, $actual_time, $now = null) {
+    function classifyTaskForStats($status, $planned_date, $planned_time, $actual_date, $actual_time, $now = null, $task_type = 'delegation') {
         $normalized_status = normalizeTaskStatus($status);
         if (isStatusCantBeDone($normalized_status)) {
             return ['skip' => true];
@@ -183,7 +183,21 @@ if (!function_exists('classifyTaskForStats')) {
             'is_delayed' => false
         ];
         
-        if (isStatusCompleted($normalized_status)) {
+        // Check completed: standard statuses + FMS "yes"
+        $is_completed_status = isStatusCompleted($normalized_status);
+        if (!$is_completed_status && $task_type === 'fms' && $normalized_status === 'yes') {
+            $is_completed_status = true;
+        }
+        
+        // A task is truly completed only if it has a completed status AND has actual data
+        // This matches manage_tasks logic where actual data is required
+        $has_actual_data = ($actual_ts !== null);
+        $is_completed = $is_completed_status && $has_actual_data;
+        
+        // "not done" is always treated as pending (matches manage_tasks)
+        $is_not_done = in_array($normalized_status, ['not done', 'notdone']);
+        
+        if ($is_completed) {
             $classification['is_completed'] = true;
             if ($actual_ts !== null && $planned_ts !== null && $actual_ts > $planned_ts) {
                 $classification['is_completed_late'] = true;
@@ -191,7 +205,7 @@ if (!function_exists('classifyTaskForStats')) {
             return $classification;
         }
         
-        $is_pending_status = isStatusPending($normalized_status);
+        $is_pending_status = isStatusPending($normalized_status) || $is_not_done;
         $is_shifted_status = isStatusShifted($normalized_status);
         
         if ($is_pending_status && ($planned_ts === null || $planned_ts >= $now)) {
@@ -252,37 +266,41 @@ if (!function_exists('isDateInRange')) {
 /**
  * Calculate personal stats for a user (like doer dashboard)
  * Following exact specifications:
- * 1. Completed Tasks: Count all tasks completed within the selected time range (actual_date IN range)
- * 2. Pending Tasks: Tasks whose PLANNED DATE falls inside the selected range, but whose ACTUAL COMPLETION DATE does NOT fall inside that same range
- *    - planned_date ∈ selected_range AND (actual_date NOT in selected_range OR actual_date IS NULL)
- * 3. WND: -1 * (Total Pending Tasks (actual_date IS NULL AND planned_date IN range) / Total Tasks Planned IN range) * 100
- * 4. WND On-Time: -1 * (Total Completed But Delayed Tasks / Total Completed Tasks Planned IN range) * 100
+ * 1. Completed Tasks: Count tasks WHERE planned_date IN range AND status="Completed" AND actual_date BETWEEN selected_start AND selected_end
+ * 2. Pending Tasks: Count tasks WHERE planned_date IN range AND (actual_date IS NULL OR actual_date NOT BETWEEN selected_start AND selected_end)
+ * 3. Delayed: Count tasks WHERE planned_date BETWEEN selected_start AND selected_end AND current_datetime > planned_datetime
+ *    (excludes completed-early tasks)
+ * 4. WND: (Total Pending / Total Planned in range) * 100  — returns -100% if denominator = 0
+ * 5. WND On-Time (WNDOT): (Total Delayed / Total Tasks planned in range) * 100  — returns -100% if denominator = 0
  */
 function calculatePersonalStats($conn, $user_id, $username, $date_from = null, $date_to = null) {
+    static $delay_status_updated = false;
+    
     $stats = [
-        'completed_on_time' => 0,  // Completed Tasks: actual_date within selected time range (or planned_date if completed early)
-        'current_pending' => 0,     // Pending Tasks: planned_date IN range AND (actual_date NOT in range OR actual_date IS NULL)
-        'current_delayed' => 0,     // Delayed tasks (for reference)
+        'completed_on_time' => 0,  // Completed Tasks: status=Completed AND actual_date in selected range
+        'current_pending' => 0,     // Pending Tasks: planned_date in range AND (actual_date IS NULL OR actual_date NOT in range)
+        'current_delayed' => 0,     // Delayed: planned_date in range AND now > planned_datetime (excl. completed early)
         'total_tasks' => 0,         // Total tasks planned IN range
         'total_tasks_all' => 0,     // All tasks EXCEPT "can't be done"
         'shifted_tasks' => 0,       // Tasks with status = 'Shifted' OR status = '🔁'
-        'wnd' => 0,                 // -1 * (Pending Tasks with planned_date IN range / Total Tasks Planned IN range) * 100
-        'wnd_on_time' => 0          // -1 * (Delayed Completed Tasks / Total Completed Tasks Planned IN range) * 100
+        'wnd' => -100,              // (Pending / Total Planned in range) * 100; -100% if no planned tasks
+        'wnd_on_time' => -100       // (Delayed / Total Planned in range) * 100; -100% if no planned tasks
     ];
     
     // Trackers for calculations
     $total_tasks_excluding_cant_be_done = 0;
-    $completed_tasks_in_range = 0;  // Tasks completed within selected time range (actual_date or planned_date if completed early)
-    $pending_tasks = 0;  // Pending tasks: planned_date IN range AND (actual_date NOT in range OR actual_date IS NULL)
-    $pending_tasks_in_range = 0;  // Pending tasks (actual_date IS NULL) where planned_date IN range (for WND numerator)
-    $total_tasks_planned_in_range = 0;  // Total tasks where planned_date IN range (for WND denominator)
-    $completed_tasks_planned_in_range = 0;  // Completed tasks where planned_date IN range (for WND On-Time denominator)
-    $delayed_completed_tasks = 0;  // Completed tasks that were delayed (actual_date > planned_date) (for WND On-Time numerator)
-    $delayed_tasks_count = 0;  // Delayed tasks using new week-based logic (for current_delayed stat)
+    $completed_tasks_in_range = 0;  // Tasks with status=Completed AND actual_date in selected range
+    $pending_tasks = 0;  // Tasks where planned_date in range AND (actual_date IS NULL OR actual_date NOT in range)
+    $total_tasks_planned_in_range = 0;  // Total tasks where planned_date IN range (WND/WNDOT denominator)
+    $delayed_tasks_count = 0;  // Tasks where planned_date in range AND now > planned_datetime (excl. completed early)
     $shifted_tasks_count = 0;  // Tasks with status = 'Shifted' OR status = '🔁'
     
     require_once __DIR__ . '/functions.php';
-    updateAllTasksDelayStatus($conn);
+    // Only update delay status once per request (avoid N+1 calls for leaderboard)
+    if (!$delay_status_updated) {
+        updateAllTasksDelayStatus($conn);
+        $delay_status_updated = true;
+    }
     
     // Determine the week to use for calculations
     // If date_from is provided, use that week; otherwise use current week
@@ -303,10 +321,7 @@ function calculatePersonalStats($conn, $user_id, $username, $date_from = null, $
         &$total_tasks_excluding_cant_be_done,
         &$completed_tasks_in_range,
         &$pending_tasks,
-        &$pending_tasks_in_range,
         &$total_tasks_planned_in_range,
-        &$completed_tasks_planned_in_range,
-        &$delayed_completed_tasks,
         &$delayed_tasks_count,
         &$shifted_tasks_count,
         $now
@@ -334,154 +349,91 @@ function calculatePersonalStats($conn, $user_id, $username, $date_from = null, $
         // Check if actual_date is in range (or all if no range)
         $actual_in_range = $has_date_range ? isDateInRange($actual_date, $date_from, $date_to) : true;
         
-        // Check if task is completed
-        $is_completed = isStatusCompleted($normalized_status);
+        // Check if task is completed (status-wise)
+        $is_completed_status = isStatusCompleted($normalized_status);
+        // FMS tasks may use "yes" as a completed status
+        if (!$is_completed_status && $task_type === 'fms' && $normalized_status === 'yes') {
+            $is_completed_status = true;
+        }
         
-        // 1. Completed Tasks: Count tasks completed within selected time range
-        // Rules:
-        // - Advance Completion Rule: If a task is completed before its planned date AND the planned date
-        //   is within the selected date range, count it in the planned week (not the completion week).
-        // - Future Task Completion Rule: If a task from a future week (planned_date outside the range)
-        //   is completed in the current week (actual_date in range), count it in the completion week.
-        // If no date range (lifetime), count all completed tasks
-        if ($is_completed) {
-            $should_count_completed = false;
-            
+        // A task is truly completed only if it has a completed status AND has actual_date/time
+        // This matches manage_tasks logic where actual data is required
+        $has_actual_data = !empty($actual_date) || !empty($actual_time);
+        $is_completed = $is_completed_status && $has_actual_data;
+        
+        // "not done" status is always treated as pending (matches manage_tasks)
+        $is_not_done = in_array($normalized_status, ['not done', 'notdone']);
+        
+        // ---------------------------------------------------------------
+        // 1. Completed Tasks
+        //    a) actual_date IN range → completed
+        //    b) actual_date OUTSIDE range but done early (actual <= planned) → completed
+        //    c) actual_date OUTSIDE range but done late  (actual >  planned) → pending
+        // ---------------------------------------------------------------
+        if ($is_completed && $planned_in_range) {
             if (!$has_date_range) {
-                // No date range: count all completed tasks
-                $should_count_completed = true;
+                $completed_tasks_in_range++;
+            } else if ($actual_in_range) {
+                $completed_tasks_in_range++;
             } else {
-                // Check if task was completed early (actual_date < planned_date)
+                // Completed but actual_date outside selected range
+                $planned_ts_cmp = buildDateTimeTimestamp($planned_date, $planned_time);
+                $actual_ts_cmp  = buildDateTimeTimestamp($actual_date, $actual_time);
+                if ($planned_ts_cmp !== null && $actual_ts_cmp !== null && $actual_ts_cmp <= $planned_ts_cmp) {
+                    // Done early → still counts as completed
+                    $completed_tasks_in_range++;
+                } else {
+                    // Done late → treat as pending for this date range
+                    $pending_tasks++;
+                }
+            }
+        }
+        
+        // ---------------------------------------------------------------
+        // Count tasks planned in range (for Total Tasks / WND / WNDOT denominator)
+        // ---------------------------------------------------------------
+        if ($planned_in_range) {
+            $total_tasks_planned_in_range++;
+        }
+        
+        // ---------------------------------------------------------------
+        // 2. Pending Tasks
+        //    - "not done" status is always pending (matches manage_tasks)
+        //    - Otherwise: no actual data = pending
+        //    (completed-out-of-range late tasks are already handled above)
+        // ---------------------------------------------------------------
+        if ($planned_in_range) {
+            if ($is_not_done) {
+                $pending_tasks++;
+            } else if (!$is_completed) {
+                if (empty($actual_date) && empty($actual_time)) {
+                    $pending_tasks++;
+                }
+            }
+        }
+        
+        // ---------------------------------------------------------------
+        // 3. Delayed Tasks
+        //    Conditions (ALL must be true):
+        //      a) planned_date BETWEEN selected_start AND selected_end
+        //      b) current_datetime > planned_datetime
+        //    Exclusion: completed-early tasks (actual < planned) are NOT delayed
+        // ---------------------------------------------------------------
+        if (!empty($planned_date) && $planned_in_range) {
+            $planned_ts = buildDateTimeTimestamp($planned_date, $planned_time);
+            
+            if ($planned_ts !== null && $now > $planned_ts) {
+                // Now is past the planned datetime — potential delay
+                // Exclude tasks completed on time or early (actual <= planned)
                 $completed_early = false;
-                if (!empty($actual_date) && !empty($planned_date)) {
-                    $planned_ts = buildDateTimeTimestamp($planned_date, $planned_time);
+                if ($is_completed && !empty($actual_date)) {
                     $actual_ts = buildDateTimeTimestamp($actual_date, $actual_time);
-                    if ($planned_ts !== null && $actual_ts !== null && $actual_ts < $planned_ts) {
+                    if ($actual_ts !== null && $actual_ts <= $planned_ts) {
                         $completed_early = true;
                     }
                 }
                 
-                if ($completed_early) {
-                    // If planned_date is in the selected range, count in planned week (Advance Completion Rule)
-                    // If planned_date is outside the range (future), count in completion week (Future Task Completion Rule)
-                    if ($planned_in_range) {
-                        // Planned date is in range: count in planned week
-                        $should_count_completed = $planned_in_range;
-                    } else {
-                        // Planned date is outside range (future): count in completion week
-                        $should_count_completed = $actual_in_range;
-                    }
-                } else {
-                    // Use normal logic: count based on actual_date being in range
-                    $should_count_completed = $actual_in_range;
-                }
-            }
-            
-            if ($should_count_completed) {
-                $completed_tasks_in_range++;
-            }
-        }
-        
-        // Count tasks planned in range (for WND denominator)
-        // If no date range (lifetime), count all tasks
-        if ($planned_in_range) {
-            $total_tasks_planned_in_range++;
-            
-            // Count completed tasks planned in range (for WND On-Time denominator)
-            if ($is_completed) {
-                $completed_tasks_planned_in_range++;
-                
-                // For WND On-Time: Check if task was delayed (actual > planned)
-                // Use week-based logic only for single week calculations without date range
-                // For date ranges, use simple comparison (actual > planned) to count all delayed tasks
-                if ($has_date_range) {
-                    // Date range: Use simple comparison - count all delayed tasks planned in range
-                    if (!empty($actual_date) && !empty($planned_date)) {
-                        $planned_ts = buildDateTimeTimestamp($planned_date, $planned_time);
-                        $actual_ts = buildDateTimeTimestamp($actual_date, $actual_time);
-                        if ($planned_ts !== null && $actual_ts !== null && $actual_ts > $planned_ts) {
-                            $delayed_completed_tasks++;
-                        }
-                    }
-                } else if (!empty($week_start)) {
-                    // Single week: Use week-based delayed logic
-                    if (isTaskDelayedForWeek($status, $planned_date, $planned_time, $actual_date, $actual_time, $week_start, $task_type)) {
-                        $delayed_completed_tasks++;
-                    }
-                } else {
-                    // Fallback: Use simple comparison
-                if (!empty($actual_date) && !empty($planned_date)) {
-                    $planned_ts = buildDateTimeTimestamp($planned_date, $planned_time);
-                    $actual_ts = buildDateTimeTimestamp($actual_date, $actual_time);
-                    if ($planned_ts !== null && $actual_ts !== null && $actual_ts > $planned_ts) {
-                        $delayed_completed_tasks++;
-                        }
-                    }
-                }
-            }
-            
-            // Count pending tasks in range (actual_date IS NULL AND planned_date IN range) for WND numerator
-            if (!$is_completed && empty($actual_date)) {
-                $pending_tasks_in_range++;
-            }
-        }
-        
-        // 2. Pending Tasks: Count tasks that are pending for the selected date range
-        //    A task should be counted as Pending if:
-        //    1. Task's planned_date falls within the selected date range
-        //    2. AND (task is not completed OR actual_date is outside the date range)
-        if ($planned_in_range) {
-            if ($has_date_range) {
-                // For date ranges: Check if task is pending based on date range logic
-                // Task is pending if: planned_date in range AND (not completed OR completed outside range)
-                $actual_not_in_range = true;
-                if (!empty($actual_date)) {
-                    $actual_not_in_range = !isDateInRange($actual_date, $date_from, $date_to);
-                }
-                
-                if (!$is_completed || ($is_completed && $actual_not_in_range)) {
-                    $pending_tasks++;
-                }
-            } else if (!empty($week_start)) {
-                // For single week: Use week-based logic
-                if (isTaskPendingForWeek($status, $planned_date, $planned_time, $actual_date, $actual_time, $week_start, $task_type)) {
-                    $pending_tasks++;
-                }
-            } else {
-                // Fallback: Task not completed and no actual date
-                if (!$is_completed && empty($actual_date)) {
-                    $pending_tasks++;
-                }
-            }
-        }
-        
-        // 3. Delayed Tasks: Count tasks that are delayed for the selected date range
-        //    Delayed tasks should be counted ONLY under these conditions:
-        //    1. Task status is "Completed".
-        //    2. Task's planned_date is within the selected date range.
-        //    3. Actual completion date/time is later than the planned date/time (delayed).
-        //    Note: actual_date doesn't need to be in range - if planned in range but completed late, it's still delayed
-        if ($is_completed && !empty($actual_date) && !empty($planned_date)) {
-            // Check if task's planned_date is in the date range
-            $planned_in_date_range = false;
-            if ($has_date_range) {
-                // For date ranges: Check if planned_date is in range
-                $planned_in_date_range = isDateInRange($planned_date, $date_from, $date_to);
-            } else if (!empty($week_start)) {
-                // For single week: Check if planned_date is in the week
-                $planned_in_date_range = isDateInWeek($planned_date, $week_start);
-            } else {
-                // No date range: count all delayed tasks
-                $planned_in_date_range = true;
-            }
-            
-            if ($planned_in_date_range) {
-                // Check if task was delayed (actual > planned)
-                $planned_ts = buildDateTimeTimestamp($planned_date, $planned_time);
-                $actual_ts = buildDateTimeTimestamp($actual_date, $actual_time);
-                
-                if ($planned_ts !== null && $actual_ts !== null && $actual_ts > $planned_ts) {
-                    // Task is delayed (planned in range, completed late)
+                if (!$completed_early) {
                     $delayed_tasks_count++;
                 }
             }
@@ -519,9 +471,6 @@ function calculatePersonalStats($conn, $user_id, $username, $date_from = null, $
                 $result = mysqli_stmt_get_result($stmt);
                 while ($row = mysqli_fetch_assoc($result)) {
                     $status = $row['status'] ?? '';
-                if ($status === '') {
-                    $status = 'pending';
-                }
                 
                 $planned_timestamp = parseFmsTimestampUniversal($row['planned'] ?? '');
                 $actual_timestamp = parseFmsTimestampUniversal($row['actual'] ?? '');
@@ -561,18 +510,16 @@ function calculatePersonalStats($conn, $user_id, $username, $date_from = null, $
     }
     
     // Set final stats
-    // 1. Completed Tasks: Count all tasks completed within the selected time range
+    // 1. Completed Tasks: status=Completed AND actual_date in selected range
     $stats['completed_on_time'] = $completed_tasks_in_range;
     
-    // 2. Pending Tasks: Tasks whose PLANNED DATE falls inside the selected range,
-    //    but whose ACTUAL COMPLETION DATE does NOT fall inside that same range.
-    //    planned_date belongs-to selected_range AND (actual_date NOT in selected_range OR actual_date IS NULL)
+    // 2. Pending Tasks: actual_date IS NULL OR actual_date NOT in selected range
     $stats['current_pending'] = $pending_tasks;
     
-    // Delayed Tasks: Count using new week-based logic
+    // 3. Delayed: planned_date in range AND now > planned_datetime (excl. completed early)
     $stats['current_delayed'] = $delayed_tasks_count;
     
-    // Total tasks planned IN range (for WND denominator)
+    // Total tasks planned IN range (WND/WNDOT denominator)
     $stats['total_tasks'] = $total_tasks_planned_in_range;
     
     // Total tasks all (excluding "can't be done")
@@ -581,21 +528,442 @@ function calculatePersonalStats($conn, $user_id, $username, $date_from = null, $
     // Shifted tasks count
     $stats['shifted_tasks'] = $shifted_tasks_count;
     
-    // 3. Calculate WND: -1 * (Total Pending Tasks (actual_date IS NULL AND planned_date IN range) / Total Tasks Planned IN range) * 100
+    // 4. WND = -1 * (Total Pending / Total Planned in range) * 100
+    //    If Total Planned = 0, return -100% (never N/A)
+    //    Capped to range [-100%, 0%] — Pending is scoped to planned_in_range so should never exceed Total
     if ($total_tasks_planned_in_range > 0) {
-        $stats['wnd'] = round(-1 * ($pending_tasks_in_range / $total_tasks_planned_in_range) * 100, 2);
+        $wnd_raw = round(-1 * ($pending_tasks / $total_tasks_planned_in_range) * 100, 2);
+        $stats['wnd'] = max(-100, min(0, $wnd_raw));
     } else {
-        $stats['wnd'] = 0;
+        $stats['wnd'] = -100;
     }
     
-    // 4. Calculate WND On-Time: -1 * (Total Completed But Delayed Tasks / Total Completed Tasks Planned IN range) * 100
-    if ($completed_tasks_planned_in_range > 0) {
-        $stats['wnd_on_time'] = round(-1 * ($delayed_completed_tasks / $completed_tasks_planned_in_range) * 100, 2);
+    // 5. WNDOT = -1 * (Total Delayed / Total Tasks planned in range) * 100
+    //    If Total Tasks = 0, return -100% (never N/A)
+    //    Capped to range [-100%, 0%] — Delayed is scoped to planned_in_range so should never exceed Total
+    if ($total_tasks_planned_in_range > 0) {
+        $wndot_raw = round(-1 * ($delayed_tasks_count / $total_tasks_planned_in_range) * 100, 2);
+        $stats['wnd_on_time'] = max(-100, min(0, $wndot_raw));
     } else {
-        $stats['wnd_on_time'] = 0;
+        $stats['wnd_on_time'] = -100;
     }
     
     return $stats;
+}
+
+/**
+ * Get frozen snapshot stats for a user and date range.
+ * Returns snapshot data if ALL weeks in the requested range are frozen,
+ * otherwise returns null (caller should fall back to live calculation).
+ * 
+ * For a single-week request (Mon→Sun), returns the snapshot directly.
+ * For multi-week ranges, aggregates all frozen weekly snapshots.
+ * 
+ * @param mysqli $conn Database connection
+ * @param int $user_id User ID
+ * @param string $date_from Start date (Y-m-d)
+ * @param string $date_to End date (Y-m-d)
+ * @return array|null Snapshot data or null if not fully frozen
+ */
+function getSnapshotStats($conn, $user_id, $date_from, $date_to) {
+    if (empty($date_from) || empty($date_to)) {
+        return null; // No date range = lifetime → always live
+    }
+    
+    // Check if the requested range has ended (all dates are in the past)
+    $today = new DateTime();
+    $today->setTime(0, 0, 0);
+    $range_end = new DateTime($date_to);
+    $range_end->setTime(23, 59, 59);
+    
+    if ($range_end >= $today) {
+        return null; // Range includes today or future → always live
+    }
+    
+    // Find Monday of the first week and Sunday of the last week in the range
+    $range_start_dt = new DateTime($date_from);
+    $start_day = (int)$range_start_dt->format('N');
+    $range_monday = clone $range_start_dt;
+    $range_monday->modify('-' . ($start_day - 1) . ' days');
+    
+    $range_end_dt = new DateTime($date_to);
+    $end_day = (int)$range_end_dt->format('N');
+    $range_sunday = clone $range_end_dt;
+    $range_sunday->modify('+' . (7 - $end_day) . ' days');
+    
+    // Query all snapshots for this user within the week range
+    $sql = "SELECT * FROM performance_snapshots 
+            WHERE user_id = ? AND week_start >= ? AND week_end <= ?
+            ORDER BY week_start ASC";
+    
+    $snapshots = [];
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        $monday_str = $range_monday->format('Y-m-d');
+        $sunday_str = $range_sunday->format('Y-m-d');
+        mysqli_stmt_bind_param($stmt, "iss", $user_id, $monday_str, $sunday_str);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        while ($row = mysqli_fetch_assoc($result)) {
+            $snapshots[] = $row;
+        }
+        mysqli_stmt_close($stmt);
+    }
+    
+    if (empty($snapshots)) {
+        return null; // No snapshots found → fall back to live
+    }
+    
+    // Check that every week in the range is covered
+    $expected_weeks = 0;
+    $check_monday = clone $range_monday;
+    while ($check_monday <= $range_end_dt) {
+        $expected_weeks++;
+        $check_monday->modify('+7 days');
+    }
+    
+    if (count($snapshots) < $expected_weeks) {
+        return null; // Not all weeks frozen → fall back to live for consistency
+    }
+    
+    // Aggregate snapshots
+    if (count($snapshots) === 1) {
+        // Single week — return directly
+        $s = $snapshots[0];
+        return [
+            'completed_on_time' => (int)$s['completed_tasks'],
+            'current_pending' => (int)$s['pending_tasks'],
+            'current_delayed' => (int)$s['delayed_tasks'],
+            'total_tasks' => (int)$s['total_tasks'],
+            'wnd' => (float)$s['wnd'],
+            'wnd_on_time' => (float)$s['wnd_on_time'],
+            'rqc_score' => (float)$s['rqc_score'],
+            'performance_score' => (float)$s['performance_score'],
+            'from_snapshot' => true
+        ];
+    }
+    
+    // Multi-week: sum counts, average percentages
+    $total_tasks = 0;
+    $completed = 0;
+    $pending = 0;
+    $delayed = 0;
+    $wnd_sum = 0;
+    $wndot_sum = 0;
+    $rqc_sum = 0;
+    $perf_sum = 0;
+    $count = count($snapshots);
+    
+    foreach ($snapshots as $s) {
+        $total_tasks += (int)$s['total_tasks'];
+        $completed += (int)$s['completed_tasks'];
+        $pending += (int)$s['pending_tasks'];
+        $delayed += (int)$s['delayed_tasks'];
+        $wnd_sum += (float)$s['wnd'];
+        $wndot_sum += (float)$s['wnd_on_time'];
+        $rqc_sum += (float)$s['rqc_score'];
+        $perf_sum += (float)$s['performance_score'];
+    }
+    
+    // Recalculate WND and WNDOT from aggregated counts for accuracy
+    $agg_wnd = ($total_tasks > 0) ? max(-100, min(0, round(-1 * ($pending / $total_tasks) * 100, 2))) : -100;
+    $agg_wndot = ($total_tasks > 0) ? max(-100, min(0, round(-1 * ($delayed / $total_tasks) * 100, 2))) : -100;
+    
+    return [
+        'completed_on_time' => $completed,
+        'current_pending' => $pending,
+        'current_delayed' => $delayed,
+        'total_tasks' => $total_tasks,
+        'wnd' => $agg_wnd,
+        'wnd_on_time' => $agg_wndot,
+        'rqc_score' => round($rqc_sum / $count, 2),
+        'performance_score' => round($perf_sum / $count, 2),
+        'from_snapshot' => true
+    ];
+}
+
+/**
+ * Smart stats: returns frozen snapshot if available, otherwise live calculation.
+ * 
+ * @param mysqli $conn Database connection
+ * @param int $user_id User ID
+ * @param string $username Username
+ * @param string $user_name Display name (for RQC lookup)
+ * @param string|null $date_from Start date
+ * @param string|null $date_to End date
+ * @return array Stats array (same shape as calculatePersonalStats output)
+ */
+function getPerformanceStats($conn, $user_id, $username, $user_name, $date_from = null, $date_to = null) {
+    // One-time purge: clear stale snapshots frozen before the delay-logic fix (v2)
+    // After purge, lazyFreezeLastWeek will recreate them with corrected logic
+    static $purge_checked = false;
+    if (!$purge_checked) {
+        $purge_checked = true;
+        $marker_file = __DIR__ . '/../sessions/.snapshot_purge_v2';
+        if (!file_exists($marker_file)) {
+            mysqli_query($conn, "TRUNCATE TABLE performance_snapshots");
+            @file_put_contents($marker_file, date('Y-m-d H:i:s') . " purged stale snapshots (delay-logic fix v2)\n");
+        }
+    }
+
+    // Try snapshot first (only works for fully-past date ranges)
+    $snapshot = getSnapshotStats($conn, $user_id, $date_from, $date_to);
+    if ($snapshot !== null) {
+        return $snapshot;
+    }
+    
+    // Fall back to live calculation
+    $stats = calculatePersonalStats($conn, $user_id, $username, $date_from, $date_to);
+    if (!is_array($stats)) {
+        $stats = [
+            'completed_on_time' => 0,
+            'current_pending' => 0,
+            'current_delayed' => 0,
+            'total_tasks' => 0,
+            'wnd' => -100,
+            'wnd_on_time' => -100
+        ];
+    }
+    
+    // Attach RQC and performance score for convenience
+    $rqc = getRqcScore($conn, $user_name, $date_from, $date_to);
+    $rqc_val = is_numeric($rqc) ? floatval($rqc) : 0;
+    $stats['rqc_score'] = $rqc_val;
+    $stats['performance_score'] = calculatePerformanceRate($rqc_val, $stats['wnd'], $stats['wnd_on_time']);
+    $stats['from_snapshot'] = false;
+    
+    return $stats;
+}
+
+/**
+ * Trigger lazy freeze: freezes the last completed week if not already frozen.
+ * Designed to be called on page load — fast no-op if already frozen.
+ * Self-contained: does not require the freeze script to avoid circular dependencies.
+ * 
+ * @param mysqli $conn Database connection
+ * @return bool True if freeze was performed, false if already frozen or skipped
+ */
+function lazyFreezeLastWeek($conn) {
+    // Ensure table exists
+    $create_sql = "CREATE TABLE IF NOT EXISTS performance_snapshots (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        username VARCHAR(50) NOT NULL,
+        user_name VARCHAR(100) NOT NULL,
+        week_start DATE NOT NULL,
+        week_end DATE NOT NULL,
+        total_tasks INT NOT NULL DEFAULT 0,
+        completed_tasks INT NOT NULL DEFAULT 0,
+        pending_tasks INT NOT NULL DEFAULT 0,
+        delayed_tasks INT NOT NULL DEFAULT 0,
+        wnd DECIMAL(7,2) NOT NULL DEFAULT -100,
+        wnd_on_time DECIMAL(7,2) NOT NULL DEFAULT -100,
+        rqc_score DECIMAL(7,2) NOT NULL DEFAULT 0,
+        performance_score DECIMAL(7,2) NOT NULL DEFAULT 0,
+        frozen_at DATETIME NOT NULL,
+        UNIQUE KEY unique_user_week (user_id, week_start),
+        INDEX idx_week (week_start, week_end),
+        INDEX idx_user (user_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+    mysqli_query($conn, $create_sql);
+    
+    // Get last completed week's Monday
+    $today = new DateTime();
+    $today->setTime(0, 0, 0);
+    $dayOfWeek = (int)$today->format('N');
+    
+    $thisMonday = clone $today;
+    $thisMonday->modify('-' . ($dayOfWeek - 1) . ' days');
+    
+    $lastMonday = clone $thisMonday;
+    $lastMonday->modify('-7 days');
+    $lastSunday = clone $lastMonday;
+    $lastSunday->modify('+6 days');
+    
+    $week_start_str = $lastMonday->format('Y-m-d');
+    $week_end_str = $lastSunday->format('Y-m-d');
+    
+    // Quick check: is it already frozen? (single fast query)
+    $check_sql = "SELECT COUNT(*) as cnt FROM performance_snapshots WHERE week_start = ?";
+    $already_frozen = false;
+    if ($stmt = mysqli_prepare($conn, $check_sql)) {
+        mysqli_stmt_bind_param($stmt, "s", $week_start_str);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        $already_frozen = ($row && $row['cnt'] > 0);
+        mysqli_stmt_close($stmt);
+    }
+    
+    if ($already_frozen) {
+        return false; // Already done — fast path
+    }
+    
+    // Need to freeze — get all users and snapshot their stats
+    $frozen_at = date('Y-m-d H:i:s');
+    $users_sql = "SELECT id, username, name, user_type FROM users WHERE user_type IN ('admin', 'manager', 'doer')";
+    $users_result = mysqli_query($conn, $users_sql);
+    if (!$users_result) {
+        return false;
+    }
+    
+    $frozen_count = 0;
+    while ($user = mysqli_fetch_assoc($users_result)) {
+        // Calculate stats for the week
+        $stats = calculatePersonalStats($conn, $user['id'], $user['username'], $week_start_str, $week_end_str);
+        if (!is_array($stats)) continue;
+        
+        $rqc = getRqcScore($conn, $user['name'], $week_start_str, $week_end_str);
+        $rqc_val = is_numeric($rqc) ? floatval($rqc) : 0;
+        $perf = calculatePerformanceRate($rqc_val, $stats['wnd'] ?? -100, $stats['wnd_on_time'] ?? -100);
+        
+        $insert_sql = "INSERT IGNORE INTO performance_snapshots 
+            (user_id, username, user_name, week_start, week_end, 
+             total_tasks, completed_tasks, pending_tasks, delayed_tasks,
+             wnd, wnd_on_time, rqc_score, performance_score, frozen_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        if ($ins = mysqli_prepare($conn, $insert_sql)) {
+            $total = $stats['total_tasks'] ?? 0;
+            $completed = $stats['completed_on_time'] ?? 0;
+            $pending = $stats['current_pending'] ?? 0;
+            $delayed = $stats['current_delayed'] ?? 0;
+            $wnd = $stats['wnd'] ?? -100;
+            $wndot = $stats['wnd_on_time'] ?? -100;
+            
+            mysqli_stmt_bind_param($ins, "issssiiiiiddds",
+                $user['id'], $user['username'], $user['name'],
+                $week_start_str, $week_end_str,
+                $total, $completed, $pending, $delayed,
+                $wnd, $wndot, $rqc_val, $perf, $frozen_at
+            );
+            if (mysqli_stmt_execute($ins)) {
+                $frozen_count++;
+            }
+            mysqli_stmt_close($ins);
+        }
+    }
+    
+    return ($frozen_count > 0);
+}
+
+/**
+ * Ensure the last N completed weeks are frozen in performance_snapshots.
+ * Checks which weeks already exist and only freezes missing ones.
+ * Called by the performance data endpoint before fetching snapshots.
+ *
+ * @param mysqli $conn Database connection
+ * @param int $num_weeks Number of past completed weeks to ensure (1, 2, 4, 8, 12)
+ */
+function ensureWeeksFrozen($conn, $num_weeks) {
+    $create_sql = "CREATE TABLE IF NOT EXISTS performance_snapshots (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        username VARCHAR(50) NOT NULL,
+        user_name VARCHAR(100) NOT NULL,
+        week_start DATE NOT NULL,
+        week_end DATE NOT NULL,
+        total_tasks INT NOT NULL DEFAULT 0,
+        completed_tasks INT NOT NULL DEFAULT 0,
+        pending_tasks INT NOT NULL DEFAULT 0,
+        delayed_tasks INT NOT NULL DEFAULT 0,
+        wnd DECIMAL(7,2) NOT NULL DEFAULT -100,
+        wnd_on_time DECIMAL(7,2) NOT NULL DEFAULT -100,
+        rqc_score DECIMAL(7,2) NOT NULL DEFAULT 0,
+        performance_score DECIMAL(7,2) NOT NULL DEFAULT 0,
+        frozen_at DATETIME NOT NULL,
+        UNIQUE KEY unique_user_week (user_id, week_start),
+        INDEX idx_week (week_start, week_end),
+        INDEX idx_user (user_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+    mysqli_query($conn, $create_sql);
+
+    $today = new DateTime();
+    $today->setTime(0, 0, 0);
+    $dayOfWeek = (int)$today->format('N');
+    $thisMonday = clone $today;
+    $thisMonday->modify('-' . ($dayOfWeek - 1) . ' days');
+
+    $weeks_needed = [];
+    for ($i = 1; $i <= $num_weeks; $i++) {
+        $monday = clone $thisMonday;
+        $monday->modify('-' . ($i * 7) . ' days');
+        $sunday = clone $monday;
+        $sunday->modify('+6 days');
+        $weeks_needed[] = [
+            'start' => $monday->format('Y-m-d'),
+            'end'   => $sunday->format('Y-m-d')
+        ];
+    }
+
+    if (empty($weeks_needed)) return;
+
+    $week_starts = array_map(function($w) { return $w['start']; }, $weeks_needed);
+    $placeholders = implode(',', array_fill(0, count($week_starts), '?'));
+    $types = str_repeat('s', count($week_starts));
+
+    $existing_weeks = [];
+    $sql = "SELECT DISTINCT week_start FROM performance_snapshots WHERE week_start IN ($placeholders)";
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$week_starts);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        while ($row = mysqli_fetch_assoc($result)) {
+            $existing_weeks[] = $row['week_start'];
+        }
+        mysqli_stmt_close($stmt);
+    }
+
+    $missing_weeks = array_filter($weeks_needed, function($w) use ($existing_weeks) {
+        return !in_array($w['start'], $existing_weeks);
+    });
+
+    if (empty($missing_weeks)) return;
+
+    $users_sql = "SELECT id, username, name FROM users WHERE user_type IN ('admin', 'manager', 'doer')";
+    $users_result = mysqli_query($conn, $users_sql);
+    if (!$users_result) return;
+
+    $users = [];
+    while ($user = mysqli_fetch_assoc($users_result)) {
+        $users[] = $user;
+    }
+
+    $frozen_at = date('Y-m-d H:i:s');
+
+    foreach ($missing_weeks as $week) {
+        foreach ($users as $user) {
+            $stats = calculatePersonalStats($conn, $user['id'], $user['username'], $week['start'], $week['end']);
+            if (!is_array($stats)) continue;
+
+            $rqc = getRqcScore($conn, $user['name'], $week['start'], $week['end']);
+            $rqc_val = is_numeric($rqc) ? floatval($rqc) : 0;
+            $perf = calculatePerformanceRate($rqc_val, $stats['wnd'] ?? -100, $stats['wnd_on_time'] ?? -100);
+
+            $insert_sql = "INSERT IGNORE INTO performance_snapshots
+                (user_id, username, user_name, week_start, week_end,
+                 total_tasks, completed_tasks, pending_tasks, delayed_tasks,
+                 wnd, wnd_on_time, rqc_score, performance_score, frozen_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            if ($ins = mysqli_prepare($conn, $insert_sql)) {
+                $total    = $stats['total_tasks'] ?? 0;
+                $completed = $stats['completed_on_time'] ?? 0;
+                $pending  = $stats['current_pending'] ?? 0;
+                $delayed  = $stats['current_delayed'] ?? 0;
+                $wnd      = $stats['wnd'] ?? -100;
+                $wndot    = $stats['wnd_on_time'] ?? -100;
+
+                mysqli_stmt_bind_param($ins, "issssiiiiiddds",
+                    $user['id'], $user['username'], $user['name'],
+                    $week['start'], $week['end'],
+                    $total, $completed, $pending, $delayed,
+                    $wnd, $wndot, $rqc_val, $perf, $frozen_at
+                );
+                mysqli_stmt_execute($ins);
+                mysqli_stmt_close($ins);
+            }
+        }
+    }
 }
 
 /**
@@ -657,7 +1025,7 @@ function calculateGlobalTaskStats($conn, $date_from = null, $date_to = null) {
         // Count all tasks excluding "can't be done"
         $total_tasks_excluding_cant_be_done++;
         
-        $classification = classifyTaskForStats($status, $planned_date, $planned_time, $actual_date, $actual_time, $now);
+        $classification = classifyTaskForStats($status, $planned_date, $planned_time, $actual_date, $actual_time, $now, $task_type);
         if ($classification['skip']) {
             return;
         }
@@ -813,7 +1181,7 @@ function calculateTeamStats($conn, $manager_id, $team_member_ids) {
     
     $processTask = function($status, $planned_date, $planned_time, $actual_date, $actual_time, $task_type = 'delegation') use (&$team_stats, &$task_pending_count, &$delayed_task_count, &$shifted_not_delayed_count, $now, $week_start) {
         $normalized_status = normalizeTaskStatus($status);
-        $classification = classifyTaskForStats($status, $planned_date, $planned_time, $actual_date, $actual_time, $now);
+        $classification = classifyTaskForStats($status, $planned_date, $planned_time, $actual_date, $actual_time, $now, $task_type);
         if ($classification['skip']) {
             return;
         }
@@ -941,15 +1309,16 @@ function calculateTeamStats($conn, $manager_id, $team_member_ids) {
 /**
  * Calculate Performance Rate from RQC, WND, and WND_On_Time
  * 
- * Rules:
- * - WND_Score = 100 - abs(WND)  (convert negative to positive)
- * - WND_On_Time_Score = 100 - abs(WND_On_Time)  (convert negative to positive)
- * - RQC remains as-is (already positive)
+ * Step 1: Convert WND and WNDOT into positive scores (for calculation only):
+ *   Converted_WND = 100 - WND  (WND is stored as negative, so 100 - abs(WND))
+ *   Converted_WNDOT = 100 - WNDOT
  * 
- * Performance Rate:
- * - If all 3 exist: (RQC + WND_Score + WND_On_Time_Score) / 3
- * - If RQC missing/0: (WND_Score + WND_On_Time_Score) / 2
- * - If only one exists: use that value
+ * Step 2:
+ *   If RQC NOT available: Performance Score = (Converted_WND + Converted_WNDOT) / 2
+ *   If RQC available:     Performance Score = (Converted_WND + Converted_WNDOT + RQC) / 3
+ * 
+ * WND and WNDOT are ALWAYS included (even when 0 → score of 100).
+ * Only RQC can be absent (null/0).
  * 
  * @param float|null $rqc RQC score (positive, higher is better)
  * @param float|null $wnd WND value (negative percentage, e.g., -60)
@@ -957,45 +1326,23 @@ function calculateTeamStats($conn, $manager_id, $team_member_ids) {
  * @return float Performance Rate (0-100, higher is better)
  */
 function calculatePerformanceRate($rqc = null, $wnd = null, $wnd_on_time = null) {
-    // Normalize WND and WND_On_Time from negative to positive scores
-    $wnd_score = null;
-    $wnd_on_time_score = null;
+    // Convert WND and WNDOT from negative to positive scores
+    // WND/WNDOT are always included (0 → 100 = perfect score)
+    $wnd_value = ($wnd !== null) ? $wnd : 0;
+    $wnd_on_time_value = ($wnd_on_time !== null) ? $wnd_on_time : 0;
     
-    if ($wnd !== null && $wnd != 0) {
-        $wnd_score = 100 - abs($wnd);
-    }
-    
-    if ($wnd_on_time !== null && $wnd_on_time != 0) {
-        $wnd_on_time_score = 100 - abs($wnd_on_time);
-    }
+    $converted_wnd = 100 - abs($wnd_value);
+    $converted_wndot = 100 - abs($wnd_on_time_value);
     
     // Check if RQC is valid (not null, not 0)
     $rqc_valid = ($rqc !== null && $rqc > 0);
     
-    // Count available scores
-    $available_scores = [];
     if ($rqc_valid) {
-        $available_scores[] = $rqc;
-    }
-    if ($wnd_score !== null) {
-        $available_scores[] = $wnd_score;
-    }
-    if ($wnd_on_time_score !== null) {
-        $available_scores[] = $wnd_on_time_score;
-    }
-    
-    // Calculate Performance Rate based on available scores
-    if (count($available_scores) === 0) {
-        return 0; // No scores available
-    } elseif (count($available_scores) === 1) {
-        return round($available_scores[0], 2); // Use the only available score
-    } elseif (count($available_scores) === 2) {
-        // If RQC is missing, average WND_Score and WND_On_Time_Score
-        // Otherwise, average the two available scores
-        return round(array_sum($available_scores) / 2, 2);
+        // All 3: (Converted_WND + Converted_WNDOT + RQC) / 3
+        return round(($converted_wnd + $converted_wndot + $rqc) / 3, 2);
     } else {
-        // All 3 scores available: (RQC + WND_Score + WND_On_Time_Score) / 3
-        return round(array_sum($available_scores) / 3, 2);
+        // No RQC: (Converted_WND + Converted_WNDOT) / 2
+        return round(($converted_wnd + $converted_wndot) / 2, 2);
     }
 }
 
@@ -1035,7 +1382,8 @@ function getLeaderboardData($conn, $limit = 10, $user_type_filter = null, $date_
                 u.id, 
                 u.username, 
                 u.name, 
-                u.user_type
+                u.user_type,
+                u.profile_photo
             FROM users u
             WHERE u.user_type IN ('doer', 'manager') $where_clause
             AND (u.username IS NULL OR LOWER(u.username) <> 'admin')
@@ -1085,6 +1433,7 @@ function getLeaderboardData($conn, $limit = 10, $user_type_filter = null, $date_
             'name' => $user['name'],
             'username' => $user['username'],
             'user_type' => $user['user_type'],
+            'profile_photo' => $user['profile_photo'] ?? '',
             'performance_rate' => $performance_rate,
             'rqc_score' => $rqc_score,
             'wnd' => $personal_stats['wnd'] ?? 0,
@@ -1158,6 +1507,7 @@ function getTeamAvailabilityData($conn, $user_ids = null) {
                 u.username, 
                 u.name, 
                 u.user_type,
+                u.profile_photo,
                 MIN(lr.leave_type) as leave_type,
                 MIN(lr.duration) as duration,
                 MIN(lr.start_date) as start_date,
@@ -1184,7 +1534,7 @@ function getTeamAvailabilityData($conn, $user_ids = null) {
         $sql .= " AND u.id IN ($ids_str)";
     }
     
-    $sql .= " GROUP BY u.id, u.username, u.name, u.user_type
+    $sql .= " GROUP BY u.id, u.username, u.name, u.user_type, u.profile_photo
             ORDER BY u.name
             LIMIT 100";
     
@@ -1255,6 +1605,7 @@ function getTeamAvailabilityData($conn, $user_ids = null) {
                         'id' => $user_id,
                         'name' => $row['name'],
                         'username' => $row['username'],
+                        'profile_photo' => $row['profile_photo'] ?? '',
                         'status' => $availability_status,
                         'leave_type' => $has_active_request ? ($row['leave_type'] ?? '') : '',
                         'duration' => $has_active_request ? ($row['duration'] ?? '') : '',

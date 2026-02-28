@@ -34403,3 +34403,705 @@
 [2026-01-24 10:41:42] Fetching FMS tasks from database for real-time updates.
 [2026-01-24 10:41:42] Successfully fetched 7939 FMS tasks from database.
 [2026-01-24 10:41:42] FMS Tasks List (display) final count: 7939
+[2026-01-24 11:23:55] Successfully fetched 7939 FMS tasks from database
+[2026-01-24 11:23:55] === DELAYED TASKS DEBUG ===
+[2026-01-24 11:23:55] Total Delegation Tasks: 66
+[2026-01-24 11:23:55] Total Checklist Tasks: 34
+[2026-01-24 11:23:55] Total FMS Tasks: 7939
+[2026-01-24 11:23:55] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-01-24 11:23:55] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-01-24 11:23:55] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-01-24 11:23:55] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-01-24 11:23:55] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-01-24 11:23:55] Final Delayed Tasks Count: 857
+[2026-01-24 11:23:55] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-01-24 11:23:55] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-01-24 11:23:55] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-01-24 11:23:56] Missing planned_date: 3
+[2026-01-24 11:23:56] Missing planned_time: 3
+[2026-01-24 11:23:56] Missing actual_date: 135
+[2026-01-24 11:23:56] Missing actual_time: 135
+[2026-01-24 11:23:56] === DETAILED TASK ANALYSIS ===
+[2026-01-24 11:23:56] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-01-24 11:23:56] Sum of individual counts: 857
+[2026-01-24 11:23:56] Unified loop count: 857
+[2026-01-24 11:23:56] === END DETAILED TASK ANALYSIS ===
+[2026-01-24 11:23:56] === END COMPARISON DEBUG ===
+[2026-01-24 11:23:56] === END DELAYED TASKS DEBUG ===
+[2026-01-24 11:23:56] Total Tasks: 8039
+[2026-01-24 11:23:56] Completed Tasks: 6234
+[2026-01-24 11:23:56] Delayed Tasks: 857
+[2026-01-24 11:23:56] Completion Rate: -22.45%
+[2026-01-24 11:23:56] Delegation Tasks Count: 66
+[2026-01-24 11:23:56] Checklist Tasks Count: 34
+[2026-01-24 11:23:56] FMS Tasks Count: 7939
+[2026-01-24 11:23:56]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-01-24 11:23:56] Fetching FMS tasks from database for real-time updates.
+[2026-01-24 11:23:56] Successfully fetched 7939 FMS tasks from database.
+[2026-01-24 11:23:56] FMS Tasks List (display) final count: 7939
+[2026-01-24 11:43:34] Successfully fetched 7939 FMS tasks from database
+[2026-01-24 11:43:34] === DELAYED TASKS DEBUG ===
+[2026-01-24 11:43:34] Total Delegation Tasks: 66
+[2026-01-24 11:43:34] Total Checklist Tasks: 34
+[2026-01-24 11:43:34] Total FMS Tasks: 7939
+[2026-01-24 11:43:34] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-01-24 11:43:34] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-01-24 11:43:34] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-01-24 11:43:34] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-01-24 11:43:34] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-01-24 11:43:34] Final Delayed Tasks Count: 857
+[2026-01-24 11:43:34] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-01-24 11:43:34] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-01-24 11:43:34] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-01-24 11:43:34] Missing planned_date: 3
+[2026-01-24 11:43:34] Missing planned_time: 3
+[2026-01-24 11:43:34] Missing actual_date: 135
+[2026-01-24 11:43:34] Missing actual_time: 135
+[2026-01-24 11:43:34] === DETAILED TASK ANALYSIS ===
+[2026-01-24 11:43:34] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-01-24 11:43:34] Sum of individual counts: 857
+[2026-01-24 11:43:34] Unified loop count: 857
+[2026-01-24 11:43:34] === END DETAILED TASK ANALYSIS ===
+[2026-01-24 11:43:34] === END COMPARISON DEBUG ===
+[2026-01-24 11:43:34] === END DELAYED TASKS DEBUG ===
+[2026-01-24 11:43:34] Total Tasks: 8039
+[2026-01-24 11:43:34] Completed Tasks: 6234
+[2026-01-24 11:43:34] Delayed Tasks: 857
+[2026-01-24 11:43:34] Completion Rate: -22.45%
+[2026-01-24 11:43:34] Delegation Tasks Count: 66
+[2026-01-24 11:43:34] Checklist Tasks Count: 34
+[2026-01-24 11:43:34] FMS Tasks Count: 7939
+[2026-01-24 11:43:34]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-01-24 11:43:34] Fetching FMS tasks from database for real-time updates.
+[2026-01-24 11:43:35] Successfully fetched 7939 FMS tasks from database.
+[2026-01-24 11:43:35] FMS Tasks List (display) final count: 7939
+[2026-01-24 16:04:00] Successfully fetched 7939 FMS tasks from database
+[2026-01-24 16:04:00] === DELAYED TASKS DEBUG ===
+[2026-01-24 16:04:00] Total Delegation Tasks: 66
+[2026-01-24 16:04:00] Total Checklist Tasks: 34
+[2026-01-24 16:04:00] Total FMS Tasks: 7939
+[2026-01-24 16:04:00] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-01-24 16:04:00] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-01-24 16:04:00] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-01-24 16:04:00] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-01-24 16:04:00] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-01-24 16:04:00] Final Delayed Tasks Count: 857
+[2026-01-24 16:04:00] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-01-24 16:04:00] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-01-24 16:04:00] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-01-24 16:04:00] Missing planned_date: 3
+[2026-01-24 16:04:00] Missing planned_time: 3
+[2026-01-24 16:04:00] Missing actual_date: 135
+[2026-01-24 16:04:00] Missing actual_time: 135
+[2026-01-24 16:04:00] === DETAILED TASK ANALYSIS ===
+[2026-01-24 16:04:00] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-01-24 16:04:00] Sum of individual counts: 857
+[2026-01-24 16:04:00] Unified loop count: 857
+[2026-01-24 16:04:00] === END DETAILED TASK ANALYSIS ===
+[2026-01-24 16:04:00] === END COMPARISON DEBUG ===
+[2026-01-24 16:04:00] === END DELAYED TASKS DEBUG ===
+[2026-01-24 16:04:00] Total Tasks: 8039
+[2026-01-24 16:04:00] Completed Tasks: 6234
+[2026-01-24 16:04:00] Delayed Tasks: 857
+[2026-01-24 16:04:00] Completion Rate: -22.45%
+[2026-01-24 16:04:01] Delegation Tasks Count: 66
+[2026-01-24 16:04:01] Checklist Tasks Count: 34
+[2026-01-24 16:04:01] FMS Tasks Count: 7939
+[2026-01-24 16:04:01]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-01-24 16:04:01] Fetching FMS tasks from database for real-time updates.
+[2026-01-24 16:04:01] Successfully fetched 7939 FMS tasks from database.
+[2026-01-24 16:04:01] FMS Tasks List (display) final count: 7939
+[2026-01-24 16:17:12] Successfully fetched 7939 FMS tasks from database
+[2026-01-24 16:17:12] === DELAYED TASKS DEBUG ===
+[2026-01-24 16:17:12] Total Delegation Tasks: 66
+[2026-01-24 16:17:12] Total Checklist Tasks: 34
+[2026-01-24 16:17:12] Total FMS Tasks: 7939
+[2026-01-24 16:17:12] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-01-24 16:17:12] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-01-24 16:17:12] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-01-24 16:17:12] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-01-24 16:17:12] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-01-24 16:17:12] Final Delayed Tasks Count: 857
+[2026-01-24 16:17:12] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-01-24 16:17:12] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-01-24 16:17:12] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-01-24 16:17:12] Missing planned_date: 3
+[2026-01-24 16:17:12] Missing planned_time: 3
+[2026-01-24 16:17:12] Missing actual_date: 135
+[2026-01-24 16:17:12] Missing actual_time: 135
+[2026-01-24 16:17:12] === DETAILED TASK ANALYSIS ===
+[2026-01-24 16:17:13] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-01-24 16:17:13] Sum of individual counts: 857
+[2026-01-24 16:17:13] Unified loop count: 857
+[2026-01-24 16:17:13] === END DETAILED TASK ANALYSIS ===
+[2026-01-24 16:17:13] === END COMPARISON DEBUG ===
+[2026-01-24 16:17:13] === END DELAYED TASKS DEBUG ===
+[2026-01-24 16:17:13] Total Tasks: 8039
+[2026-01-24 16:17:13] Completed Tasks: 6234
+[2026-01-24 16:17:13] Delayed Tasks: 857
+[2026-01-24 16:17:13] Completion Rate: -22.45%
+[2026-01-24 16:17:13] Delegation Tasks Count: 66
+[2026-01-24 16:17:13] Checklist Tasks Count: 34
+[2026-01-24 16:17:13] FMS Tasks Count: 7939
+[2026-01-24 16:17:13]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-01-24 16:17:13] Fetching FMS tasks from database for real-time updates.
+[2026-01-24 16:17:13] Successfully fetched 7939 FMS tasks from database.
+[2026-01-24 16:17:13] FMS Tasks List (display) final count: 7939
+[2026-01-29 11:08:40] CLIENT_USER_FLOW [UPDATE]: Process started by user ID 1 (Admin) in manage_users.php
+[2026-01-29 11:08:40] CLIENT_USER_FLOW [UPDATE]: Validation passed for username 'Alok', email 'alok@gmail.com', name 'Alok Chauhan', client_id 29, joining_date: 2022-01-01, date_of_birth: 1965-01-01
+[2026-01-29 11:08:40] CLIENT_USER_FLOW [UPDATE]: Executing UPDATE query with password change for user_id 31, username 'Alok', email 'alok@gmail.com', client_id 29
+[2026-01-29 11:56:23] CLIENT_USER_FLOW [UPDATE]: Process started by user ID 1 (Admin) in manage_users.php
+[2026-01-29 11:56:23] CLIENT_USER_FLOW [UPDATE]: Validation passed for username 'John', email 'test@gmail.com', name 'John Dew', client_id 32, joining_date: 2026-01-21, date_of_birth: 2000-01-01
+[2026-01-29 11:56:23] CLIENT_USER_FLOW [UPDATE]: Executing UPDATE query with password change for user_id 35, username 'John', email 'test@gmail.com', client_id 32
+[2026-01-29 11:56:23] CLIENT_USER_FLOW [UPDATE]: Successfully updated client_user with user_id 35, username 'John', email 'test@gmail.com', name 'John Dew', client_id 32 (password changed)
+[2026-02-04 14:41:33] Fetching FMS tasks from database for real-time updates.
+[2026-02-04 14:41:33] No FMS tasks found in database for doer: Admin
+[2026-02-04 14:41:33] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-04 14:41:33] User Admin (ID: 1) my task page loaded. Delegation: 3, Checklist: 0, FMS: 0. Total: 1. Filtered out: 2 completed shifted tasks.
+[2026-02-04 14:41:33] Final task count for display: 1 tasks
+[2026-02-10 14:35:57] Fetching FMS tasks from database for real-time updates.
+[2026-02-10 14:35:57] No FMS tasks found in database for doer: Admin
+[2026-02-10 14:35:57] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-10 14:35:57] User Admin (ID: 1) my task page loaded. Delegation: 3, Checklist: 0, FMS: 0. Total: 1. Filtered out: 2 completed shifted tasks.
+[2026-02-10 14:35:57] Final task count for display: 1 tasks
+[2026-02-13 16:02:49] Fetching FMS tasks from database for real-time updates.
+[2026-02-13 16:02:49] No FMS tasks found in database for doer: Admin
+[2026-02-13 16:02:49] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-13 16:02:49] User Admin (ID: 1) my task page loaded. Delegation: 3, Checklist: 0, FMS: 0. Total: 1. Filtered out: 2 completed shifted tasks.
+[2026-02-13 16:02:49] Final task count for display: 1 tasks
+[2026-02-16 18:03:44] Successfully fetched 7939 FMS tasks from database
+[2026-02-16 18:03:45] === DELAYED TASKS DEBUG ===
+[2026-02-16 18:03:45] Total Delegation Tasks: 66
+[2026-02-16 18:03:45] Total Checklist Tasks: 34
+[2026-02-16 18:03:45] Total FMS Tasks: 7939
+[2026-02-16 18:03:45] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-16 18:03:45] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-02-16 18:03:45] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-02-16 18:03:45] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:03:45] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:03:45] Final Delayed Tasks Count: 857
+[2026-02-16 18:03:45] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-16 18:03:45] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-02-16 18:03:45] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-02-16 18:03:45] Missing planned_date: 3
+[2026-02-16 18:03:45] Missing planned_time: 3
+[2026-02-16 18:03:45] Missing actual_date: 135
+[2026-02-16 18:03:45] Missing actual_time: 135
+[2026-02-16 18:03:45] === DETAILED TASK ANALYSIS ===
+[2026-02-16 18:03:45] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-02-16 18:03:45] Sum of individual counts: 857
+[2026-02-16 18:03:45] Unified loop count: 857
+[2026-02-16 18:03:45] === END DETAILED TASK ANALYSIS ===
+[2026-02-16 18:03:45] === END COMPARISON DEBUG ===
+[2026-02-16 18:03:45] === END DELAYED TASKS DEBUG ===
+[2026-02-16 18:03:45] Total Tasks: 8039
+[2026-02-16 18:03:45] Completed Tasks: 6234
+[2026-02-16 18:03:45] Delayed Tasks: 857
+[2026-02-16 18:03:45] Completion Rate: -22.45%
+[2026-02-16 18:03:45] Delegation Tasks Count: 66
+[2026-02-16 18:03:45] Checklist Tasks Count: 34
+[2026-02-16 18:03:45] FMS Tasks Count: 7939
+[2026-02-16 18:03:45]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-02-16 18:03:45] Fetching FMS tasks from database for real-time updates.
+[2026-02-16 18:03:46] Successfully fetched 7939 FMS tasks from database.
+[2026-02-16 18:03:46] FMS Tasks List (display) final count: 7939
+[2026-02-16 18:03:51] Fetching FMS tasks from database for real-time updates.
+[2026-02-16 18:03:51] No FMS tasks found in database for doer: Kanishka
+[2026-02-16 18:03:51] Filtered out 0 shifted tasks with actual time set from my task page
+[2026-02-16 18:03:51] User Kanishka (ID: 3) my task page loaded. Delegation: 1, Checklist: 0, FMS: 0. Total: 1. Filtered out: 0 completed shifted tasks.
+[2026-02-16 18:03:51] Final task count for display: 1 tasks
+[2026-02-16 18:03:56] Successfully fetched 7939 FMS tasks from database
+[2026-02-16 18:03:56] === DELAYED TASKS DEBUG ===
+[2026-02-16 18:03:56] Total Delegation Tasks: 66
+[2026-02-16 18:03:56] Total Checklist Tasks: 34
+[2026-02-16 18:03:56] Total FMS Tasks: 7939
+[2026-02-16 18:03:56] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-16 18:03:56] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-02-16 18:03:56] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-02-16 18:03:56] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:03:56] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:03:56] Final Delayed Tasks Count: 857
+[2026-02-16 18:03:56] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-16 18:03:56] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-02-16 18:03:56] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-02-16 18:03:56] Missing planned_date: 3
+[2026-02-16 18:03:56] Missing planned_time: 3
+[2026-02-16 18:03:56] Missing actual_date: 135
+[2026-02-16 18:03:56] Missing actual_time: 135
+[2026-02-16 18:03:56] === DETAILED TASK ANALYSIS ===
+[2026-02-16 18:03:56] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-02-16 18:03:56] Sum of individual counts: 857
+[2026-02-16 18:03:56] Unified loop count: 857
+[2026-02-16 18:03:56] === END DETAILED TASK ANALYSIS ===
+[2026-02-16 18:03:56] === END COMPARISON DEBUG ===
+[2026-02-16 18:03:56] === END DELAYED TASKS DEBUG ===
+[2026-02-16 18:03:56] Total Tasks: 8039
+[2026-02-16 18:03:56] Completed Tasks: 6234
+[2026-02-16 18:03:56] Delayed Tasks: 857
+[2026-02-16 18:03:56] Completion Rate: -22.45%
+[2026-02-16 18:03:56] Delegation Tasks Count: 66
+[2026-02-16 18:03:56] Checklist Tasks Count: 34
+[2026-02-16 18:03:56] FMS Tasks Count: 7939
+[2026-02-16 18:03:56]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-02-16 18:03:56] Fetching FMS tasks from database for real-time updates.
+[2026-02-16 18:03:57] Successfully fetched 7939 FMS tasks from database.
+[2026-02-16 18:03:57] FMS Tasks List (display) final count: 7939
+[2026-02-16 18:08:58] Successfully fetched 7939 FMS tasks from database
+[2026-02-16 18:08:58] === DELAYED TASKS DEBUG ===
+[2026-02-16 18:08:58] Total Delegation Tasks: 66
+[2026-02-16 18:08:58] Total Checklist Tasks: 34
+[2026-02-16 18:08:58] Total FMS Tasks: 7939
+[2026-02-16 18:08:58] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-16 18:08:58] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-02-16 18:08:58] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-02-16 18:08:58] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:08:58] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:08:58] Final Delayed Tasks Count: 857
+[2026-02-16 18:08:58] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-16 18:08:58] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-02-16 18:08:58] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-02-16 18:08:58] Missing planned_date: 3
+[2026-02-16 18:08:58] Missing planned_time: 3
+[2026-02-16 18:08:58] Missing actual_date: 135
+[2026-02-16 18:08:58] Missing actual_time: 135
+[2026-02-16 18:08:58] === DETAILED TASK ANALYSIS ===
+[2026-02-16 18:08:58] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-02-16 18:08:58] Sum of individual counts: 857
+[2026-02-16 18:08:58] Unified loop count: 857
+[2026-02-16 18:08:58] === END DETAILED TASK ANALYSIS ===
+[2026-02-16 18:08:58] === END COMPARISON DEBUG ===
+[2026-02-16 18:08:58] === END DELAYED TASKS DEBUG ===
+[2026-02-16 18:08:58] Total Tasks: 8039
+[2026-02-16 18:08:58] Completed Tasks: 6234
+[2026-02-16 18:08:58] Delayed Tasks: 857
+[2026-02-16 18:08:58] Completion Rate: -22.45%
+[2026-02-16 18:08:58] Delegation Tasks Count: 66
+[2026-02-16 18:08:58] Checklist Tasks Count: 34
+[2026-02-16 18:08:58] FMS Tasks Count: 7939
+[2026-02-16 18:08:58]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-02-16 18:08:58] Fetching FMS tasks from database for real-time updates.
+[2026-02-16 18:08:59] Successfully fetched 7939 FMS tasks from database.
+[2026-02-16 18:08:59] FMS Tasks List (display) final count: 7939
+[2026-02-16 18:14:01] Successfully fetched 7939 FMS tasks from database
+[2026-02-16 18:14:01] === DELAYED TASKS DEBUG ===
+[2026-02-16 18:14:01] Total Delegation Tasks: 66
+[2026-02-16 18:14:01] Total Checklist Tasks: 34
+[2026-02-16 18:14:01] Total FMS Tasks: 7939
+[2026-02-16 18:14:01] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-16 18:14:01] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-02-16 18:14:01] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-02-16 18:14:01] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:14:01] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:14:01] Final Delayed Tasks Count: 857
+[2026-02-16 18:14:01] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-16 18:14:01] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-02-16 18:14:01] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-02-16 18:14:01] Missing planned_date: 3
+[2026-02-16 18:14:01] Missing planned_time: 3
+[2026-02-16 18:14:01] Missing actual_date: 135
+[2026-02-16 18:14:01] Missing actual_time: 135
+[2026-02-16 18:14:01] === DETAILED TASK ANALYSIS ===
+[2026-02-16 18:14:01] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-02-16 18:14:01] Sum of individual counts: 857
+[2026-02-16 18:14:01] Unified loop count: 857
+[2026-02-16 18:14:01] === END DETAILED TASK ANALYSIS ===
+[2026-02-16 18:14:01] === END COMPARISON DEBUG ===
+[2026-02-16 18:14:01] === END DELAYED TASKS DEBUG ===
+[2026-02-16 18:14:01] Total Tasks: 8039
+[2026-02-16 18:14:01] Completed Tasks: 6234
+[2026-02-16 18:14:02] Delayed Tasks: 857
+[2026-02-16 18:14:02] Completion Rate: -22.45%
+[2026-02-16 18:14:02] Delegation Tasks Count: 66
+[2026-02-16 18:14:02] Checklist Tasks Count: 34
+[2026-02-16 18:14:02] FMS Tasks Count: 7939
+[2026-02-16 18:14:02]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-02-16 18:14:02] Fetching FMS tasks from database for real-time updates.
+[2026-02-16 18:14:02] Successfully fetched 7939 FMS tasks from database.
+[2026-02-16 18:14:02] FMS Tasks List (display) final count: 7939
+[2026-02-16 18:15:43] Successfully fetched 7939 FMS tasks from database
+[2026-02-16 18:15:43] === DELAYED TASKS DEBUG ===
+[2026-02-16 18:15:43] Total Delegation Tasks: 66
+[2026-02-16 18:15:43] Total Checklist Tasks: 34
+[2026-02-16 18:15:43] Total FMS Tasks: 7939
+[2026-02-16 18:15:43] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-16 18:15:43] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-02-16 18:15:43] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-02-16 18:15:43] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:15:43] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:15:43] Final Delayed Tasks Count: 857
+[2026-02-16 18:15:43] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-16 18:15:43] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-02-16 18:15:43] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-02-16 18:15:43] Missing planned_date: 3
+[2026-02-16 18:15:43] Missing planned_time: 3
+[2026-02-16 18:15:43] Missing actual_date: 135
+[2026-02-16 18:15:43] Missing actual_time: 135
+[2026-02-16 18:15:43] === DETAILED TASK ANALYSIS ===
+[2026-02-16 18:15:43] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-02-16 18:15:43] Sum of individual counts: 857
+[2026-02-16 18:15:43] Unified loop count: 857
+[2026-02-16 18:15:43] === END DETAILED TASK ANALYSIS ===
+[2026-02-16 18:15:43] === END COMPARISON DEBUG ===
+[2026-02-16 18:15:43] === END DELAYED TASKS DEBUG ===
+[2026-02-16 18:15:43] Total Tasks: 8039
+[2026-02-16 18:15:43] Completed Tasks: 6234
+[2026-02-16 18:15:43] Delayed Tasks: 857
+[2026-02-16 18:15:43] Completion Rate: -22.45%
+[2026-02-16 18:15:43] Delegation Tasks Count: 66
+[2026-02-16 18:15:43] Checklist Tasks Count: 34
+[2026-02-16 18:15:43] FMS Tasks Count: 7939
+[2026-02-16 18:15:43]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-02-16 18:15:43] Fetching FMS tasks from database for real-time updates.
+[2026-02-16 18:15:44] Successfully fetched 7939 FMS tasks from database.
+[2026-02-16 18:15:44] FMS Tasks List (display) final count: 7939
+[2026-02-16 18:16:24] Successfully fetched 7939 FMS tasks from database
+[2026-02-16 18:16:24] === DELAYED TASKS DEBUG ===
+[2026-02-16 18:16:24] Total Delegation Tasks: 66
+[2026-02-16 18:16:24] Total Checklist Tasks: 34
+[2026-02-16 18:16:24] Total FMS Tasks: 7939
+[2026-02-16 18:16:24] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-16 18:16:24] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-02-16 18:16:24] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-02-16 18:16:24] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:16:24] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:16:24] Final Delayed Tasks Count: 857
+[2026-02-16 18:16:24] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-16 18:16:24] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-02-16 18:16:24] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-02-16 18:16:24] Missing planned_date: 3
+[2026-02-16 18:16:24] Missing planned_time: 3
+[2026-02-16 18:16:24] Missing actual_date: 135
+[2026-02-16 18:16:24] Missing actual_time: 135
+[2026-02-16 18:16:24] === DETAILED TASK ANALYSIS ===
+[2026-02-16 18:16:24] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-02-16 18:16:24] Sum of individual counts: 857
+[2026-02-16 18:16:24] Unified loop count: 857
+[2026-02-16 18:16:24] === END DETAILED TASK ANALYSIS ===
+[2026-02-16 18:16:24] === END COMPARISON DEBUG ===
+[2026-02-16 18:16:24] === END DELAYED TASKS DEBUG ===
+[2026-02-16 18:16:24] Total Tasks: 8039
+[2026-02-16 18:16:24] Completed Tasks: 6234
+[2026-02-16 18:16:24] Delayed Tasks: 857
+[2026-02-16 18:16:24] Completion Rate: -22.45%
+[2026-02-16 18:16:24] Delegation Tasks Count: 66
+[2026-02-16 18:16:24] Checklist Tasks Count: 34
+[2026-02-16 18:16:24] FMS Tasks Count: 7939
+[2026-02-16 18:16:24]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-02-16 18:16:24] Fetching FMS tasks from database for real-time updates.
+[2026-02-16 18:16:25] Successfully fetched 7939 FMS tasks from database.
+[2026-02-16 18:16:25] FMS Tasks List (display) final count: 7939
+[2026-02-16 18:20:48] Successfully fetched 7939 FMS tasks from database
+[2026-02-16 18:20:48] === DELAYED TASKS DEBUG ===
+[2026-02-16 18:20:48] Total Delegation Tasks: 66
+[2026-02-16 18:20:48] Total Checklist Tasks: 34
+[2026-02-16 18:20:48] Total FMS Tasks: 7939
+[2026-02-16 18:20:48] FMS Task Sample 1: planned_date=2025-11-20, planned_time=10:00:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-16 18:20:48] FMS Task Sample 2: planned_date=2025-11-19, planned_time=16:30:00, actual_date=2025-11-19, actual_time=15:40:00, status=Done
+[2026-02-16 18:20:48] FMS Task Sample 3: planned_date=2025-11-20, planned_time=10:25:00, actual_date=2025-11-19, actual_time=16:00:00, status=Done
+[2026-02-16 18:20:48] FMS Task Sample 4: planned_date=2025-11-19, planned_time=16:15:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:20:48] FMS Task Sample 5: planned_date=2025-11-19, planned_time=16:38:00, actual_date=2025-11-19, actual_time=16:08:00, status=Done
+[2026-02-16 18:20:48] Final Delayed Tasks Count: 857
+[2026-02-16 18:20:48] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-16 18:20:48] Manager Dashboard - Delegation: 66, Checklist: 34, FMS: 7939
+[2026-02-16 18:20:48] Manager Dashboard - Total: 8039, Delayed: 857
+[2026-02-16 18:20:48] Missing planned_date: 3
+[2026-02-16 18:20:48] Missing planned_time: 3
+[2026-02-16 18:20:48] Missing actual_date: 135
+[2026-02-16 18:20:48] Missing actual_time: 135
+[2026-02-16 18:20:48] === DETAILED TASK ANALYSIS ===
+[2026-02-16 18:20:48] Delayed by type - Delegation: 57, Checklist: 34, FMS: 766
+[2026-02-16 18:20:48] Sum of individual counts: 857
+[2026-02-16 18:20:48] Unified loop count: 857
+[2026-02-16 18:20:48] === END DETAILED TASK ANALYSIS ===
+[2026-02-16 18:20:48] === END COMPARISON DEBUG ===
+[2026-02-16 18:20:48] === END DELAYED TASKS DEBUG ===
+[2026-02-16 18:20:48] Total Tasks: 8039
+[2026-02-16 18:20:48] Completed Tasks: 6234
+[2026-02-16 18:20:48] Delayed Tasks: 857
+[2026-02-16 18:20:48] Completion Rate: -22.45%
+[2026-02-16 18:20:48] Delegation Tasks Count: 66
+[2026-02-16 18:20:48] Checklist Tasks Count: 34
+[2026-02-16 18:20:48] FMS Tasks Count: 7939
+[2026-02-16 18:20:48]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 7939
+[2026-02-16 18:20:48] Fetching FMS tasks from database for real-time updates.
+[2026-02-16 18:20:49] Successfully fetched 7939 FMS tasks from database.
+[2026-02-16 18:20:49] FMS Tasks List (display) final count: 7939
+[2026-02-18 13:26:38] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: SMC
+[2026-02-18 13:26:38] ERROR: Autoload file not found at: C:\xampp\htdocs\app-v5.5-new\includes/../vendor/vendor/autoload.php
+[2026-02-18 13:27:00] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:27:00] ERROR: Autoload file not found at: C:\xampp\htdocs\app-v5.5-new\includes/../vendor/vendor/autoload.php
+[2026-02-18 13:27:09] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:27:09] ERROR: Autoload file not found at: C:\xampp\htdocs\app-v5.5-new\includes/../vendor/vendor/autoload.php
+[2026-02-18 13:27:17] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:27:17] ERROR: Autoload file not found at: C:\xampp\htdocs\app-v5.5-new\includes/../vendor/vendor/autoload.php
+[2026-02-18 13:34:59] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:34:59] ERROR: Autoload file not found at: C:\xampp\htdocs\app-v5.5-new\includes/../vendor/vendor/autoload.php
+[2026-02-18 13:35:08] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:35:08] ERROR: Autoload file not found at: C:\xampp\htdocs\app-v5.5-new\includes/../vendor/vendor/autoload.php
+[2026-02-18 13:38:03] Fetching FMS tasks from database for real-time updates.
+[2026-02-18 13:38:03] No FMS tasks found in database for doer: Admin
+[2026-02-18 13:38:03] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-18 13:38:03] User Admin (ID: 1) my task page loaded. Delegation: 3, Checklist: 0, FMS: 0. Total: 1. Filtered out: 2 completed shifted tasks.
+[2026-02-18 13:38:03] Final task count for display: 1 tasks
+[2026-02-18 13:41:17] Fetching FMS tasks from database for real-time updates.
+[2026-02-18 13:41:17] No FMS tasks found in database for doer: Admin
+[2026-02-18 13:41:17] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-18 13:41:17] User Admin (ID: 1) my task page loaded. Delegation: 3, Checklist: 0, FMS: 0. Total: 1. Filtered out: 2 completed shifted tasks.
+[2026-02-18 13:41:17] Final task count for display: 1 tasks
+[2026-02-18 13:41:39] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:41:39] ERROR: Autoload file not found at: C:\xampp\htdocs\app-v5.5-new\includes/../vendor/vendor/autoload.php
+[2026-02-18 13:42:35] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:42:35] ERROR: Autoload file not found at: C:\xampp\htdocs\app-v5.5-new\includes/../vendor/vendor/autoload.php
+[2026-02-18 13:45:11] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:45:11] Autoload file loaded in fetchSheetData
+[2026-02-18 13:45:11] Creating Google Client instance
+[2026-02-18 13:45:11] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:45:11] Creating Google Sheets service
+[2026-02-18 13:45:11] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:45:13] API call successful, returning 5169 rows
+[2026-02-18 13:46:10] Entering fetchSheetData function with sheetId: 1QJQDqoIMdEU1HBswGvOyABYrf8y8ond5SSyi7gzeQ4k, sheetName: DB_Format
+[2026-02-18 13:46:10] Autoload file loaded in fetchSheetData
+[2026-02-18 13:46:10] Creating Google Client instance
+[2026-02-18 13:46:10] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:46:10] Creating Google Sheets service
+[2026-02-18 13:46:10] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:46:12] API call successful, returning 5035 rows
+[2026-02-18 13:46:38] Entering fetchSheetData function with sheetId: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4, sheetName: DB_Format
+[2026-02-18 13:46:38] Autoload file loaded in fetchSheetData
+[2026-02-18 13:46:38] Creating Google Client instance
+[2026-02-18 13:46:38] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:46:38] Creating Google Sheets service
+[2026-02-18 13:46:38] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:46:40] API call successful, returning 10386 rows
+[2026-02-18 13:47:09] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:47:09] Autoload file loaded in fetchSheetData
+[2026-02-18 13:47:09] Creating Google Client instance
+[2026-02-18 13:47:09] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:47:09] Creating Google Sheets service
+[2026-02-18 13:47:09] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:47:11] API call successful, returning 5170 rows
+[2026-02-18 13:47:28] Entering fetchSheetData function with sheetId: 1QJQDqoIMdEU1HBswGvOyABYrf8y8ond5SSyi7gzeQ4k, sheetName: DB_Format
+[2026-02-18 13:47:28] Autoload file loaded in fetchSheetData
+[2026-02-18 13:47:28] Creating Google Client instance
+[2026-02-18 13:47:28] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:47:28] Creating Google Sheets service
+[2026-02-18 13:47:28] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:47:30] API call successful, returning 5035 rows
+[2026-02-18 13:47:47] Entering fetchSheetData function with sheetId: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4, sheetName: DB_Format
+[2026-02-18 13:47:47] Autoload file loaded in fetchSheetData
+[2026-02-18 13:47:47] Creating Google Client instance
+[2026-02-18 13:47:47] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:47:47] Creating Google Sheets service
+[2026-02-18 13:47:47] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:47:49] API call successful, returning 10386 rows
+[2026-02-18 13:48:18] Entering fetchSheetData function with sheetId: 1WvqFctFdBM9I6MLuY61x_MQBN-7dXFV6zObfF-uObsQ, sheetName: DB_Format
+[2026-02-18 13:48:18] Autoload file loaded in fetchSheetData
+[2026-02-18 13:48:18] Creating Google Client instance
+[2026-02-18 13:48:18] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:48:18] Creating Google Sheets service
+[2026-02-18 13:48:18] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:48:22] API call successful, returning 5170 rows
+[2026-02-18 13:48:38] Entering fetchSheetData function with sheetId: 1QJQDqoIMdEU1HBswGvOyABYrf8y8ond5SSyi7gzeQ4k, sheetName: DB_Format
+[2026-02-18 13:48:38] Autoload file loaded in fetchSheetData
+[2026-02-18 13:48:38] Creating Google Client instance
+[2026-02-18 13:48:38] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:48:38] Creating Google Sheets service
+[2026-02-18 13:48:38] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:48:39] API call successful, returning 5035 rows
+[2026-02-18 13:59:20] Entering fetchSheetData function with sheetId: 1eLO-gJgL61sJXwXSn8gXR4MgbYTRStta1cLXTglvMs8, sheetName: DB_Format
+[2026-02-18 13:59:20] Autoload file loaded in fetchSheetData
+[2026-02-18 13:59:20] Creating Google Client instance
+[2026-02-18 13:59:20] Setting auth config with credentials file: C:\xampp\htdocs\app-v5.5-new\includes/../credentials.json
+[2026-02-18 13:59:20] Creating Google Sheets service
+[2026-02-18 13:59:20] Making API call to get sheet values for range: DB_Format
+[2026-02-18 13:59:22] API call successful, returning 3265 rows
+[2026-02-19 13:35:51] Fetching FMS tasks from database for real-time updates.
+[2026-02-19 13:35:51] No FMS tasks found in database for doer: Admin
+[2026-02-19 13:35:51] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-19 13:35:51] User Admin (ID: 1) my task page loaded. Delegation: 3, Checklist: 0, FMS: 0. Total: 1. Filtered out: 2 completed shifted tasks.
+[2026-02-19 13:35:51] Final task count for display: 1 tasks
+[2026-02-20 17:23:40] Entering fetchSheetData function with sheetId: 1B4jW3zTAg1dI7-CsAGH-G9ARoM1QgYoVyOpNPZIASNY, sheetName: DB_Format
+[2026-02-20 17:23:44] Autoload file loaded in fetchSheetData
+[2026-02-20 17:23:44] Creating Google Client instance
+[2026-02-20 17:23:45] Setting auth config with credentials file: C:\xampp\htdocs\app-v8.1\includes/../credentials.json
+[2026-02-20 17:23:45] Creating Google Sheets service
+[2026-02-20 17:23:46] Making API call to get sheet values for range: DB_Format
+[2026-02-20 17:23:56] API call successful, returning 151 rows
+[2026-02-20 17:59:14] Fetching FMS tasks from database for real-time updates.
+[2026-02-20 17:59:14] No FMS tasks found in database for doer: Admin
+[2026-02-20 17:59:14] Filtered out 0 shifted tasks with actual time set from my task page
+[2026-02-20 17:59:14] User Admin (ID: 1) my task page loaded. Delegation: 0, Checklist: 0, FMS: 0. Total: 0. Filtered out: 0 completed shifted tasks.
+[2026-02-20 17:59:14] Final task count for display: 0 tasks
+[2026-02-21 11:06:07] Fetching FMS tasks from database for real-time updates.
+[2026-02-21 11:06:08] Successfully fetched 142 FMS tasks from database for doer: Prateek
+[2026-02-21 11:06:08] Filtered out 3 shifted tasks with actual time set from my task page
+[2026-02-21 11:06:08] User Prateek (ID: 20) my task page loaded. Delegation: 6, Checklist: 0, FMS: 142. Total: 145. Filtered out: 3 completed shifted tasks.
+[2026-02-21 11:06:08] Final task count for display: 145 tasks
+[2026-02-21 11:45:29] Fetching FMS tasks from database for real-time updates.
+[2026-02-21 11:45:29] Successfully fetched 142 FMS tasks from database for doer: Prateek
+[2026-02-21 11:45:29] Filtered out 3 shifted tasks with actual time set from my task page
+[2026-02-21 11:45:29] User Prateek (ID: 20) my task page loaded. Delegation: 6, Checklist: 0, FMS: 142. Total: 145. Filtered out: 3 completed shifted tasks.
+[2026-02-21 11:45:29] Final task count for display: 145 tasks
+[2026-02-21 12:10:48] Successfully fetched 13118 FMS tasks from database
+[2026-02-21 12:10:48] === DELAYED TASKS DEBUG ===
+[2026-02-21 12:10:48] Total Delegation Tasks: 50
+[2026-02-21 12:10:48] Total Checklist Tasks: 133
+[2026-02-21 12:10:48] Total FMS Tasks: 13118
+[2026-02-21 12:10:48] FMS Task Sample 1: planned_date=2025-10-04, planned_time=11:51:00, actual_date=2025-10-06, actual_time=11:29:00, status=Done
+[2026-02-21 12:10:48] FMS Task Sample 2: planned_date=2025-10-06, planned_time=12:29:00, actual_date=2025-10-06, actual_time=11:32:00, status=Done
+[2026-02-21 12:10:48] FMS Task Sample 3: planned_date=2025-10-06, planned_time=12:02:00, actual_date=2025-10-13, actual_time=14:10:00, status=Done
+[2026-02-21 12:10:48] FMS Task Sample 4: planned_date=2025-10-13, planned_time=14:40:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-21 12:10:48] FMS Task Sample 5: planned_date=2025-10-04, planned_time=11:44:00, actual_date=2025-10-06, actual_time=11:27:00, status=Done
+[2026-02-21 12:10:48] Final Delayed Tasks Count: 3290
+[2026-02-21 12:10:48] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-21 12:10:48] Manager Dashboard - Delegation: 50, Checklist: 133, FMS: 13118
+[2026-02-21 12:10:48] Manager Dashboard - Total: 13301, Delayed: 3290
+[2026-02-21 12:10:48] Missing planned_date: 13
+[2026-02-21 12:10:48] Missing planned_time: 13
+[2026-02-21 12:10:48] Missing actual_date: 1096
+[2026-02-21 12:10:48] Missing actual_time: 1096
+[2026-02-21 12:10:48] === DETAILED TASK ANALYSIS ===
+[2026-02-21 12:10:48] Delayed by type - Delegation: 44, Checklist: 113, FMS: 3133
+[2026-02-21 12:10:48] Sum of individual counts: 3290
+[2026-02-21 12:10:48] Unified loop count: 3290
+[2026-02-21 12:10:48] === END DETAILED TASK ANALYSIS ===
+[2026-02-21 12:10:48] === END COMPARISON DEBUG ===
+[2026-02-21 12:10:48] === END DELAYED TASKS DEBUG ===
+[2026-02-21 12:10:48] Total Tasks: 13301
+[2026-02-21 12:10:48] Completed Tasks: 10106
+[2026-02-21 12:10:48] Delayed Tasks: 3290
+[2026-02-21 12:10:48] Completion Rate: -24.02%
+[2026-02-21 12:10:48] Delegation Tasks Count: 50
+[2026-02-21 12:10:48] Checklist Tasks Count: 133
+[2026-02-21 12:10:48] FMS Tasks Count: 13118
+[2026-02-21 12:10:48]   Sheet ID: 1gtymNm2t1HyAkgT3NR0BudykoDPAsjBlh8p8wD9L3xs - Count: 2464
+[2026-02-21 12:10:48]   Sheet ID: 1rXsFdJlAaGccdJuJrQ_0q77smoselN8MYswMY2gRals - Count: 279
+[2026-02-21 12:10:48]   Sheet ID: 13D3rSvz_Jjpuj7hCCJAPDuUHiIDVltMVD2gJITEp7ZU - Count: 538
+[2026-02-21 12:10:48]   Sheet ID: 1PBKYYy2wkPqd3LDawr9Dhkamvsaa2x3CoTSUhxQ-nUM - Count: 1078
+[2026-02-21 12:10:48]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 8611
+[2026-02-21 12:10:48]   Sheet ID: 1B4jW3zTAg1dI7-CsAGH-G9ARoM1QgYoVyOpNPZIASNY - Count: 148
+[2026-02-21 12:10:48] Fetching FMS tasks from database for real-time updates.
+[2026-02-21 12:10:49] Successfully fetched 13118 FMS tasks from database.
+[2026-02-21 12:10:49] FMS Tasks List (display) final count: 13118
+[2026-02-21 12:11:23] Fetching FMS tasks from database for real-time updates.
+[2026-02-21 12:11:23] Successfully fetched 0 FMS tasks from database for doer: Ujjwal
+[2026-02-21 12:11:23] Filtered out 0 shifted tasks with actual time set from my task page
+[2026-02-21 12:11:23] User Ujjwal (ID: 19) my task page loaded. Delegation: 2, Checklist: 0, FMS: 0. Total: 2. Filtered out: 0 completed shifted tasks.
+[2026-02-21 12:11:23] Final task count for display: 2 tasks
+[2026-02-21 15:46:29] Successfully fetched 13118 FMS tasks from database
+[2026-02-21 15:46:29] === DELAYED TASKS DEBUG ===
+[2026-02-21 15:46:29] Total Delegation Tasks: 50
+[2026-02-21 15:46:29] Total Checklist Tasks: 133
+[2026-02-21 15:46:29] Total FMS Tasks: 13118
+[2026-02-21 15:46:29] FMS Task Sample 1: planned_date=2025-10-04, planned_time=11:51:00, actual_date=2025-10-06, actual_time=11:29:00, status=Done
+[2026-02-21 15:46:29] FMS Task Sample 2: planned_date=2025-10-06, planned_time=12:29:00, actual_date=2025-10-06, actual_time=11:32:00, status=Done
+[2026-02-21 15:46:29] FMS Task Sample 3: planned_date=2025-10-06, planned_time=12:02:00, actual_date=2025-10-13, actual_time=14:10:00, status=Done
+[2026-02-21 15:46:29] FMS Task Sample 4: planned_date=2025-10-13, planned_time=14:40:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-21 15:46:29] FMS Task Sample 5: planned_date=2025-10-04, planned_time=11:44:00, actual_date=2025-10-06, actual_time=11:27:00, status=Done
+[2026-02-21 15:46:29] Final Delayed Tasks Count: 3290
+[2026-02-21 15:46:29] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-21 15:46:29] Manager Dashboard - Delegation: 50, Checklist: 133, FMS: 13118
+[2026-02-21 15:46:29] Manager Dashboard - Total: 13301, Delayed: 3290
+[2026-02-21 15:46:29] Missing planned_date: 13
+[2026-02-21 15:46:29] Missing planned_time: 13
+[2026-02-21 15:46:29] Missing actual_date: 1096
+[2026-02-21 15:46:29] Missing actual_time: 1096
+[2026-02-21 15:46:29] === DETAILED TASK ANALYSIS ===
+[2026-02-21 15:46:29] Delayed by type - Delegation: 44, Checklist: 113, FMS: 3133
+[2026-02-21 15:46:29] Sum of individual counts: 3290
+[2026-02-21 15:46:29] Unified loop count: 3290
+[2026-02-21 15:46:29] === END DETAILED TASK ANALYSIS ===
+[2026-02-21 15:46:29] === END COMPARISON DEBUG ===
+[2026-02-21 15:46:29] === END DELAYED TASKS DEBUG ===
+[2026-02-21 15:46:29] Total Tasks: 13301
+[2026-02-21 15:46:29] Completed Tasks: 10106
+[2026-02-21 15:46:29] Delayed Tasks: 3290
+[2026-02-21 15:46:29] Completion Rate: -24.02%
+[2026-02-21 15:46:29] Delegation Tasks Count: 50
+[2026-02-21 15:46:29] Checklist Tasks Count: 133
+[2026-02-21 15:46:29] FMS Tasks Count: 13118
+[2026-02-21 15:46:29]   Sheet ID: 1gtymNm2t1HyAkgT3NR0BudykoDPAsjBlh8p8wD9L3xs - Count: 2464
+[2026-02-21 15:46:29]   Sheet ID: 1rXsFdJlAaGccdJuJrQ_0q77smoselN8MYswMY2gRals - Count: 279
+[2026-02-21 15:46:29]   Sheet ID: 13D3rSvz_Jjpuj7hCCJAPDuUHiIDVltMVD2gJITEp7ZU - Count: 538
+[2026-02-21 15:46:29]   Sheet ID: 1PBKYYy2wkPqd3LDawr9Dhkamvsaa2x3CoTSUhxQ-nUM - Count: 1078
+[2026-02-21 15:46:29]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 8611
+[2026-02-21 15:46:29]   Sheet ID: 1B4jW3zTAg1dI7-CsAGH-G9ARoM1QgYoVyOpNPZIASNY - Count: 148
+[2026-02-21 15:46:29] Fetching FMS tasks from database for real-time updates.
+[2026-02-21 15:46:29] Successfully fetched 13118 FMS tasks from database.
+[2026-02-21 15:46:29] FMS Tasks List (display) final count: 13118
+[2026-02-21 17:57:58] Successfully fetched 13118 FMS tasks from database
+[2026-02-21 17:57:58] === DELAYED TASKS DEBUG ===
+[2026-02-21 17:57:58] Total Delegation Tasks: 50
+[2026-02-21 17:57:58] Total Checklist Tasks: 133
+[2026-02-21 17:57:58] Total FMS Tasks: 13118
+[2026-02-21 17:57:58] FMS Task Sample 1: planned_date=2025-10-04, planned_time=11:51:00, actual_date=2025-10-06, actual_time=11:29:00, status=Done
+[2026-02-21 17:57:58] FMS Task Sample 2: planned_date=2025-10-06, planned_time=12:29:00, actual_date=2025-10-06, actual_time=11:32:00, status=Done
+[2026-02-21 17:57:58] FMS Task Sample 3: planned_date=2025-10-06, planned_time=12:02:00, actual_date=2025-10-13, actual_time=14:10:00, status=Done
+[2026-02-21 17:57:58] FMS Task Sample 4: planned_date=2025-10-13, planned_time=14:40:00, actual_date=NULL, actual_time=NULL, status=Pending
+[2026-02-21 17:57:58] FMS Task Sample 5: planned_date=2025-10-04, planned_time=11:44:00, actual_date=2025-10-06, actual_time=11:27:00, status=Done
+[2026-02-21 17:57:58] Final Delayed Tasks Count: 3290
+[2026-02-21 17:57:58] === COMPARISON WITH ADMIN DASHBOARD ===
+[2026-02-21 17:57:58] Manager Dashboard - Delegation: 50, Checklist: 133, FMS: 13118
+[2026-02-21 17:57:58] Manager Dashboard - Total: 13301, Delayed: 3290
+[2026-02-21 17:57:58] Missing planned_date: 13
+[2026-02-21 17:57:58] Missing planned_time: 13
+[2026-02-21 17:57:58] Missing actual_date: 1096
+[2026-02-21 17:57:58] Missing actual_time: 1096
+[2026-02-21 17:57:58] === DETAILED TASK ANALYSIS ===
+[2026-02-21 17:57:58] Delayed by type - Delegation: 44, Checklist: 113, FMS: 3133
+[2026-02-21 17:57:58] Sum of individual counts: 3290
+[2026-02-21 17:57:58] Unified loop count: 3290
+[2026-02-21 17:57:58] === END DETAILED TASK ANALYSIS ===
+[2026-02-21 17:57:58] === END COMPARISON DEBUG ===
+[2026-02-21 17:57:58] === END DELAYED TASKS DEBUG ===
+[2026-02-21 17:57:58] Total Tasks: 13301
+[2026-02-21 17:57:58] Completed Tasks: 10106
+[2026-02-21 17:57:58] Delayed Tasks: 3290
+[2026-02-21 17:57:58] Completion Rate: -24.02%
+[2026-02-21 17:57:58] Delegation Tasks Count: 50
+[2026-02-21 17:57:58] Checklist Tasks Count: 133
+[2026-02-21 17:57:58] FMS Tasks Count: 13118
+[2026-02-21 17:57:58]   Sheet ID: 1gtymNm2t1HyAkgT3NR0BudykoDPAsjBlh8p8wD9L3xs - Count: 2464
+[2026-02-21 17:57:58]   Sheet ID: 1rXsFdJlAaGccdJuJrQ_0q77smoselN8MYswMY2gRals - Count: 279
+[2026-02-21 17:57:58]   Sheet ID: 13D3rSvz_Jjpuj7hCCJAPDuUHiIDVltMVD2gJITEp7ZU - Count: 538
+[2026-02-21 17:57:58]   Sheet ID: 1PBKYYy2wkPqd3LDawr9Dhkamvsaa2x3CoTSUhxQ-nUM - Count: 1078
+[2026-02-21 17:57:58]   Sheet ID: 1AHGCcGATxgQCgVlbRh0UXHD4m1yTQj6J3ioF1QSSYs4 - Count: 8611
+[2026-02-21 17:57:58]   Sheet ID: 1B4jW3zTAg1dI7-CsAGH-G9ARoM1QgYoVyOpNPZIASNY - Count: 148
+[2026-02-21 17:57:58] Fetching FMS tasks from database for real-time updates.
+[2026-02-21 17:57:59] Successfully fetched 13118 FMS tasks from database.
+[2026-02-21 17:57:59] FMS Tasks List (display) final count: 13118
+[2026-02-26 12:43:29] Fetching FMS tasks from database for real-time updates.
+[2026-02-26 12:43:29] No FMS tasks found in database for doer: Admin
+[2026-02-26 12:43:29] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-26 12:43:29] User Admin (ID: 1) my task page loaded. Delegation: 3, Checklist: 0, FMS: 0. Total: 1. Filtered out: 2 completed shifted tasks.
+[2026-02-26 12:43:29] Final task count for display: 1 tasks
+[2026-02-26 12:46:35] Fetching FMS tasks from database for real-time updates.
+[2026-02-26 12:46:35] No FMS tasks found in database for doer: Admin
+[2026-02-26 12:46:35] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-26 12:46:35] User Admin (ID: 1) my task page loaded. Delegation: 3, Checklist: 0, FMS: 0. Total: 1. Filtered out: 2 completed shifted tasks.
+[2026-02-26 12:46:35] Final task count for display: 1 tasks
+[2026-02-26 12:46:57] Fetching FMS tasks from database for real-time updates.
+[2026-02-26 12:46:57] No FMS tasks found in database for doer: Admin
+[2026-02-26 12:46:57] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-26 12:46:57] User Admin (ID: 1) my task page loaded. Delegation: 2, Checklist: 0, FMS: 0. Total: 0. Filtered out: 2 completed shifted tasks.
+[2026-02-26 12:46:57] Final task count for display: 0 tasks
+[2026-02-26 12:47:01] Fetching FMS tasks from database for real-time updates.
+[2026-02-26 12:47:01] No FMS tasks found in database for doer: Admin
+[2026-02-26 12:47:01] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-26 12:47:01] User Admin (ID: 1) my task page loaded. Delegation: 2, Checklist: 0, FMS: 0. Total: 0. Filtered out: 2 completed shifted tasks.
+[2026-02-26 12:47:01] Final task count for display: 0 tasks
+[2026-02-26 16:22:09] Fetching FMS tasks from database for real-time updates.
+[2026-02-26 16:22:09] No FMS tasks found in database for doer: Admin
+[2026-02-26 16:22:09] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-02-26 16:22:09] User Admin (ID: 1) my task page loaded. Delegation: 2, Checklist: 0, FMS: 0. Total: 0. Filtered out: 2 completed shifted tasks.
+[2026-02-26 16:22:09] Final task count for display: 0 tasks
+[2026-02-27 17:17:49] Fetching FMS tasks from database for real-time updates.
+[2026-02-27 17:17:49] Successfully fetched 1 FMS tasks from database for doer: Kaveri
+[2026-02-27 17:17:49] Filtered out 0 shifted tasks with actual time set from my task page
+[2026-02-27 17:17:49] User Kaveri (ID: 20) my task page loaded. Delegation: 0, Checklist: 0, FMS: 1. Total: 1. Filtered out: 0 completed shifted tasks.
+[2026-02-27 17:17:49] Final task count for display: 1 tasks
+[2026-02-27 17:17:56] Fetching FMS tasks from database for real-time updates.
+[2026-02-27 17:17:56] Successfully fetched 1 FMS tasks from database for doer: Kaveri
+[2026-02-27 17:17:56] Filtered out 0 shifted tasks with actual time set from my task page
+[2026-02-27 17:17:56] User Kaveri (ID: 20) my task page loaded. Delegation: 0, Checklist: 0, FMS: 1. Total: 1. Filtered out: 0 completed shifted tasks.
+[2026-02-27 17:17:56] Final task count for display: 1 tasks

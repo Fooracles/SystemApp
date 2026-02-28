@@ -1,0 +1,232 @@
+{
+  "meta": {
+    "name": "FMS Flow Builder Design System",
+    "version": "1.0",
+    "purpose": "High-level design guidelines for AI-assisted replication of the FMS Builder UI across the project. Think like a creative director: capture the visual soul, not implementation details.",
+    "source": "Derived from fms-flow-builder/ analysis"
+  },
+
+  "designPhilosophy": {
+    "essence": "A professional, enterprise-grade flow builder with a dark, focused aesthetic. The UI feels like a cockpit for process designers—dense but readable, powerful but not overwhelming.",
+    "principles": [
+      "Clarity over decoration: Every element serves function. No gratuitous flair.",
+      "Depth through layering: Use subtle elevation (darker → lighter) to create hierarchy. Canvas is darkest, panels float above, modals float above panels.",
+      "Accent as guidance: The primary gradient guides the eye to primary actions and selected states. Use sparingly for maximum impact.",
+      "Semantic color coding: Step=indigo, Decision=amber, Target=violet, Yes=primary, No=red. Consistency reinforces meaning.",
+      "Smooth, fast feedback: Transitions are 0.15–0.2s. Hover states are immediate. Disabled states are clearly dimmed.",
+      "Reserved polish: Rounded corners (6–12px), soft shadows, gradient accents. Professional, not playful."
+    ],
+    "avoid": [
+      "Bordering on playful or consumer-app",
+      "Flat design without depth",
+      "High contrast borders that feel harsh",
+      "Busy patterns or decorative illustrations",
+      "Responsive breakpoints—this is a desktop-first app"
+    ]
+  },
+
+  "visualIdentity": {
+    "aesthetic": "Dark, gradient-accented, flow-diagram builder",
+    "mood": "Serious, capable, focused",
+    "references": "Developer tools (VS Code dark), flowchart apps (Lucidchart), SaaS dashboards (Linear, Notion dark mode)"
+  },
+
+  "colorSystem": {
+    "primary": {
+      "default": { "hex": "#6366f1", "role": "Indigo—main accent, links, active states" },
+      "light": { "hex": "#8b5cf6", "role": "Lighter violet—gradient end, tab active, toggle on" },
+      "gradient": "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+      "glow": "rgba(99, 102, 241, 0.3)",
+      "themeable": true
+    },
+    "backgrounds": {
+      "page": { "hex": "#0f0f14", "role": "Main app background, canvas" },
+      "sidebar": { "hex": "#0a0a0f", "role": "Nav sidebar—slightly darker than page" },
+      "panel": { "hex": "#18181b", "role": "Cards, modals, panels, nodes" },
+      "elevated": { "hex": "#27272a", "role": "Inputs, secondary buttons, badges, hover" },
+      "empty": { "hex": "#1a1a24", "role": "Empty state icons" }
+    },
+    "borders": {
+      "subtle": { "hex": "#2a2a35", "role": "Dividers, panel edges, card borders (default)" },
+      "default": { "hex": "#3f3f46", "role": "Inputs, buttons, minimap" },
+      "focus": "var(--primary-color)",
+      "active": "var(--primary-color)"
+    },
+    "text": {
+      "primary": { "hex": "#f4f4f5", "role": "Headings, primary content" },
+      "secondary": { "hex": "#a1a1aa", "role": "Labels, meta, secondary content" },
+      "tertiary": { "hex": "#71717a", "role": "Muted, placeholders, descriptions" },
+      "quaternary": { "hex": "#52525b", "role": "Very muted, fine print" }
+    },
+    "semantic": {
+      "success": { "hex": "#4ade80", "role": "Valid, completed, done" },
+      "error": { "hex": "#f87171", "role": "Invalid, delete, No edge" },
+      "warning": { "hex": "#eab308", "role": "Pending, in-progress (amber)" },
+      "info": { "hex": "#60a5fa", "role": "Active step, in progress (blue)" }
+    },
+    "nodeTypeAccents": {
+      "step": "#6366f1",
+      "decision": "#eab308",
+      "target": "#a78bfa"
+    }
+  },
+
+  "typography": {
+    "fontFamily": "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+    "scale": {
+      "pageTitle": { "size": "22px", "weight": 600, "role": "H1, view titles" },
+      "sectionTitle": { "size": "16px", "weight": 600, "role": "Panel headers, H2" },
+      "subsectionTitle": { "size": "14px", "weight": 600, "role": "H3, card titles" },
+      "body": { "size": "13px", "weight": 400, "role": "Primary UI text" },
+      "small": { "size": "12px", "weight": 400, "role": "Labels, meta" },
+      "extraSmall": { "size": "10–11px", "weight": 500, "role": "Badges, code, status pills" }
+    },
+    "monospace": { "family": "monospace", "size": "11px", "role": "JSON, code blocks" },
+    "badgeUppercase": { "transform": "uppercase", "letterSpacing": "0.03–0.05em" }
+  },
+
+  "spacing": {
+    "scale": [4, 6, 8, 10, 12, 14, 16, 20, 24, 28],
+    "gaps": { "tight": 4, "compact": 6, "default": 8, "medium": 12, "relaxed": 16, "section": 24, "large": 28 },
+    "padding": {
+      "compact": "6px 10px",
+      "medium": "10px 14px",
+      "large": "16px 20px",
+      "modal": "16px 20px",
+      "panelHeader": "10px 14px",
+      "node": "12px 14px"
+    }
+  },
+
+  "borderRadius": {
+    "small": "4px",
+    "default": "6px",
+    "medium": "8px",
+    "large": "12px",
+    "node": "12px (themeable: default=12, rounded=20, sharp=4)",
+    "circular": "50%"
+  },
+
+  "shadows": {
+    "node": "0 4px 12px rgba(0,0,0,0.3)",
+    "modal": "0 8px 32px rgba(0,0,0,0.5)",
+    "menu": "0 10px 40px rgba(0,0,0,0.4)",
+    "toast": "0 4px 12px rgba(0,0,0,0.4)",
+    "toggleKnob": "0 1px 3px rgba(0,0,0,0.3)"
+  },
+
+  "transitions": {
+    "fast": "0.15s",
+    "medium": "0.2s",
+    "slow": "0.3s",
+    "properties": ["background", "border-color", "color", "left", "width"]
+  },
+
+  "componentCatalog": {
+    "Button": {
+      "primary": "Gradient background, white text, 6px radius, 6–12px padding. Use for primary CTAs (Save, Create, Add).",
+      "secondary": "Transparent bg, #3f3f46 border, #a1a1aa text. Use for Share, Cancel, secondary actions.",
+      "icon": "32×32px, transparent, centered icon. Primary action: gradient bg + white icon.",
+      "small": "22×22px for node actions; 6px radius for toolbar."
+    },
+    "Toggle": {
+      "size": "36×20 or 40×22",
+      "track": "On = gradient, Off = #3f3f46",
+      "knob": "16×16 circle, white, left transition 0.2s, subtle shadow"
+    },
+    "Input": {
+      "bg": "#27272a",
+      "border": "1px solid #3f3f46",
+      "radius": 6,
+      "padding": "6px 10px",
+      "fontSize": 13,
+      "focus": "border-color: primary"
+    },
+    "Select": "Same as Input. Option list: #18181b bg, #3f3f46 border.",
+    "Checkbox": "accent-color: primary. Inline with label, 8px gap.",
+    "Tab": {
+      "default": "#71717a, transparent bg, no underline",
+      "active": "Primary light color, 2px bottom border in primary"
+    },
+    "Modal": {
+      "overlay": "rgba(0,0,0,0.7)",
+      "content": "#18181b, 1px #3f3f46 border, 12px radius, 580px max width, 85vh max height",
+      "shadow": "0 8px 32px rgba(0,0,0,0.5)"
+    },
+    "Panel": {
+      "bg": "#18181b",
+      "header": "10–16px padding, 1px #2a2a35 bottom border, 13–16px font",
+      "body": "overflow: auto, 8–24px padding"
+    },
+    "Card": {
+      "bg": "#18181b",
+      "border": "1px solid #2a2a35",
+      "radius": "10-12",
+      "padding": 16,
+      "hover": "border-color primary, 1px glow (rgba primary 0.3)"
+    },
+    "StatusBadge": {
+      "padding": "2px 8–10px",
+      "radius": 6,
+      "fontSize": 11,
+      "fontWeight": 500,
+      "semanticColors": "Use semantic palette (success/error/warning/info) with 15% bg tint"
+    },
+    "Node": {
+      "base": "#18181b bg, 1px #3f3f46 border, node-border-radius, min-width 180px",
+      "leftAccent": "3px left border by type (step=primary, decision=#eab308, target=#a78bfa)",
+      "shadow": "0 4px 12px rgba(0,0,0,0.3)",
+      "selected": "2px primary outline"
+    },
+    "StartEndNode": "64×64 circle, gradient fill, white text, 10px font, 'Flow Start' / 'Flow End'.",
+    "Edge": "2px stroke. Yes/default = primary. No = #f87171.",
+    "EdgeLabel": "10px font, 600 weight, pill shape, #18181b bg, primary/red border.",
+    "ResizeHandle": "6px wide, transparent default, gradient on hover.",
+    "Toast": "Bottom center, #18181b bg, primary border, 8px radius, 10-20px padding, 13px font.",
+    "EmptyState": "48px padding, #71717a text, optional 64×64 icon box (#1a1a24 bg).",
+    "ProgressBar": "4px height, #27272a track, gradient or #4ade80 fill, 0.3s width transition.",
+    "SectionHeader": "14-16px font 600, 1px #2a2a35 bottom border, 8-16px bottom padding."
+  },
+
+  "layout": {
+    "structure": "Flexbox. Main: sidebar + content. Content: top bar + body.",
+    "sidebar": "46–130px width, resizable, #0a0a0f.",
+    "rightPanel": "200–500px width, default 280px, resizable.",
+    "topBar": "52px height, #0f0f14, 1px #2a2a35 bottom border.",
+    "grid": "repeat(auto-fill, minmax(300px, 1fr)), gap 16.",
+    "formGrid": "grid-template-columns: 1fr 1fr, gap 12."
+  },
+
+  "icons": {
+    "style": "Inline SVG, stroke-based, 12–18px typical",
+    "noLibrary": "No icon library; use inline SVGs with currentColor for fill.",
+    "common": "Pencil (edit), Trash (delete), Back arrow, Clock, Check, X, Duplicate."
+  },
+
+  "canvas": {
+    "background": "#0f0f14 (themeable)",
+    "grid": "dots | lines | cross | none, color #2a2a35",
+    "minimap": "#18181b bg, 8px radius, bottom-right, #3f3f46 border"
+  },
+
+  "theming": {
+    "cssVariables": ["--primary-color", "--primary-color-light", "--gradient-primary", "--primary-glow", "--node-border-radius"],
+    "colorPresets": ["Indigo", "Emerald", "Blue", "Rose", "Amber", "Cyan"],
+    "canvasPresets": ["Dark #0f0f14", "Charcoal #1a1a2e", "Navy #0d1117", "Black #000000"]
+  },
+
+  "aiReplicationInstructions": {
+    "summary": "To replicate FMS Builder look: use dark backgrounds (#0f0f14, #18181b, #27272a), indigo–violet gradient accents, 6–12px radius, semantic colors for states, 13px body text, subtle borders (#2a2a35, #3f3f46). Never use bright or saturated colors except for semantic states.",
+    "checklist": [
+      "Page/canvas bg is #0f0f14",
+      "Cards/panels are #18181b with #2a2a35 borders",
+      "Primary actions use linear-gradient(135deg, #6366f1, #8b5cf6)",
+      "Text hierarchy: #f4f4f5 > #a1a1aa > #71717a",
+      "Inputs: #27272a bg, #3f3f46 border, 6px radius",
+      "Hover: bg → #3f3f46 or border → primary",
+      "Success=#4ade80, Error=#f87171, Warning=#eab308",
+      "Transitions: 0.15s for UI, 0.3s for progress",
+      "Use fms- prefix for custom classes when applicable"
+    ]
+  }
+}

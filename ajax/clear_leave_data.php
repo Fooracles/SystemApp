@@ -17,24 +17,20 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_type']) || !isset($_SESSION['username'])) {
-    echo json_encode([
-        'success' => false,
-        'error' => 'Unauthorized: Please log in.'
-    ]);
-    exit;
+    jsonError('Unauthorized: Please log in.', 401);
 }
 
 // Check if user is Admin
 if ($_SESSION['user_type'] !== 'admin') {
-    echo json_encode([
-        'success' => false,
-        'error' => 'Forbidden: Admin access required.'
-    ]);
-    exit;
+    jsonError('Forbidden: Admin access required.', 400);
 }
 
-// Include database configuration from config file
+// Include database configuration and functions
 require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/functions.php';
+
+// CSRF protection for POST requests
+csrfProtect();
 
 // Use database connection from config.php
 if (!$conn) {
@@ -115,10 +111,7 @@ try {
     
     logClearOperation("Exception: " . $e->getMessage());
     
-    echo json_encode([
-        'success' => false,
-        'error' => 'An error occurred: ' . $e->getMessage()
-    ]);
+    handleException($e, 'clear_leave_data');
 } finally {
     if (isset($conn)) {
         mysqli_close($conn);

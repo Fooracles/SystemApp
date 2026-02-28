@@ -82,4 +82,9 @@ echo json_encode([
         'session_id' => session_id()
     ]
 ]);
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}
 ?>

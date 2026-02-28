@@ -33,6 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// CSRF protection for POST requests
+csrfProtect();
+
 $unique_service_no = $_POST['unique_service_no'] ?? '';
 $action = $_POST['action'] ?? '';
 $note = $_POST['note'] ?? '';
@@ -61,7 +64,7 @@ try {
     $query = "SELECT * FROM Leave_request WHERE unique_service_no = ? AND (status = '' OR status IS NULL OR status = 'PENDING')";
     $stmt = mysqli_prepare($conn, $query);
     if (!$stmt) {
-        throw new Exception('Database prepare error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
 
     mysqli_stmt_bind_param($stmt, 's', $unique_service_no);
@@ -81,12 +84,12 @@ try {
     $update_query = "UPDATE Leave_request SET status = ? WHERE unique_service_no = ?";
     $update_stmt = mysqli_prepare($conn, $update_query);
     if (!$update_stmt) {
-        throw new Exception('Database prepare error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
 
     mysqli_stmt_bind_param($update_stmt, 'ss', $new_status, $unique_service_no);
     if (!mysqli_stmt_execute($update_stmt)) {
-        throw new Exception('Failed to update leave request status: ' . mysqli_stmt_error($update_stmt));
+        error_log("[DB Error] Failed to update leave request status"); throw new Exception('A database error occurred');
     }
     mysqli_stmt_close($update_stmt);
 
@@ -94,7 +97,7 @@ try {
     $audit_query = "INSERT INTO leave_status_actions (unique_service_no, employee_name, manager_email, actor_email, action, note, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
     $audit_stmt = mysqli_prepare($conn, $audit_query);
     if (!$audit_stmt) {
-        throw new Exception('Database prepare error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database prepare error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
 
     $actor_email = 'admin@system.com'; // Default system admin
@@ -108,7 +111,7 @@ try {
     );
 
     if (!mysqli_stmt_execute($audit_stmt)) {
-        throw new Exception('Failed to insert audit record: ' . mysqli_stmt_error($audit_stmt));
+        error_log("[DB Error] Failed to insert audit record"); throw new Exception('A database error occurred');
     }
     mysqli_stmt_close($audit_stmt);
     
@@ -201,10 +204,7 @@ try {
     
     // Ensure clean JSON output for errors too
     ob_clean();
-    echo json_encode([
-        'success' => false,
-        'error' => 'Failed to process action: ' . $e->getMessage()
-    ]);
+    handleException($e, 'leave_status_action');
     ob_end_flush();
 } finally {
     if (isset($conn)) {

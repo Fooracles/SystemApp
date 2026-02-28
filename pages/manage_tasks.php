@@ -361,7 +361,7 @@ try {
     }
     
     $checklist_query = "SELECT cs.id as task_id, cs.task_code as unique_id, cs.task_description as description,
-                               cs.task_date as planned_date, CONCAT(cs.task_date, ' 23:59:59') as planned_time,
+                               cs.task_date as planned_date, '23:59:59' as planned_time,
                                cs.actual_date, cs.actual_time, COALESCE(cs.status, 'pending') as status,
                                cs.is_delayed, cs.delay_duration, cs.duration, cs.assignee as doer_name,
                                u.Status as doer_user_status,
@@ -383,6 +383,37 @@ try {
                     while ($row = mysqli_fetch_assoc($checklist_result)) {
                         // Ensure consistent id field
                         $row['id'] = $row['task_id'];
+                        // Normalize status: trim and collapse spaces for consistent matching
+                        if (!empty($row['status'])) {
+                            $row['status'] = preg_replace('/\s+/', ' ', trim($row['status']));
+                        }
+                        // Real-time delay for checklist: pending + planned in past = delayed
+                        $planned_date = $row['planned_date'] ?? '';
+                        $planned_time = $row['planned_time'] ?? '23:59:59';
+                        $actual_date = $row['actual_date'] ?? '';
+                        $actual_time = $row['actual_time'] ?? '';
+                        $status_lower = strtolower(trim($row['status'] ?? ''));
+                        $is_completed = in_array($status_lower, ['completed', 'done']) || !empty($actual_date) || !empty($actual_time);
+                        if (!empty($planned_date)) {
+                            $planned_ts = strtotime($planned_date . ' ' . $planned_time);
+                            if ($planned_ts !== false) {
+                                if (!$is_completed) {
+                                    $now = time();
+                                    if ($now > $planned_ts) {
+                                        $row['is_delayed'] = 1;
+                                        $row['delay_duration'] = formatSecondsToHHMMSS($now - $planned_ts);
+                                    }
+                                } else {
+                                    if (!empty($actual_date)) {
+                                        $actual_ts = strtotime($actual_date . ' ' . (!empty($actual_time) ? $actual_time : '23:59:59'));
+                                        if ($actual_ts !== false && $actual_ts > $planned_ts) {
+                                            $row['is_delayed'] = 1;
+                                            $row['delay_duration'] = formatSecondsToHHMMSS($actual_ts - $planned_ts);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         $all_tasks[] = $row;
                     }
                 }
@@ -396,6 +427,37 @@ try {
             while ($row = mysqli_fetch_assoc($checklist_result)) {
                 // Ensure consistent id field
                 $row['id'] = $row['task_id'];
+                // Normalize status: trim and collapse spaces for consistent matching
+                if (!empty($row['status'])) {
+                    $row['status'] = preg_replace('/\s+/', ' ', trim($row['status']));
+                }
+                // Real-time delay for checklist: pending + planned in past = delayed
+                $planned_date = $row['planned_date'] ?? '';
+                $planned_time = $row['planned_time'] ?? '23:59:59';
+                $actual_date = $row['actual_date'] ?? '';
+                $actual_time = $row['actual_time'] ?? '';
+                $status_lower = strtolower(trim($row['status'] ?? ''));
+                $is_completed = in_array($status_lower, ['completed', 'done']) || !empty($actual_date) || !empty($actual_time);
+                if (!empty($planned_date)) {
+                    $planned_ts = strtotime($planned_date . ' ' . $planned_time);
+                    if ($planned_ts !== false) {
+                        if (!$is_completed) {
+                            $now = time();
+                            if ($now > $planned_ts) {
+                                $row['is_delayed'] = 1;
+                                $row['delay_duration'] = formatSecondsToHHMMSS($now - $planned_ts);
+                            }
+                        } else {
+                            if (!empty($actual_date)) {
+                                $actual_ts = strtotime($actual_date . ' ' . (!empty($actual_time) ? $actual_time : '23:59:59'));
+                                if ($actual_ts !== false && $actual_ts > $planned_ts) {
+                                    $row['is_delayed'] = 1;
+                                    $row['delay_duration'] = formatSecondsToHHMMSS($actual_ts - $planned_ts);
+                                }
+                            }
+                        }
+                    }
+                }
                 $all_tasks[] = $row;
             }
         }
@@ -467,8 +529,12 @@ try {
             $delay_duration = null; // Reset for each task
             $is_delayed = 0;        // Reset for each task
 
-            $completed_statuses = ['completed', 'done', 'not done', 'can not be done'];
+            $completed_statuses = ['completed', 'done', 'not done', 'can not be done', 'yes'];
             $is_task_completed = in_array(strtolower($row['status'] ?? ''), $completed_statuses);
+            // FMS: treat "has actual data" as completed for delay (matches fms_task.php; handles sheet statuses like "Yes")
+            if (!$is_task_completed && $actual_timestamp && $planned_timestamp) {
+                $is_task_completed = true;
+            }
 
             if ($is_task_completed) {
                 // LOGIC FOR COMPLETED TASKS: Compare actual vs. planned
@@ -612,6 +678,7 @@ try {
                 'can\'t be done' => 'can not be done',
                 'cant be done' => 'can not be done',
                 'can not be done' => 'can not be done',
+                'Can not be done' => 'Can not be done',
                 'not done' => 'not done',
                 'notdone' => 'not done',
                 'not-done' => 'not done',
@@ -905,7 +972,20 @@ try {
     $summary_stats = [
         'total_tasks' => $total_filtered_tasks,
         'completed_tasks' => count(array_filter($filtered_tasks, function($task) {
-            return in_array(strtolower($task['status']), ['completed', 'done']);
+            // Must have actual date or time (task was actually completed)
+            $actual_date = $task['actual_date'] ?? '';
+            $actual_time = $task['actual_time'] ?? '';
+            if (empty($actual_date) && empty($actual_time)) {
+                return false;
+            }
+            // Normalize status: trim and collapse spaces
+            $status = preg_replace('/\s+/', ' ', strtolower(trim($task['status'] ?? '')));
+            $completed_statuses = ['completed', 'done'];
+            // FMS sheet may store completion as "Yes"
+            if (($task['task_type'] ?? '') === 'fms') {
+                $completed_statuses[] = 'yes';
+            }
+            return in_array($status, $completed_statuses);
         })),
         'delayed_tasks' => count(array_filter($filtered_tasks, function($task) {
             // Exclude "can't be done" tasks
@@ -914,42 +994,58 @@ try {
                 return false;
             }
             
-            // Simple delayed logic: actual > planned (no week logic)
             $planned_date = $task['planned_date'] ?? '';
             $planned_time = $task['planned_time'] ?? '';
             $actual_date = $task['actual_date'] ?? '';
             $actual_time = $task['actual_time'] ?? '';
             
-            // Need both planned and actual dates to determine delay
-            if (empty($planned_date) || empty($actual_date)) {
+            if (empty($planned_date)) {
                 return false;
             }
             
-            // Build timestamps for comparison
+            // Build planned timestamp
             $planned_datetime = $planned_date;
             if (!empty($planned_time)) {
                 $planned_datetime .= ' ' . $planned_time;
             } else {
                 $planned_datetime .= ' 23:59:59';
             }
-            
-            $actual_datetime = $actual_date;
-            if (!empty($actual_time)) {
-                $actual_datetime .= ' ' . $actual_time;
-            } else {
-                $actual_datetime .= ' 23:59:59';
+            $planned_ts = strtotime($planned_datetime);
+            if ($planned_ts === false) {
+                return false;
             }
             
-            $planned_ts = strtotime($planned_datetime);
-            $actual_ts = strtotime($actual_datetime);
+            $now = time();
             
-            // Delayed if actual > planned
-            return ($planned_ts !== false && $actual_ts !== false && $actual_ts > $planned_ts);
+            // Delayed if current time is past planned datetime
+            if ($now > $planned_ts) {
+                // Exclude tasks completed on time or early (actual <= planned)
+                $is_completed = in_array($status, ['completed', 'done']);
+                if (($task['task_type'] ?? '') === 'fms') {
+                    $is_completed = $is_completed || ($status === 'yes');
+                }
+                if ($is_completed && !empty($actual_date)) {
+                    $actual_datetime = $actual_date;
+                    if (!empty($actual_time)) {
+                        $actual_datetime .= ' ' . $actual_time;
+                    } else {
+                        $actual_datetime .= ' 23:59:59';
+                    }
+                    $actual_ts = strtotime($actual_datetime);
+                    if ($actual_ts !== false && $actual_ts <= $planned_ts) {
+                        return false; // Completed on time or early — not delayed
+                    }
+                }
+                return true;
+            }
+            
+            return false;
         })),
         'pending_tasks' => count(array_filter($filtered_tasks, function($task) {
-            // Exclude "can't be done" tasks
-            $status = strtolower(trim($task['status'] ?? ''));
-            if (in_array($status, ["can't be done", "can not be done", "cant be done"])) {
+            // Exclude "can't be done" tasks (all spelling variants)
+            $status = preg_replace('/\s+/', ' ', strtolower(trim($task['status'] ?? '')));
+            $cant_be_done = ["can't be done", "can not be done", "cant be done", "cannot be done", "cant_be_done"];
+            if (in_array($status, $cant_be_done)) {
                 return false;
             }
             
@@ -1218,6 +1314,7 @@ try {
     .manage-tasks-page .filter-content {
         transition: var(--transition-normal);
         overflow: hidden;
+        padding: 1rem;
     }
 
     .manage-tasks-page .filter-content.collapsed {
@@ -1963,62 +2060,6 @@ try {
         min-width: 80px;
     }
 
-    /* Tabs Container Styling - Matching leave_request.php design */
-    .tabs-container {
-        margin-bottom: 2rem;
-    }
-
-    .tabs {
-        display: flex;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        padding: 0.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 8px 32px rgba(47, 60, 126, 0.1);
-    }
-
-    .tab {
-        flex: 1;
-        padding: 1rem 1.5rem;
-        text-align: center;
-        cursor: pointer;
-        border-radius: 15px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        font-weight: 600;
-        color: var(--dark-text-muted);
-        font-size: 1rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .tab::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        transition: left 0.5s;
-    }
-
-    .tab:hover::before {
-        left: 100%;
-    }
-
-    .tab:hover {
-        color: var(--brand-primary);
-        transform: translateY(-1px);
-    }
-
-    .tab.active {
-        background: var(--gradient-primary);
-        color: var(--dark-text-primary);
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-    }
-
     .tab-content {
         display: none;
     }
@@ -2026,28 +2067,176 @@ try {
     .tab-content.active {
         display: block;
     }
+
+    /* Radio Button Toggle in Table Header (matching client section style) */
+    .task-radio-toggle {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        padding: 0.25rem;
+    }
+
+    .task-radio-label {
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.8);
+        border: none;
+        outline: none;
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .task-radio-label:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .task-radio-label.active {
+        background: rgba(255, 255, 255, 0.95);
+        color: #007bff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-radio-label input[type="radio"] {
+        display: none;
+    }
+
+    .task-radio-label i {
+        font-size: 0.85rem;
+    }
+
+    /* Quick filter dropdowns in table header */
+    .header-quick-filter {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 4px;
+        color: white;
+        font-size: 0.78rem;
+        padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+        line-height: 1.5;
+        min-width: 110px;
+        cursor: pointer;
+        appearance: auto;
+        margin-right: 10px;
+    }
+
+    .header-quick-filter:focus {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.5);
+        outline: none;
+        color: white;
+    }
+
+    .header-quick-filter option {
+        background: #1e293b;
+        color: #e2e8f0;
+    }
+
+    /* Date range toggle (matching performance page) */
+    .date-range-toggle {
+        display: flex;
+        gap: 0.375rem;
+        align-items: center;
+    }
+
+    .date-range-pill {
+        padding: 0.35rem 0.75rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        color: var(--dark-text-secondary);
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .date-range-pill:hover {
+        border-color: rgba(99, 102, 241, 0.25);
+        color: var(--dark-text-primary);
+    }
+
+    .date-range-pill.active {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+        border-color: rgba(99, 102, 241, 0.4);
+        color: var(--dark-text-primary);
+        box-shadow: 0 1px 4px rgba(99, 102, 241, 0.15);
+    }
+
+    .date-range-pill span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .date-range-custom-input {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        color: var(--dark-text-secondary);
+        font-size: 0.75rem;
+        padding: 0.35rem 0.6rem;
+        cursor: pointer;
+        width: 125px;
+    }
+
+    .date-range-custom-input:focus {
+        border-color: rgba(99, 102, 241, 0.4);
+        outline: none;
+        color: var(--dark-text-primary);
+    }
+
+    .date-range-custom-input::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        cursor: pointer;
+    }
 </style>
 
 <div class="manage-tasks-page">
     <div class="container-fluid">
         
         <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">
-                                <i class="fas fa-tasks"></i> Manage Tasks
-                            </h5>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-light btn-sm" onclick="refreshTable()">
-                                    <i class="fas fa-sync-alt"></i> Refresh
-                                </button>
-                            </div>
-                        </div>
+        <div class="d-flex justify-content-between align-items-center mb-4" style="margin-left: 12px; margin-right: 12px;">
+            <h2 class="mb-0"><?php echo htmlspecialchars($page_title); ?></h2>
+            <div class="d-flex align-items-center gap-3">
+                <div class="date-range-toggle" id="dateRangeToggle">
+                    <?php
+                    $active_range = '';
+                    if (!empty($filter_date_from) && !empty($filter_date_to)) {
+                        $from = new DateTime($filter_date_from);
+                        $to = new DateTime($filter_date_to);
+                        $diff_days = (int)$from->diff($to)->days;
+                        if ($diff_days <= 8) $active_range = '1w';
+                        elseif ($diff_days <= 15) $active_range = '2w';
+                        elseif ($diff_days <= 29) $active_range = '4w';
+                        elseif ($diff_days <= 57) $active_range = '8w';
+                        elseif ($diff_days <= 85) $active_range = '12w';
+                        else $active_range = 'custom';
+                    }
+                    ?>
+                    <button class="date-range-pill <?php echo $active_range === '1w' ? 'active' : ''; ?>" data-range="1w" title="Last Week"><span>1W</span></button>
+                    <button class="date-range-pill <?php echo $active_range === '2w' ? 'active' : ''; ?>" data-range="2w" title="2 Weeks"><span>2W</span></button>
+                    <button class="date-range-pill <?php echo $active_range === '4w' ? 'active' : ''; ?>" data-range="4w" title="4 Weeks"><span>4W</span></button>
+                    <button class="date-range-pill <?php echo $active_range === '8w' ? 'active' : ''; ?>" data-range="8w" title="8 Weeks"><span>8W</span></button>
+                    <button class="date-range-pill <?php echo $active_range === '12w' ? 'active' : ''; ?>" data-range="12w" title="12 Weeks"><span>12W</span></button>
+                    <div class="d-flex align-items-center gap-1">
+                        <input type="date" class="date-range-custom-input" id="customDateFrom" value="<?php echo htmlspecialchars($filter_date_from); ?>" title="From date" onclick="this.showPicker()" style="margin-right: 10px;">
+                        <input type="date" class="date-range-custom-input" id="customDateTo" value="<?php echo htmlspecialchars($filter_date_to); ?>" title="To date" onclick="this.showPicker()" style="margin-right: 10px;">
                     </div>
                 </div>
+                <button class="btn btn-outline-primary btn-sm" onclick="refreshTable()" title="Refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
         </div>
 
@@ -2071,7 +2260,7 @@ try {
                     </div>
                     <div class="metric-content">
                         <div class="metric-value"><?php echo number_format($summary_stats['completed_tasks']); ?></div>
-                        <div class="metric-label">Completed Tasks</div>
+                        <div class="metric-label">Completed Tasks in View</div>
                                     </div>
                                 </div>
                             </div>
@@ -2082,7 +2271,7 @@ try {
                     </div>
                     <div class="metric-content">
                         <div class="metric-value"><?php echo number_format($summary_stats['delayed_tasks']); ?></div>
-                        <div class="metric-label">Total Delayed Tasks</div>
+                        <div class="metric-label">Delayed Tasks in View</div>
                                     </div>
                                 </div>
                             </div>
@@ -2093,11 +2282,13 @@ try {
                     </div>
                     <div class="metric-content">
                         <div class="metric-value"><?php echo number_format($summary_stats['pending_tasks']); ?></div>
-                        <div class="metric-label">Pending Tasks</div>
+                        <div class="metric-label">Pending Tasks in View</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+        <p class="text-center text-muted small fst-italic mb-4">This is the raw data,<br>For weekly performance <a href="team_performance.php">refer to this</a></p>
 
         <!-- Alert Messages Section -->
                         <?php if (!empty($success_message)): ?>
@@ -2142,19 +2333,10 @@ try {
                         <?php endif; ?>
                         
         <!-- Filter Section -->
-        <div class="row mb-4">
+        <div class="row mb-4" id="filterSection" style="display: none;">
             <div class="col-12">
                 <div class="filter-section">
-            <div class="filter-header d-flex justify-content-between align-items-center mb-3">
-                <h6 class="mb-0 text-primary font-weight-bold">
-                    <i class="fas fa-filter"></i> All Tasks
-                </h6>
-                <button type="button" class="btn btn-outline-secondary btn-sm" id="toggleFilters">
-                    <i class="fas fa-chevron-down" id="filterToggleIcon"></i> Show Filters
-                </button>
-            </div>
-            
-            <div class="filter-content collapsed" id="filterContent">
+            <div class="filter-content" id="filterContent">
                                 <form method="GET" class="filter-form">
                                     <div class="row g-3">
                                         <!-- Row 1 -->
@@ -2234,10 +2416,9 @@ try {
                                             <label class="form-label small text-muted">Date To</label>
                                             <input type="date" class="form-control form-control-sm date-picker-clickable" name="date_to" 
                                                    value="<?php echo htmlspecialchars($filter_date_to ?? ''); ?>">
-                                            <div class="d-flex gap-2 mt-2">
-                                                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-                                                <a href="manage_tasks.php" class="btn btn-outline-secondary btn-sm">Reset</a>
-                                            </div>
+                                        </div>
+                                        <div class="col-12 d-flex justify-content-end mt-2">
+                                            <a href="manage_tasks.php" class="btn btn-outline-secondary btn-sm"><i class="fas fa-times"></i> Reset Filters</a>
                                         </div>
                                     </div>
                                 </form>
@@ -2246,42 +2427,50 @@ try {
                             </div>
                         </div>
 
-        <!-- Tasks Tabs Section -->
+        <!-- Tasks Table Section -->
         <div class="row mb-4">
             <div class="col-12">
-                <!-- Tabs Container -->
-                <div class="tabs-container">
-                    <div class="tabs">
-                        <div class="tab active" onclick="switchTasksTab('all')">
-                            <i class="fas fa-tasks"></i> All Tasks
-                        </div>
-                        <div class="tab" onclick="switchTasksTab('priority')">
-                            <i class="fas fa-star"></i> Priority Tasks
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="task-radio-toggle">
+                                <label class="task-radio-label active" id="taskRadioAll">
+                                    <input type="radio" name="task_view" value="all" checked onchange="switchTasksTab('all')" autocomplete="off">
+                                    All Tasks
+                                </label>
+                                <label class="task-radio-label" id="taskRadioPriority">
+                                    <input type="radio" name="task_view" value="priority" onchange="switchTasksTab('priority')" autocomplete="off">
+                                    Priority Tasks
+                                </label>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <select class="header-quick-filter" id="quickDoerFilter" onchange="applyQuickFilter()">
+                                    <option value="">All Doers</option>
+                                    <?php if (!empty($doers) && is_array($doers)): ?>
+                                        <?php foreach ($doers as $doer): ?>
+                                            <option value="<?php echo htmlspecialchars($doer); ?>" <?php echo (isset($filter_doer) && $filter_doer === $doer) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($doer); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                                <select class="header-quick-filter" id="quickStatusFilter" onchange="applyQuickFilter()">
+                                    <option value="">All Status</option>
+                                    <option value="pending" <?php echo ($filter_status === 'pending') ? 'selected' : ''; ?>>Pending</option>
+                                    <option value="completed" <?php echo ($filter_status === 'completed') ? 'selected' : ''; ?>>Completed</option>
+                                    <option value="not done" <?php echo ($filter_status === 'not done') ? 'selected' : ''; ?>>Not Done</option>
+                                    <option value="can not be done" <?php echo ($filter_status === 'can not be done') ? 'selected' : ''; ?>>Can't Be Done</option>
+                                    <option value="shifted" <?php echo ($filter_status === 'shifted') ? 'selected' : ''; ?>>Shifted</option>
+                                </select>
+                                <button type="button" class="btn btn-light btn-sm" id="toggleFilters" style="padding: 0.25rem 0.5rem; line-height: 1.5; font-size: 0.78rem;">
+                                    <i class="fas fa-filter"></i> Filters
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    
+
                     <!-- All Tasks Tab Content -->
                     <div class="tab-content active" id="allTasksTab">
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-tasks"></i> All Tasks
-                                    </h5>
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <label class="mb-0 text-white small me-2">Show:</label>
-                                        <select class="form-control form-control-sm" id="recordLimit" style="width: auto; display: inline-block;" onchange="changeRecordLimit(this.value)">
-                                            <option value="25" <?php echo $tasks_per_page == 25 ? 'selected' : ''; ?>>25</option>
-                                            <option value="50" <?php echo $tasks_per_page == 50 ? 'selected' : ''; ?>>50</option>
-                                            <option value="100" <?php echo $tasks_per_page == 100 ? 'selected' : ''; ?>>100</option>
-                                            <option value="250" <?php echo $tasks_per_page == 250 ? 'selected' : ''; ?>>250</option>
-                                        </select>
-                                        <button class="btn btn-light btn-sm" onclick="refreshTable()">
-                                            <i class="fas fa-sync-alt"></i> Refresh
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="card-body p-2">
                                 <div class="table-responsive">
                                     <table class="table table-ultra-compact table-hover" id="manage-tasks-table" style="zoom: 0.97;">
@@ -2592,75 +2781,60 @@ try {
                             </table>
                         </div>
 
-                        <!-- Pagination -->
-                        <?php if ($total_pages > 1): ?>
-                            <nav aria-label="Tasks pagination" class="mt-3">
-                                <ul class="pagination pagination-sm justify-content-center">
-                                    <?php if ($current_page_num > 1): ?>
-                                        <li class="page-item">
-                                            <a class="page-link" href="?<?php echo buildManageTasksQuery(['page' => $current_page_num - 1]); ?>">
-                                                <i class="fas fa-chevron-left"></i>
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-                                    
-                                    <?php for ($i = max(1, $current_page_num - 2); $i <= min($total_pages, $current_page_num + 2); $i++): ?>
-                                        <li class="page-item <?php echo ($i == $current_page_num) ? 'active' : ''; ?>">
-                                            <a class="page-link" href="?<?php echo buildManageTasksQuery(['page' => $i]); ?>">
-                                                <?php echo $i; ?>
-                                            </a>
-                                        </li>
-                                    <?php endfor; ?>
-                                    
-                                    <?php if ($current_page_num < $total_pages): ?>
-                                        <li class="page-item">
-                                            <a class="page-link" href="?<?php echo buildManageTasksQuery(['page' => $current_page_num + 1]); ?>">
-                                                <i class="fas fa-chevron-right"></i>
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-                                </ul>
-                            </nav>
-                        <?php endif; ?>
-
-                        <!-- Results Info -->
-                        <div class="text-center text-muted small">
-                            <?php if ($total_tasks > 0): ?>
-                                Showing <?php echo $display_start; ?>-<?php echo $display_end; ?> of <?php echo $total_tasks; ?> tasks
-                                <?php if ($total_pages > 1): ?>
-                                    • Limit: <?php echo $tasks_per_page; ?>/page
+                        <!-- Bottom Bar: Show selector (left) + Results Info (center) + Pagination (right) -->
+                        <div class="d-flex justify-content-between align-items-center mt-3 px-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <label class="mb-0 small text-muted text-nowrap">Show:</label>
+                                <select class="form-select form-select-sm" style="width: 70px; min-width: 70px;" onchange="changeRecordLimit(this.value)">
+                                    <option value="25" <?php echo $tasks_per_page == 25 ? 'selected' : ''; ?>>25</option>
+                                    <option value="50" <?php echo $tasks_per_page == 50 ? 'selected' : ''; ?>>50</option>
+                                    <option value="100" <?php echo $tasks_per_page == 100 ? 'selected' : ''; ?>>100</option>
+                                    <option value="250" <?php echo $tasks_per_page == 250 ? 'selected' : ''; ?>>250</option>
+                                </select>
+                            </div>
+                            <span class="text-muted small">
+                                <?php if ($total_tasks > 0): ?>
+                                    Showing <?php echo $display_start; ?>-<?php echo $display_end; ?> of <?php echo $total_tasks; ?> tasks
+                                <?php else: ?>
+                                    No tasks found
                                 <?php endif; ?>
+                            </span>
+                            <?php if ($total_pages > 1): ?>
+                                <nav aria-label="Tasks pagination" class="mb-0">
+                                    <ul class="pagination pagination-sm mb-0">
+                                        <?php if ($current_page_num > 1): ?>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?<?php echo buildManageTasksQuery(['page' => $current_page_num - 1]); ?>">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+                                        <?php for ($i = max(1, $current_page_num - 2); $i <= min($total_pages, $current_page_num + 2); $i++): ?>
+                                            <li class="page-item <?php echo ($i == $current_page_num) ? 'active' : ''; ?>">
+                                                <a class="page-link" href="?<?php echo buildManageTasksQuery(['page' => $i]); ?>">
+                                                    <?php echo $i; ?>
+                                                </a>
+                                            </li>
+                                        <?php endfor; ?>
+                                        <?php if ($current_page_num < $total_pages): ?>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?<?php echo buildManageTasksQuery(['page' => $current_page_num + 1]); ?>">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </nav>
                             <?php else: ?>
-                                No tasks found
+                                <div></div>
                             <?php endif; ?>
                         </div>
                             </div>
-                        </div>
                     </div>
-                    
+
                     <!-- Priority Tasks Tab Content -->
                     <div class="tab-content" id="priorityTasksTab">
-                        <div class="card">
-                            <div class="card-header bg-warning text-white">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-star"></i> Priority Tasks
-                                    </h5>
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <label class="mb-0 text-white small me-2">Show:</label>
-                                        <select class="form-control form-control-sm" id="priorityRecordLimit" style="width: auto; display: inline-block;" onchange="changeRecordLimit(this.value)">
-                                            <option value="25" <?php echo $tasks_per_page == 25 ? 'selected' : ''; ?>>25</option>
-                                            <option value="50" <?php echo $tasks_per_page == 50 ? 'selected' : ''; ?>>50</option>
-                                            <option value="100" <?php echo $tasks_per_page == 100 ? 'selected' : ''; ?>>100</option>
-                                            <option value="250" <?php echo $tasks_per_page == 250 ? 'selected' : ''; ?>>250</option>
-                                        </select>
-                                        <button class="btn btn-light btn-sm" onclick="refreshTable()">
-                                            <i class="fas fa-sync-alt"></i> Refresh
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body p-2">
+                        <div class="card-body p-2">
                                 <div class="table-responsive">
                                     <table class="table table-ultra-compact table-hover" id="priority-tasks-table" style="zoom: 0.97;">
                                         <thead class="thead-light">
@@ -2943,50 +3117,55 @@ try {
                                     </table>
                                 </div>
 
-                                <!-- Pagination for Priority Tasks -->
-                                <?php if ($priority_total_pages_var > 1): ?>
-                                    <nav aria-label="Priority Tasks pagination" class="mt-3">
-                                        <ul class="pagination pagination-sm justify-content-center">
-                                            <?php if ($priority_current_page_var > 1): ?>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="?<?php echo buildManageTasksQuery(['priority_page' => $priority_current_page_var - 1, 'tab' => 'priority'], ['page']); ?>">
-                                                        <i class="fas fa-chevron-left"></i>
-                                                    </a>
-                                                </li>
-                                            <?php endif; ?>
-                                            
-                                            <?php for ($i = max(1, $priority_current_page_var - 2); $i <= min($priority_total_pages_var, $priority_current_page_var + 2); $i++): ?>
-                                                <li class="page-item <?php echo ($i == $priority_current_page_var) ? 'active' : ''; ?>">
-                                                    <a class="page-link" href="?<?php echo buildManageTasksQuery(['priority_page' => $i, 'tab' => 'priority'], ['page']); ?>">
-                                                        <?php echo $i; ?>
-                                                    </a>
-                                                </li>
-                                            <?php endfor; ?>
-                                            
-                                            <?php if ($priority_current_page_var < $priority_total_pages_var): ?>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="?<?php echo buildManageTasksQuery(['priority_page' => $priority_current_page_var + 1, 'tab' => 'priority'], ['page']); ?>">
-                                                        <i class="fas fa-chevron-right"></i>
-                                                    </a>
-                                                </li>
-                                            <?php endif; ?>
-                                        </ul>
-                                    </nav>
-                                <?php endif; ?>
-
-                                <!-- Results Info -->
-                                <div class="text-center text-muted small">
-                                    <?php if ($priority_total_tasks > 0): ?>
-                                        Showing <?php echo $priority_display_start; ?>-<?php echo $priority_display_end; ?> of <?php echo $priority_total_tasks; ?> priority tasks
-                                        <?php if ($priority_total_pages_var > 1): ?>
-                                            • Limit: <?php echo $tasks_per_page; ?>/page
+                                <!-- Bottom Bar: Show selector (left) + Results Info (center) + Pagination (right) -->
+                                <div class="d-flex justify-content-between align-items-center mt-3 px-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <label class="mb-0 small text-muted text-nowrap">Show:</label>
+                                        <select class="form-select form-select-sm" style="width: 70px; min-width: 70px;" onchange="changeRecordLimit(this.value)">
+                                            <option value="25" <?php echo $tasks_per_page == 25 ? 'selected' : ''; ?>>25</option>
+                                            <option value="50" <?php echo $tasks_per_page == 50 ? 'selected' : ''; ?>>50</option>
+                                            <option value="100" <?php echo $tasks_per_page == 100 ? 'selected' : ''; ?>>100</option>
+                                            <option value="250" <?php echo $tasks_per_page == 250 ? 'selected' : ''; ?>>250</option>
+                                        </select>
+                                    </div>
+                                    <span class="text-muted small">
+                                        <?php if ($priority_total_tasks > 0): ?>
+                                            Showing <?php echo $priority_display_start; ?>-<?php echo $priority_display_end; ?> of <?php echo $priority_total_tasks; ?> priority tasks
+                                        <?php else: ?>
+                                            No priority tasks found
                                         <?php endif; ?>
+                                    </span>
+                                    <?php if ($priority_total_pages_var > 1): ?>
+                                        <nav aria-label="Priority Tasks pagination" class="mb-0">
+                                            <ul class="pagination pagination-sm mb-0">
+                                                <?php if ($priority_current_page_var > 1): ?>
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="?<?php echo buildManageTasksQuery(['priority_page' => $priority_current_page_var - 1, 'tab' => 'priority'], ['page']); ?>">
+                                                            <i class="fas fa-chevron-left"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php endif; ?>
+                                                <?php for ($i = max(1, $priority_current_page_var - 2); $i <= min($priority_total_pages_var, $priority_current_page_var + 2); $i++): ?>
+                                                    <li class="page-item <?php echo ($i == $priority_current_page_var) ? 'active' : ''; ?>">
+                                                        <a class="page-link" href="?<?php echo buildManageTasksQuery(['priority_page' => $i, 'tab' => 'priority'], ['page']); ?>">
+                                                            <?php echo $i; ?>
+                                                        </a>
+                                                    </li>
+                                                <?php endfor; ?>
+                                                <?php if ($priority_current_page_var < $priority_total_pages_var): ?>
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="?<?php echo buildManageTasksQuery(['priority_page' => $priority_current_page_var + 1, 'tab' => 'priority'], ['page']); ?>">
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php endif; ?>
+                                            </ul>
+                                        </nav>
                                     <?php else: ?>
-                                        No priority tasks found
+                                        <div></div>
                                     <?php endif; ?>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -3004,42 +3183,118 @@ function refreshTable() {
 function changeRecordLimit(limit) {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('limit', limit);
-    urlParams.delete('page'); // Reset to page 1 when changing limit
-    urlParams.delete('priority_page'); // Reset priority page too
+    urlParams.delete('page');
+    urlParams.delete('priority_page');
     window.location.href = '?' + urlParams.toString();
 }
 
+// Quick filter (Doer / Status dropdowns in table header)
+function applyQuickFilter() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var doer = document.getElementById('quickDoerFilter').value;
+    var status = document.getElementById('quickStatusFilter').value;
+
+    if (doer) urlParams.set('doer', doer); else urlParams.delete('doer');
+    if (status) urlParams.set('status', status); else urlParams.delete('status');
+    urlParams.delete('page');
+    urlParams.delete('priority_page');
+    window.location.href = '?' + urlParams.toString();
+}
+
+// Date range toggle pills
+(function() {
+    var pills = document.querySelectorAll('.date-range-pill[data-range]');
+    var customFrom = document.getElementById('customDateFrom');
+    var customTo = document.getElementById('customDateTo');
+
+    function getDateRange(range) {
+        var to = new Date();
+        var from = new Date();
+        switch(range) {
+            case '1w': from.setDate(to.getDate() - 7); break;
+            case '2w': from.setDate(to.getDate() - 14); break;
+            case '4w': from.setDate(to.getDate() - 28); break;
+            case '8w': from.setDate(to.getDate() - 56); break;
+            case '12w': from.setDate(to.getDate() - 84); break;
+        }
+        return {
+            from: from.toISOString().split('T')[0],
+            to: to.toISOString().split('T')[0]
+        };
+    }
+
+    function applyDateRange(dateFrom, dateTo) {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (dateFrom) urlParams.set('date_from', dateFrom); else urlParams.delete('date_from');
+        if (dateTo) urlParams.set('date_to', dateTo); else urlParams.delete('date_to');
+        urlParams.delete('page');
+        urlParams.delete('priority_page');
+        window.location.href = '?' + urlParams.toString();
+    }
+
+    pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+            var range = this.getAttribute('data-range');
+            if (this.classList.contains('active')) {
+                applyDateRange('', '');
+                return;
+            }
+            var dates = getDateRange(range);
+            applyDateRange(dates.from, dates.to);
+        });
+    });
+
+    if (customFrom) {
+        customFrom.addEventListener('change', function() {
+            if (customFrom.value && customTo.value) {
+                applyDateRange(customFrom.value, customTo.value);
+            }
+        });
+    }
+    if (customTo) {
+        customTo.addEventListener('change', function() {
+            if (customFrom.value && customTo.value) {
+                applyDateRange(customFrom.value, customTo.value);
+            }
+        });
+    }
+})();
+
 // Tab switching functionality for All Tasks and Priority Tasks
 function switchTasksTab(tabName) {
-    console.log('Switching to tab:', tabName);
-    
-    // Update tab appearance
-    const tabs = document.querySelectorAll('.tabs .tab');
-    tabs.forEach(tab => {
-        tab.classList.remove('active');
+    // Update radio toggle labels
+    const allLabels = document.querySelectorAll('.task-radio-label');
+    allLabels.forEach(function(label) {
+        const radio = label.querySelector('input[type="radio"]');
+        if (radio && radio.value === tabName) {
+            label.classList.add('active');
+            radio.checked = true;
+        } else {
+            label.classList.remove('active');
+        }
     });
-    
-    const activeTab = document.querySelector(`.tab[onclick="switchTasksTab('${tabName}')"]`);
-    if (activeTab) {
-        activeTab.classList.add('active');
-    }
-    
+
     // Update tab content visibility
     const tabContents = document.querySelectorAll('.tab-content');
     tabContents.forEach(content => {
         content.classList.remove('active');
     });
-    
+
     let activeContent;
     if (tabName === 'all') {
         activeContent = document.getElementById('allTasksTab');
     } else if (tabName === 'priority') {
         activeContent = document.getElementById('priorityTasksTab');
     }
-    
+
     if (activeContent) {
         activeContent.classList.add('active');
     }
+
+    // Update URL without page reload
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tabName === 'priority' ? 'priority' : 'all');
+    window.history.pushState({}, '', url);
 }
 
 // Check URL parameter for initial tab
@@ -3358,26 +3613,42 @@ function showAlert(message, type) {
     }, 5000);
 }
 
-// Corrected filter toggle functionality
+// Filter toggle functionality
 $('#toggleFilters').on('click', function() {
-    var filterContent = $('#filterContent');
+    var filterSection = $('#filterSection');
+    filterSection.slideToggle(200);
+
     var icon = $(this).find('i');
-    
-    // 1. Toggle the CSS class to show or hide the content
-    filterContent.toggleClass('collapsed');
-    
-    // 2. Toggle the icon's class to change its direction
-    icon.toggleClass('fa-chevron-up fa-chevron-down');
-    
-    // 3. Find and change only the text, leaving the icon untouched
-    var textNode = this.childNodes[2]; // Finds the text part of the button
-    if (textNode.nodeValue.includes('Hide')) {
-        textNode.nodeValue = ' Show Filters';
-    } else {
-        textNode.nodeValue = ' Hide Filters';
+    icon.toggleClass('fa-filter fa-times');
+
+    var textNode = this.childNodes[2];
+    if (textNode && textNode.nodeValue) {
+        textNode.nodeValue = filterSection.is(':visible') ? ' Filters' : ' Close';
     }
 });
-    
+
+// Auto-submit filters on change (selects, radios, dates) and on typing (text inputs with debounce)
+(function() {
+    var filterForm = document.querySelector('.filter-form');
+    if (!filterForm) return;
+
+    var debounceTimer = null;
+
+    filterForm.querySelectorAll('select, input[type="date"]').forEach(function(el) {
+        el.addEventListener('change', function() { filterForm.submit(); });
+    });
+
+    filterForm.querySelectorAll('input[type="radio"]').forEach(function(el) {
+        el.addEventListener('change', function() { filterForm.submit(); });
+    });
+
+    filterForm.querySelectorAll('input[type="text"]').forEach(function(el) {
+        el.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() { filterForm.submit(); }, 600);
+        });
+    });
+})();
 
 // Auto-refresh every 30 seconds
 setInterval(function() {

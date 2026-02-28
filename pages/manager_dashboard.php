@@ -95,11 +95,11 @@ if(isset($_POST['update_status']) && !empty($_POST['task_id']) && !empty($_POST[
                 if (mysqli_stmt_execute($stmt_checklist_update)) {
                     $success_msg = "Checklist Task status updated successfully!";
                 } else {
-                    $error_msg = "Error updating checklist task status: " . mysqli_stmt_error($stmt_checklist_update);
+                    error_log("[DB Error] " . mysqli_stmt_error($stmt)); $error_msg = "A database error occurred. Please try again.";
                 }
                 mysqli_stmt_close($stmt_checklist_update);
             } else {
-                $error_msg = "Database error preparing for checklist status update: " . mysqli_error($conn);
+                error_log("[DB Error] " . mysqli_error($conn)); $error_msg = "A database error occurred. Please try again.";
             }
         }
     } else {
@@ -2724,10 +2724,7 @@ $current_page = 1;
                             <div class="user-info">
                                 <div class="user-avatar-wrapper">
                                     <div class="user-avatar">
-                                        <img src="../assets/uploads/profile_photos/user_${user.id}.png" 
-                                             alt="${user.name}" 
-                                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="avatar-initials" style="display: none;">${initials}</div>
+                                        <div class="avatar-initials" style="display: flex;">${initials}</div>
                                     </div>
                                 </div>
                                 <div class="user-details">
@@ -2849,10 +2846,7 @@ $current_page = 1;
                         
                         memberElement.innerHTML = `
                             <div class="member-avatar">
-                                <img src="../assets/uploads/profile_photos/user_${member.id}.png" 
-                                     alt="${member.name}" 
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span style="display: none;">${firstLetter}</span>
+                                <span style="display: flex;">${firstLetter}</span>
                             </div>
                             <div class="member-name">${member.name}</div>
                             <div class="member-status ${statusClass}"></div>

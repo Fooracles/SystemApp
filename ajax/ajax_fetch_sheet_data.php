@@ -573,4 +573,9 @@ ini_set('display_errors', 0);
 
 add_log("Response sent, process completed");
 exit;
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}
 ?>

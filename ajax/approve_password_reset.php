@@ -20,6 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// CSRF protection for POST requests
+csrfProtect();
+
 $request_id = $_POST['request_id'] ?? null;
 
 if (!$request_id) {
@@ -63,11 +66,16 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
             echo json_encode(['status' => 'error', 'message' => 'Request not found or already processed']);
         }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . mysqli_stmt_error($stmt)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/approve_password_reset.php');
     }
     
     mysqli_stmt_close($stmt);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Database error: ' . mysqli_error($conn)]);
+    handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/approve_password_reset.php');
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>

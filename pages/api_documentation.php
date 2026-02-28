@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $page_title = "API Documentation";
 require_once "../includes/header.php";
@@ -686,7 +686,6 @@ function copyToClipboard(text) {
             btn.style.background = 'rgba(0, 0, 0, 0.1)';
         }, 2000);
     }).catch(err => {
-        console.error('Failed to copy: ', err);
         alert('Failed to copy to clipboard');
     });
 }

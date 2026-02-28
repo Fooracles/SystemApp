@@ -1,15 +1,27 @@
 <?php
+// Start output buffering first to catch any stray output
+if (ob_get_level() == 0) {
+    ob_start();
+} else {
+    ob_clean();
+}
+
+// Include core files (functions.php auto-starts session)
 require_once "../includes/config.php";
 require_once "../includes/functions.php";
 require_once "../includes/dashboard_components.php";
 
+// Re-suppress error display AFTER config loads (error_handler.php overrides it in dev)
+ini_set('display_errors', 0);
+
 // Set appropriate content type header
-header('Content-Type: application/json');
+if (!headers_sent()) {
+    header('Content-Type: application/json');
+}
 
 // Check if user is logged in
 if (!isLoggedIn()) {
-    echo json_encode(['success' => false, 'error' => 'Not authenticated']);
-    exit;
+    jsonError('Not authenticated', 500);
 }
 
 $current_user_id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? 1;
@@ -98,10 +110,36 @@ try {
         }
     }
     
+    // Clean any stray output before sending JSON
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
+    
     echo json_encode(['success' => true, 'data' => $members]);
     
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
+    handleException($e, 'get_team_performance_members');
+} catch (Error $e) {
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+        http_response_code(500);
+    }
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage(),
+        'file' => basename($e->getFile()),
+        'line' => $e->getLine()
+    ]);
+}
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
 }
 ?>
-

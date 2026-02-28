@@ -1,9 +1,14 @@
 <?php
-session_start();
+// Always keep JSON responses clean (no PHP warning HTML in output)
+ob_start();
+ini_set('html_errors', '0');
+
+// IMPORTANT: include config BEFORE starting session (config sets session ini values)
 require_once '../includes/config.php';
+require_once '../includes/functions.php';
 
 // Set JSON header
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Get user information from request (passed from JavaScript)
 $user_role = $_GET['user_role'] ?? 'admin';
@@ -83,7 +88,7 @@ try {
     $total_items = 0;
     if ($stmt_count = mysqli_prepare($conn, $sql_count)) {
         if (!empty($types) && !empty($params)) {
-            mysqli_stmt_bind_param($stmt_count, $types, ...$params);
+            mysqliBindParams($stmt_count, $types, $params);
         }
         if (mysqli_stmt_execute($stmt_count)) {
             $result_count = mysqli_stmt_get_result($stmt_count);
@@ -150,16 +155,9 @@ try {
     
     $leaves = [];
     if ($stmt_select = mysqli_prepare($conn, $sql_select)) {
-        $current_param_types = $types . "ii";
-        $current_param_values = array_merge($params, [$items_per_page, $offset]);
-        
-        // Always bind parameters if we have any
-        if (!empty($current_param_types)){
-            mysqli_stmt_bind_param($stmt_select, $current_param_types, ...$current_param_values);
-        } else {
-            // If no parameters, just bind pagination parameters
-            mysqli_stmt_bind_param($stmt_select, "ii", $items_per_page, $offset);
-        }
+        $bind_types = $types . "ii";
+        $bind_params = array_merge($params, [$items_per_page, $offset]);
+        mysqliBindParams($stmt_select, $bind_types, $bind_params);
 
         if (mysqli_stmt_execute($stmt_select)) {
             $result_subtasks = mysqli_stmt_get_result($stmt_select);
@@ -188,6 +186,11 @@ try {
     $start_record = $offset + 1;
     $end_record = min($offset + $items_per_page, $total_items);
     
+    // Ensure no stray output corrupts JSON
+    if (ob_get_length()) {
+        ob_clean();
+    }
+
     echo json_encode([
         'success' => true,
         'data' => $leaves,
@@ -210,16 +213,19 @@ try {
         ]
     ]);
     
-} catch (Exception $e) {
+} catch (Throwable $e) {
     error_log("Error fetching total leaves: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Failed to fetch leave records: ' . $e->getMessage()
-    ]);
+    if (ob_get_length()) {
+        ob_clean();
+    }
+    handleException($e, 'leave_fetch_totals');
 } finally {
     if (isset($conn)) {
         mysqli_close($conn);
+    }
+    if (ob_get_level()) {
+        ob_end_flush();
     }
 }
 ?>

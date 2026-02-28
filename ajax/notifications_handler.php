@@ -16,18 +16,19 @@ ob_clean();
 if (!isLoggedIn()) {
     header('Content-Type: application/json');
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
 
 header('Content-Type: application/json');
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 $user_id = $_SESSION['id'] ?? null;
 
 if (!$user_id) {
-    echo json_encode(['success' => false, 'error' => 'User ID not found']);
-    exit;
+    jsonError('User ID not found', 404);
 }
 
 switch ($action) {
@@ -69,7 +70,7 @@ function getNotifications($conn, $user_id) {
     
     $stmt = mysqli_prepare($conn, $query);
     if (!$stmt) {
-        echo json_encode(['success' => false, 'error' => 'Database error: ' . mysqli_error($conn)]);
+        handleDbError($conn, 'C:/xampp/htdocs/app-v5.5-new/ajax/notifications_handler.php');
         exit;
     }
     
@@ -139,15 +140,13 @@ function markNotificationRead($conn, $user_id) {
     $notification_id = $_POST['notification_id'] ?? null;
     
     if (!$notification_id) {
-        echo json_encode(['success' => false, 'error' => 'Notification ID required']);
-        exit;
+        jsonError('Notification ID required', 400);
     }
     
     $query = "UPDATE notifications SET is_read = 1, read_at = NOW() WHERE id = ? AND user_id = ?";
     $stmt = mysqli_prepare($conn, $query);
     if (!$stmt) {
-        echo json_encode(['success' => false, 'error' => 'Database error']);
-        exit;
+        jsonError('Database error', 500);
     }
     
     mysqli_stmt_bind_param($stmt, 'ii', $notification_id, $user_id);
@@ -160,8 +159,7 @@ function markAllNotificationsRead($conn, $user_id) {
     $query = "UPDATE notifications SET is_read = 1, read_at = NOW() WHERE user_id = ? AND is_read = 0";
     $stmt = mysqli_prepare($conn, $query);
     if (!$stmt) {
-        echo json_encode(['success' => false, 'error' => 'Database error']);
-        exit;
+        jsonError('Database error', 500);
     }
     
     mysqli_stmt_bind_param($stmt, 'i', $user_id);
@@ -174,15 +172,13 @@ function deleteNotification($conn, $user_id) {
     $notification_id = $_POST['notification_id'] ?? null;
     
     if (!$notification_id) {
-        echo json_encode(['success' => false, 'error' => 'Notification ID required']);
-        exit;
+        jsonError('Notification ID required', 400);
     }
     
     $query = "DELETE FROM notifications WHERE id = ? AND user_id = ?";
     $stmt = mysqli_prepare($conn, $query);
     if (!$stmt) {
-        echo json_encode(['success' => false, 'error' => 'Database error']);
-        exit;
+        jsonError('Database error', 500);
     }
     
     mysqli_stmt_bind_param($stmt, 'ii', $notification_id, $user_id);
@@ -205,3 +201,7 @@ function getUnreadCount($conn, $user_id) {
     ]);
 }
 
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}

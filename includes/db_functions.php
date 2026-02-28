@@ -532,6 +532,214 @@ function createTasksIndexes($conn) {
 }
 
 /**
+ * Ensure runtime safety indexes/columns exist for FMS execution tables.
+ * Non-destructive migration for existing installations.
+ *
+ * @param mysqli $conn
+ * @return void
+ */
+function ensureFmsFlowExecutionSchema($conn) {
+    if (tableExists($conn, 'fms_flow_form_step_map')) {
+        if (!columnExists($conn, 'fms_flow_form_step_map', 'form_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_form_step_map ADD COLUMN form_id INT NOT NULL AFTER id");
+        }
+        if (!columnExists($conn, 'fms_flow_form_step_map', 'node_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_form_step_map ADD COLUMN node_id VARCHAR(64) NOT NULL AFTER form_id");
+        }
+        if (!columnExists($conn, 'fms_flow_form_step_map', 'doer_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_form_step_map ADD COLUMN doer_id INT NOT NULL AFTER node_id");
+        }
+        if (!columnExists($conn, 'fms_flow_form_step_map', 'duration_minutes')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_form_step_map ADD COLUMN duration_minutes INT NOT NULL DEFAULT 0 AFTER doer_id");
+        }
+        if (!columnExists($conn, 'fms_flow_form_step_map', 'sort_order')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_form_step_map ADD COLUMN sort_order INT NOT NULL DEFAULT 0 AFTER duration_minutes");
+        }
+        if (!columnExists($conn, 'fms_flow_form_step_map', 'created_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_form_step_map ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER sort_order");
+        }
+        if (!columnExists($conn, 'fms_flow_form_step_map', 'updated_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_form_step_map ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at");
+        }
+    }
+
+    if (tableExists($conn, 'fms_flow_runs')) {
+        if (!columnExists($conn, 'fms_flow_runs', 'flow_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN flow_id INT NOT NULL AFTER id");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'form_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN form_id INT NOT NULL AFTER flow_id");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'run_title')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN run_title VARCHAR(255) NOT NULL AFTER form_id");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'form_data')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN form_data LONGTEXT NULL AFTER run_title");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'status')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN status ENUM('running','completed','cancelled','paused') NOT NULL DEFAULT 'running' AFTER form_data");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'initiated_by')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN initiated_by INT NOT NULL AFTER status");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'current_node_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN current_node_id VARCHAR(64) NULL AFTER initiated_by");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'started_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER current_node_id");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'completed_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN completed_at TIMESTAMP NULL DEFAULT NULL AFTER started_at");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'created_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER completed_at");
+        }
+        if (!columnExists($conn, 'fms_flow_runs', 'updated_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_runs ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at");
+        }
+    }
+
+    $indexStatements = [
+        'fms_flow_form_fields' => [
+            'idx_form_fields_order' => "CREATE INDEX idx_form_fields_order ON fms_flow_form_fields(form_id, sort_order)"
+        ],
+        'fms_flow_form_step_map' => [
+            'idx_form_step_order' => "CREATE INDEX idx_form_step_order ON fms_flow_form_step_map(form_id, sort_order)",
+            'idx_form_step_doer' => "CREATE INDEX idx_form_step_doer ON fms_flow_form_step_map(doer_id)"
+        ],
+        'fms_flow_runs' => [
+            'idx_runs_flow_status' => "CREATE INDEX idx_runs_flow_status ON fms_flow_runs(flow_id, status)",
+            'idx_runs_form_status' => "CREATE INDEX idx_runs_form_status ON fms_flow_runs(form_id, status)",
+            'idx_runs_current_node' => "CREATE INDEX idx_runs_current_node ON fms_flow_runs(current_node_id)",
+            'idx_runs_started' => "CREATE INDEX idx_runs_started ON fms_flow_runs(started_at)"
+        ],
+        'fms_flow_run_steps' => [
+            'idx_run_steps_doer_status_planned' => "CREATE INDEX idx_run_steps_doer_status_planned ON fms_flow_run_steps(doer_id, status, planned_at)",
+            'idx_run_steps_run_sort' => "CREATE INDEX idx_run_steps_run_sort ON fms_flow_run_steps(run_id, sort_order)",
+            'idx_run_steps_run_status' => "CREATE INDEX idx_run_steps_run_status ON fms_flow_run_steps(run_id, status)"
+        ]
+    ];
+    $indexRequirements = [
+        'fms_flow_form_fields' => [
+            'idx_form_fields_order' => ['form_id', 'sort_order'],
+        ],
+        'fms_flow_form_step_map' => [
+            'idx_form_step_order' => ['form_id', 'sort_order'],
+            'idx_form_step_doer' => ['doer_id'],
+        ],
+        'fms_flow_runs' => [
+            'idx_runs_flow_status' => ['flow_id', 'status'],
+            'idx_runs_form_status' => ['form_id', 'status'],
+            'idx_runs_current_node' => ['current_node_id'],
+            'idx_runs_started' => ['started_at'],
+        ],
+        'fms_flow_run_steps' => [
+            'idx_run_steps_doer_status_planned' => ['doer_id', 'status', 'planned_at'],
+            'idx_run_steps_run_sort' => ['run_id', 'sort_order'],
+            'idx_run_steps_run_status' => ['run_id', 'status'],
+        ],
+    ];
+
+    foreach ($indexStatements as $tableName => $indexes) {
+        if (!tableExists($conn, $tableName)) {
+            continue;
+        }
+        foreach ($indexes as $indexName => $sql) {
+            // Avoid index creation attempts until required columns exist.
+            $requiredCols = $indexRequirements[$tableName][$indexName] ?? [];
+            $missing = false;
+            foreach ($requiredCols as $col) {
+                if (!columnExists($conn, $tableName, $col)) {
+                    $missing = true;
+                    break;
+                }
+            }
+            if ($missing) {
+                continue;
+            }
+            try {
+                if (!indexExists($conn, $tableName, $indexName)) {
+                    if (!mysqli_query($conn, $sql)) {
+                        dbLog("Error creating '$indexName' on '$tableName': " . mysqli_error($conn));
+                    }
+                }
+            } catch (Throwable $e) {
+                dbLog("Error creating '$indexName' on '$tableName': " . $e->getMessage());
+                continue;
+            }
+        }
+    }
+
+    if (tableExists($conn, 'fms_flow_run_steps')) {
+        if (!columnExists($conn, 'fms_flow_run_steps', 'run_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN run_id INT NOT NULL AFTER id");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'node_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN node_id VARCHAR(64) NOT NULL AFTER run_id");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'step_name')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN step_name VARCHAR(255) NOT NULL AFTER node_id");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'step_code')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN step_code VARCHAR(100) NULL AFTER step_name");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'doer_id')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN doer_id INT NOT NULL AFTER step_code");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'status')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN status ENUM('waiting','pending','in_progress','completed','skipped') NOT NULL DEFAULT 'waiting' AFTER doer_id");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'duration_minutes')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN duration_minutes INT NOT NULL DEFAULT 0 AFTER status");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'planned_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN planned_at DATETIME NULL AFTER duration_minutes");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'started_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN started_at DATETIME NULL AFTER planned_at");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'actual_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN actual_at DATETIME NULL AFTER started_at");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'sort_order')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN sort_order INT NOT NULL DEFAULT 0 AFTER actual_at");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'comment')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN comment TEXT NULL AFTER sort_order");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'attachment_path')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN attachment_path VARCHAR(500) NULL AFTER comment");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'created_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER attachment_path");
+        }
+        if (!columnExists($conn, 'fms_flow_run_steps', 'updated_at')) {
+            @mysqli_query($conn, "ALTER TABLE fms_flow_run_steps ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at");
+        }
+    }
+}
+
+/**
+ * Ensure flow node enum supports start/end and repair legacy bad rows.
+ *
+ * @param mysqli $conn
+ * @return void
+ */
+function ensureFmsFlowNodeTypes($conn) {
+    if (!tableExists($conn, 'fms_flow_nodes')) {
+        return;
+    }
+
+    // Allow start/end node types in schema.
+    $alterSql = "ALTER TABLE fms_flow_nodes MODIFY COLUMN type ENUM('step','decision','target','start','end') NOT NULL";
+    @mysqli_query($conn, $alterSql);
+
+    // Repair previously saved rows where enum coercion produced invalid/empty type.
+    @mysqli_query($conn, "UPDATE fms_flow_nodes SET type = 'start' WHERE id = '__start__' AND type <> 'start'");
+    @mysqli_query($conn, "UPDATE fms_flow_nodes SET type = 'end' WHERE id = '__end__' AND type <> 'end'");
+}
+
+/**
  * Check and create all required database tables
  * 
  * @param mysqli $conn Database connection
@@ -577,6 +785,8 @@ function checkAndCreateTables($conn) {
     if (tableExists($conn, 'updates')) {
         ensureUpdatesColumns($conn);
     }
+    ensureFmsFlowNodeTypes($conn);
+    ensureFmsFlowExecutionSchema($conn);
 
     // If no tables need to be created, return early
     if (empty($tables_to_create)) {
@@ -624,6 +834,8 @@ function checkAndCreateTables($conn) {
         // Ensure expected columns exist if table pre-existed
         ensureFmsTasksColumns($conn);
     }
+    ensureFmsFlowNodeTypes($conn);
+    ensureFmsFlowExecutionSchema($conn);
     
     return [
         'success' => $success,

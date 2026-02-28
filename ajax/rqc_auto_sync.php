@@ -260,10 +260,7 @@ try {
     
     logRqcSync("Manual sync failed: " . $e->getMessage());
     
-    echo json_encode([
-        'success' => false,
-        'error' => 'Sync failed: ' . $e->getMessage()
-    ]);
+    handleException($e, 'rqc_auto_sync');
 } finally {
     if (isset($conn)) {
         mysqli_close($conn);

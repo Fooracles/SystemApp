@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Include required files first (before any output)
 require_once "../includes/config.php";
 require_once "../includes/functions.php";
@@ -527,7 +527,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
                 alert('An error occurred while updating user status. Please try again.');
                 this.value = originalValue;
             })
@@ -696,4 +695,3 @@ function submitClientUserForm() {
 </style>
 
 <?php require_once "../includes/footer.php"; ?>
-

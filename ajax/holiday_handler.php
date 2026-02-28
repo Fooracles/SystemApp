@@ -10,9 +10,11 @@ header('Content-Type: application/json');
 
 // Check if the user is logged in - basic security
 if (!isLoggedIn()) {
-    echo json_encode(['status' => 'error', 'message' => 'Authentication required.']);
-    exit;
+    jsonError('Authentication required.', 400);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $response = ['status' => 'error', 'message' => 'Invalid request'];
 
@@ -209,4 +211,9 @@ if (isset($_POST['action'])) {
 }
 
 echo json_encode($response);
-?> 
+
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}
+?>

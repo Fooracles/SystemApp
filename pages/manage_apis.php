@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Start output buffering to prevent header issues
 ob_start();
 
@@ -1886,5 +1886,5 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php 
 // Clean output buffer and include footer
 ob_end_flush();
-require_once "../includes/footer.php"; 
+require_once "../includes/footer.php";
 ?>

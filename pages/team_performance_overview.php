@@ -124,9 +124,11 @@ $current_username = $_SESSION['username'] ?? '';
         <!-- Performance Content -->
         <div id="performanceContent" style="display: none;">
             <!-- Performance Stats -->
-            <div class="performance-stats-grid" id="performanceStatsGrid" style="margin-bottom: 2rem;">
+            <div class="performance-stats-grid" id="performanceStatsGrid" style="margin-bottom: 0.5rem;">
                 <!-- Stats will be populated by JavaScript -->
             </div>
+
+            <p class="text-center text-muted small fst-italic" style="margin-bottom: 1.5rem;">Weekly Performance is Frozen Every Sunday at Midnight.<br>Ensure all pending tasks are marked as Done On-time.</p>
 
             <!-- Graph Type Selector -->
             <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
@@ -238,6 +240,24 @@ $current_username = $_SESSION['username'] ?? '';
         0 12px 40px rgba(102, 126, 234, 0.3),
         0 0 0 1px rgba(102, 126, 234, 0.3) inset;
     border-color: rgba(102, 126, 234, 0.4);
+}
+
+/* Orange glow for WND/WNDOT values between -20.5% and -10.6% */
+.performance-stat-card.orange-glow {
+    border-color: rgba(255, 165, 0, 0.5);
+    box-shadow: 
+        0 8px 32px rgba(255, 165, 0, 0.3),
+        0 0 20px rgba(255, 165, 0, 0.2),
+        0 0 0 1px rgba(255, 165, 0, 0.2) inset;
+}
+
+/* Red glow for WND/WNDOT values <= -20.6% */
+.performance-stat-card.red-glow {
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 
+        0 8px 32px rgba(239, 68, 68, 0.3),
+        0 0 20px rgba(239, 68, 68, 0.2),
+        0 0 0 1px rgba(239, 68, 68, 0.2) inset;
 }
 
 .performance-stat-value {
@@ -548,7 +568,6 @@ async function loadMembers() {
         });
         
     } catch (error) {
-        console.error('Error loading members:', error);
         document.getElementById('memberSelect').innerHTML = '<option value="">Error loading members</option>';
     }
 }
@@ -602,7 +621,6 @@ async function loadPerformanceData(username) {
             `;
         }
     } catch (error) {
-        console.error('Error loading performance data:', error);
         loadingMessage.innerHTML = `
             <div style="text-align: center; padding: 2rem; color: var(--dark-text-danger);">
                 <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
@@ -615,6 +633,8 @@ async function loadPerformanceData(username) {
 function displayPerformanceStats(data) {
     const stats = data.stats || {};
     const completionRate = data.completion_rate || 0;
+    const wndValue = stats.wnd || 0;
+    const wndOnTimeValue = stats.wnd_on_time || 0;
     const grid = document.getElementById('performanceStatsGrid');
     
     grid.innerHTML = `
@@ -638,11 +658,38 @@ function displayPerformanceStats(data) {
             <div class="performance-stat-value">${stats.current_delayed || 0}</div>
             <div class="performance-stat-label">Delayed</div>
         </div>
-        <div class="performance-stat-card">
-            <div class="performance-stat-value">${stats.wnd || 0}</div>
+        <div class="performance-stat-card" data-stat="wnd">
+            <div class="performance-stat-value">${wndValue}%</div>
             <div class="performance-stat-label">Work Not Done</div>
         </div>
+        <div class="performance-stat-card" data-stat="wnd_on_time">
+            <div class="performance-stat-value">${wndOnTimeValue}%</div>
+            <div class="performance-stat-label">WND On Time</div>
+        </div>
     `;
+    
+    // Apply color-coded glow to WND and WND on Time cards
+    applyWndGlowOverview('wnd', wndValue);
+    applyWndGlowOverview('wnd_on_time', wndOnTimeValue);
+}
+
+// Color Coding Logic for WND & WNDOT cards on overview page
+// Values are negative: <= -20.6% → RED, -20.5% to -10.6% → ORANGE, > -10% → GREY (default)
+function applyWndGlowOverview(statType, value) {
+    const card = document.querySelector(`.performance-stat-card[data-stat="${statType}"]`);
+    if (!card) return;
+    
+    // Remove existing glow classes
+    card.classList.remove('orange-glow', 'red-glow');
+    
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return;
+    
+    if (numValue <= -20.6) {
+        card.classList.add('red-glow');
+    } else if (numValue <= -10.6 && numValue >= -20.5) {
+        card.classList.add('orange-glow');
+    }
 }
 
 function setupGraphTypeButtons() {
@@ -1080,4 +1127,5 @@ window.addEventListener('beforeunload', function() {
 });
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once "../includes/footer.php";
+?>

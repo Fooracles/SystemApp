@@ -1457,48 +1457,82 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
         }
         
         .edit-mode td {
-            padding: 8px !important;
+            padding: 6px 8px !important;
             background: rgba(99, 102, 241, 0.15) !important; /* Dark theme highlight */
             color: var(--dark-text-primary) !important;
+            vertical-align: middle !important;
         }
         
         .edit-mode:hover td {
             background: rgba(99, 102, 241, 0.2) !important; /* Slightly brighter on hover */
         }
         
-        .edit-mode .form-control {
-            background: linear-gradient(135deg, #1e1e1e, #2a2a2a) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        .edit-mode .form-control,
+        .edit-mode .form-control-sm,
+        tr.edit-mode .form-control,
+        tr.edit-mode select,
+        tr.edit-mode textarea {
+            background-color: #2d2d3d !important;
+            background: #2d2d3d !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
             border-radius: 4px !important;
-            color: #e0e0e0 !important;
+            color: #ffffff !important;
+            font-size: 13px !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
         
-        .edit-mode .form-control:focus {
-            background: linear-gradient(135deg, #2a2a2a, #333333) !important;
+        .edit-mode .form-control:focus,
+        tr.edit-mode select:focus,
+        tr.edit-mode textarea:focus {
+            background-color: #353548 !important;
+            background: #353548 !important;
             border-color: var(--brand-primary) !important;
             box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
-            color: white !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
         
-        .edit-mode select.form-control {
-            background: linear-gradient(135deg, #1e1e1e, #2a2a2a) !important;
-            color: #e0e0e0 !important;
+        .edit-mode select.form-control,
+        tr.edit-mode select,
+        .edit-mode .edit-select {
+            background-color: #2d2d3d !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            white-space: nowrap !important;
+            font-size: 14px !important;
+            padding: 4px 6px !important;
+            height: 30px !important;
+            line-height: 1.5 !important;
+            width: auto !important;
+            min-width: 0 !important;
+            max-width: none !important;
         }
         
-        .edit-mode select.form-control option {
-            background: #1e1e1e !important;
-            color: #e0e0e0 !important;
+        .edit-mode select.form-control option,
+        tr.edit-mode select option {
+            background-color: #2d2d3d !important;
+            color: #ffffff !important;
         }
         
         .edit-mode select.form-control option:hover,
         .edit-mode select.form-control option:checked {
-            background: var(--brand-primary) !important;
+            background-color: var(--brand-primary) !important;
             color: white !important;
         }
         
-        .edit-mode textarea.form-control {
-            background: linear-gradient(135deg, #1e1e1e, #2a2a2a) !important;
-            color: #e0e0e0 !important;
+        .edit-mode textarea.form-control,
+        tr.edit-mode textarea,
+        .edit-mode .edit-textarea {
+            background-color: #2d2d3d !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            resize: vertical;
+            min-width: 180px;
+            font-size: 14px !important;
+            padding: 4px 8px !important;
+            line-height: 1.5 !important;
         }
         
         /* Edit mode Save/Cancel buttons - Dark Theme */
@@ -1525,7 +1559,23 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
             border-color: rgba(255, 255, 255, 0.2) !important;
             color: #e0e0e0 !important;
         }
-        
+
+        /* Edit mode action buttons container */
+        .edit-mode .edit-action-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+            min-width: 90px;
+        }
+
+        .edit-mode .edit-action-btns .btn {
+            width: 100%;
+            white-space: nowrap;
+            font-size: 12px;
+            padding: 4px 8px;
+        }
+
         /* Delay hover styling */
         .delay-hover {
             cursor: pointer;
@@ -2588,7 +2638,7 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                 alert('Only administrators can edit tasks.');
                 // Reset dropdown to current status
                 var row = dropdown.closest('tr');
-                var currentStatusText = row.find('td').eq(5).find('.badge').text().trim();
+                var currentStatusText = row.find('td').eq(4).find('.status-icon').attr('title') || row.find('td').eq(4).text().trim();
                 var currentStatusValue = '';
                 switch(currentStatusText.toLowerCase()) {
                     case 'pending': currentStatusValue = 'pending'; break;
@@ -2610,7 +2660,7 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                 enableInlineEditing(row, taskId);
                 
                 // Reset dropdown to current status
-                var currentStatusText = row.find('td').eq(5).find('.badge').text().trim();
+                var currentStatusText = row.find('td').eq(4).find('.status-icon').attr('title') || row.find('td').eq(4).text().trim();
                 var currentStatusValue = '';
                 
                 // Map status text to option values
@@ -2651,7 +2701,7 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                 if (!confirm('Are you sure you want to change the status of this task to "' + selectedText + '"?')) {
                     // Reset dropdown to current status
                     var row = dropdown.closest('tr');
-                    var currentStatusText = row.find('td').eq(5).find('.badge').text().trim();
+                    var currentStatusText = row.find('td').eq(4).find('.status-icon').attr('title') || row.find('td').eq(4).text().trim();
                     var currentStatusValue = '';
                     
                     // Map status text to option values
@@ -2700,8 +2750,8 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                                 }
                             }
 
-                            // Update Actual Column using server response (Column 4: Actual)
-                            var actualCell = row.find('td').eq(4);
+                            // Update Actual Column using server response (Column 3: Actual)
+                            var actualCell = row.find('td').eq(3);
                             if (response.updated_actual_display) {
                                 actualCell.html('<small>' + response.updated_actual_display + '</small>');
                             } else if (newStatus === 'completed') {
@@ -2710,8 +2760,8 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                                 actualCell.text('N/A');
                             }
 
-                            // Update Delayed Column using server response (Column 6: Delayed)
-                            var delayedCell = row.find('td').eq(6);
+                            // Update Delayed Column using server response (Column 5: Delayed)
+                            var delayedCell = row.find('td').eq(5);
                             if (response.updated_delay_display_html) {
                                 delayedCell.html('<small class="font-weight-bold">' + response.updated_delay_display_html + '</small>');
                             } else if (newStatus === 'shifted') {
@@ -2728,7 +2778,7 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                             alert('Error: ' + response.message);
                             // Reset dropdown to current status
                             var row = dropdown.closest('tr');
-                            var currentStatusText = row.find('td').eq(5).find('.badge').text().trim();
+                            var currentStatusText = row.find('td').eq(4).find('.status-icon').attr('title') || row.find('td').eq(4).text().trim();
                             var currentStatusValue = '';
                             
                             // Map status text to option values
@@ -2749,7 +2799,7 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                         alert('AJAX Error: Could not update task status. ' + error);
                         // Reset dropdown to current status
                         var row = dropdown.closest('tr');
-                        var currentStatusText = row.find('td').eq(5).find('.badge').text().trim();
+                        var currentStatusText = row.find('td').eq(4).find('.status-icon').attr('title') || row.find('td').eq(4).text().trim();
                         var currentStatusValue = '';
                         
                         // Map status text to option values
@@ -2834,10 +2884,10 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
     function enableInlineEditing(row, taskId) {
         // Store original values
         row.data('original-values', {
-            taskCode: row.find('td').eq(0).text(),
-            taskDescription: row.find('td').eq(1).text(),
-            doer: row.find('td').eq(8).text(), // Doer
-            duration: row.find('td').eq(7).text() // Duration
+            taskCode: row.find('td').eq(0).text().trim(),
+            taskDescription: row.find('td').eq(1).find('.description-hover').data('full-description') || row.find('td').eq(1).text().trim(),
+            doer: row.find('td').eq(7).text().trim(), // Doer (col index 7)
+            duration: row.find('td').eq(6).text().trim() // Duration (col index 6)
         });
         
         // Store task ID
@@ -2848,8 +2898,9 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
         
         // Make Task Description editable
         var descCell = row.find('td').eq(1);
-        var originalDesc = descCell.text();
-        descCell.html('<textarea class="form-control form-control-sm" rows="2" style="min-width: 200px; background: linear-gradient(135deg, #1e1e1e, #2a2a2a) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; color: #e0e0e0 !important;">' + originalDesc + '</textarea>');
+        // Use data-full-description attribute (clean text) or fallback to trimmed text
+        var originalDesc = descCell.find('.description-hover').data('full-description') || descCell.text().trim();
+        descCell.html('<textarea class="form-control form-control-sm edit-textarea" rows="1">' + $('<div/>').text(originalDesc).html() + '</textarea>');
         
         // Keep Assigner as read-only (no changes needed)
         // The Assigner field will remain as static text during edit mode
@@ -2858,14 +2909,17 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
         // The planned date/time field will remain as static text during edit mode
         
         // Make Doer editable (dropdown)
-        var doerCell = row.find('td').eq(8); // Updated index for doer
-        var originalDoer = doerCell.text();
-        var doerOptions = '<select class="form-control form-control-sm" style="min-width: 150px; font-size: 14px; padding: 4px 8px; background: linear-gradient(135deg, #1e1e1e, #2a2a2a) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; color: #e0e0e0 !important;">';
+        var doerCell = row.find('td').eq(7); // Doer is col index 7
+        var originalDoer = doerCell.text().trim();
+        var doerOptions = '<select class="form-control form-control-sm edit-select">';
         doerOptions += '<option value="">Select Doer</option>';
         <?php 
-        // Get all active users for the dropdown
+        // Get all active non-client users for the dropdown
         $all_users_for_edit = [];
-        $users_query = "SELECT username FROM users WHERE Status = 'Active' ORDER BY username ASC";
+        $users_query = "SELECT username FROM users 
+                        WHERE user_type != 'client' 
+                        AND COALESCE(Status, 'Active') = 'Active' 
+                        ORDER BY username ASC";
         $users_result = mysqli_query($conn, $users_query);
         if ($users_result) {
             while ($user_row = mysqli_fetch_assoc($users_result)) {
@@ -2882,9 +2936,9 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
         doerCell.html(doerOptions);
         
         // Make Duration editable (dropdown)
-        var durationCell = row.find('td').eq(7); // Updated index for duration
-        var originalDuration = durationCell.text();
-        var durationDropdown = '<select class="form-control form-control-sm" style="min-width: 120px; font-size: 14px; padding: 4px 8px; background: linear-gradient(135deg, #1e1e1e, #2a2a2a) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; color: #e0e0e0 !important;">';
+        var durationCell = row.find('td').eq(6); // Duration is col index 6
+        var originalDuration = durationCell.text().trim();
+        var durationDropdown = '<select class="form-control form-control-sm edit-select">';
         durationDropdown += '<option value="">Select Duration</option>';
         durationDropdown += '<option value="0"' + (originalDuration === '00:00:00' ? ' selected' : '') + '>00:00:00</option>';
         durationDropdown += '<option value="15"' + (originalDuration === '00:15:00' ? ' selected' : '') + '>00:15:00</option>';
@@ -2913,9 +2967,11 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
         durationCell.html(durationDropdown);
         
         // Replace action dropdown with Save/Cancel buttons
-        var actionCell = row.find('td').eq(9); // Updated index for actions column
-        actionCell.html('<button class="btn btn-success btn-sm save-edit-btn mr-1"><i class="fas fa-save"></i> Save</button>' +
-                       '<button class="btn btn-secondary btn-sm cancel-edit-btn"><i class="fas fa-times"></i> Cancel</button>');
+        var actionCell = row.find('td').eq(9); // Actions is col index 9
+        actionCell.html('<div class="edit-action-btns">' +
+                       '<button class="btn btn-success btn-sm save-edit-btn"><i class="fas fa-save"></i> Save</button>' +
+                       '<button class="btn btn-secondary btn-sm cancel-edit-btn"><i class="fas fa-times"></i> Cancel</button>' +
+                       '</div>');
     }
 
     function cancelInlineEditing(row) {
@@ -2926,12 +2982,12 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
         row.find('td').eq(1).text(originalValues.taskDescription);
         // Assigner field remains unchanged (read-only)
         // Planned date/time field remains unchanged (read-only)
-        row.find('td').eq(7).text(originalValues.duration); // Duration
-        row.find('td').eq(8).text(originalValues.doer); // Doer
+        row.find('td').eq(6).text(originalValues.duration); // Duration (col index 6)
+        row.find('td').eq(7).text(originalValues.doer); // Doer (col index 7)
         
         // Restore action dropdown
         var taskId = row.data('task-id');
-        var currentStatusText = row.find('td').eq(5).find('.badge').text().trim();
+        var currentStatusText = row.find('td').eq(4).find('.status-icon').attr('title') || row.find('td').eq(4).text().trim();
         var currentStatusValue = '';
         
         // Map status text to option values
@@ -2967,8 +3023,8 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
             task_id: taskId,
             task_type: 'delegation',
             description: row.find('td').eq(1).find('textarea').val(),
-            doer: row.find('td').eq(8).find('select').val(), // Doer
-            duration: row.find('td').eq(7).find('select').val() // Duration
+            doer: row.find('td').eq(7).find('select').val(), // Doer (col index 7)
+            duration: row.find('td').eq(6).find('select').val() // Duration (col index 6)
         };
         
         // Validate required fields
@@ -3015,11 +3071,11 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                     row.find('td').eq(1).text(editedData.description);
                     // Assigner field remains unchanged (read-only)
                     // Planned date/time field remains unchanged (read-only)
-                    row.find('td').eq(7).text(durationFormatted); // Duration
-                    row.find('td').eq(8).text(editedData.doer); // Doer
+                    row.find('td').eq(6).text(durationFormatted); // Duration (col index 6)
+                    row.find('td').eq(7).text(editedData.doer); // Doer (col index 7)
                     
                     // Restore action dropdown
-                    var currentStatusText = row.find('td').eq(5).find('.badge').text().trim();
+                    var currentStatusText = row.find('td').eq(4).find('.status-icon').attr('title') || row.find('td').eq(4).text().trim();
                     var currentStatusValue = '';
                     
                     // Map status text to option values
@@ -3336,14 +3392,15 @@ $delegation_tasks_list = array_slice($all_delegation_tasks, $offset_delegation, 
                 data: formData,
                 dataType: 'json',
                 success: function(response) {
-                    if (response.success) {
+                    if (response.status === 'success') {
                         // Close modal immediately after successful AJAX response
                         $('#dateTimePickerModal').modal('hide');
                         
                         // Show success message
-                        alert('Task shifted successfully!');
+                        alert('Alert: ' + (response.message || 'Task shifted successfully!'));
                         
-                        // Real-time updates handled above - no page reload needed
+                        // Reload page to reflect changes
+                        location.reload();
                     } else {
                         // Close modal on error as well
                         $('#dateTimePickerModal').modal('hide');

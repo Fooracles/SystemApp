@@ -2,20 +2,22 @@
 // Session is automatically started by includes/functions.php
 require_once '../includes/config.php';
 require_once '../includes/functions.php';
+require_once '../includes/notification_triggers.php';
 
 // Check if user is logged in
 if (!isLoggedIn()) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
+    jsonError('Unauthorized', 401);
 }
 
 // Check if user is Manager or Client
 if (!isAdmin() && !isManager() && !isClient()) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Access denied']);
-    exit;
+    jsonError('Access denied', 403);
 }
+
+// CSRF protection for POST requests
+csrfProtect();
 
 $user_id = $_SESSION['id'];
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
@@ -45,6 +47,12 @@ try {
             }
             updateReport($conn, $user_id);
             break;
+        case 'delete_report':
+            if (!isAdmin() && !isManager()) {
+                throw new Exception('Only admins and managers can delete reports');
+            }
+            deleteReport($conn, $user_id);
+            break;
         case 'view':
             viewReport($conn, $user_id);
             break;
@@ -56,19 +64,117 @@ try {
     }
 } catch (Exception $e) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    handleException($e, 'reports_handler');
+}
+
+/**
+ * Ensure report_recipients table exists (one report can be shared with multiple client users)
+ */
+function ensureReportRecipientsTable($conn) {
+    $result = mysqli_query($conn, "SHOW TABLES LIKE 'report_recipients'");
+    if ($result && mysqli_num_rows($result) > 0) {
+        return;
+    }
+    $sql = "CREATE TABLE IF NOT EXISTS report_recipients (
+        report_id INT NOT NULL,
+        user_id INT NOT NULL,
+        PRIMARY KEY (report_id, user_id),
+        FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        INDEX (user_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+    @mysqli_query($conn, $sql);
 }
 
 function getReports($conn, $user_id) {
+    $is_admin = isAdmin();
+    $is_manager = isManager();
+    $is_client = isClient();
+    
+    // Check if columns exist
+    $check_assigned = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'assigned_to'");
+    $check_account = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'client_account_id'");
+    $has_assigned_to = $check_assigned && mysqli_num_rows($check_assigned) > 0;
+    $has_client_account_id = $check_account && mysqli_num_rows($check_account) > 0;
+    
+    ensureReportRecipientsTable($conn);
+    
+    // Build base query
     $sql = "SELECT r.*, u.name as uploaded_by_name 
             FROM reports r 
-            LEFT JOIN users u ON r.uploaded_by = u.id 
-            ORDER BY r.uploaded_at DESC";
+            LEFT JOIN users u ON r.uploaded_by = u.id";
+    
+    // Add WHERE clause based on user role
+    $where_conditions = [];
+    
+    if ($is_client) {
+        // Client users: See reports assigned to them OR where they are in report_recipients
+        if ($has_assigned_to) {
+            $where_conditions[] = "(r.assigned_to = $user_id OR r.id IN (SELECT report_id FROM report_recipients WHERE user_id = $user_id))";
+        } else {
+            $where_conditions[] = "r.id IN (SELECT report_id FROM report_recipients WHERE user_id = $user_id)";
+        }
+    } elseif ($is_manager && !$is_admin) {
+        // Manager: Only see reports assigned to their client accounts/users
+        // Get client accounts assigned to this manager
+        $client_accounts_sql = "SELECT id FROM users WHERE user_type = 'client' AND (password IS NULL OR password = '') AND manager_id = ?";
+        $client_accounts_stmt = mysqli_prepare($conn, $client_accounts_sql);
+        mysqli_stmt_bind_param($client_accounts_stmt, 'i', $user_id);
+        mysqli_stmt_execute($client_accounts_stmt);
+        $client_accounts_result = mysqli_stmt_get_result($client_accounts_stmt);
+        
+        $client_account_ids = [];
+        while ($account_row = mysqli_fetch_assoc($client_accounts_result)) {
+            $client_account_ids[] = $account_row['id'];
+        }
+        mysqli_stmt_close($client_accounts_stmt);
+        
+        // Get client users under those accounts
+        if (!empty($client_account_ids)) {
+            $sanitized_account_ids = array_map('intval', $client_account_ids);
+            $account_ids_string = implode(',', $sanitized_account_ids);
+            
+            $client_users_sql = "SELECT id FROM users WHERE user_type = 'client' AND manager_id IN ($account_ids_string) AND password IS NOT NULL AND password != ''";
+            $client_users_result = mysqli_query($conn, $client_users_sql);
+            
+            $client_user_ids = [];
+            while ($user_row = mysqli_fetch_assoc($client_users_result)) {
+                $client_user_ids[] = $user_row['id'];
+            }
+            
+            $all_allowed_ids = array_unique(array_merge($client_account_ids, $client_user_ids));
+            $sanitized_allowed = array_map('intval', $all_allowed_ids);
+            $ids_string = implode(',', $sanitized_allowed);
+            
+            // Build condition: report is assigned to allowed users OR belongs to allowed accounts
+            $manager_conditions = [];
+            if ($has_assigned_to) {
+                $manager_conditions[] = "r.assigned_to IN ($ids_string)";
+            }
+            if ($has_client_account_id && !empty($client_account_ids)) {
+                $manager_conditions[] = "r.client_account_id IN ($account_ids_string)";
+            }
+            if (!empty($manager_conditions)) {
+                $where_conditions[] = "(" . implode(' OR ', $manager_conditions) . ")";
+            }
+        } else {
+            // No assigned accounts, return empty
+            $where_conditions[] = "1=0";
+        }
+    }
+    // Admin: No WHERE clause needed - see all reports
+    
+    // Add WHERE clause if conditions exist
+    if (!empty($where_conditions)) {
+        $sql .= " WHERE " . implode(' OR ', $where_conditions);
+    }
+    
+    $sql .= " ORDER BY r.uploaded_at DESC";
     
     $result = mysqli_query($conn, $sql);
     
     if (!$result) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     $reports = [];
@@ -85,6 +191,10 @@ function getReport($conn, $user_id) {
     if ($report_id <= 0) {
         throw new Exception('Invalid report ID');
     }
+    
+    $is_admin = isAdmin();
+    $is_manager = isManager();
+    $is_client = isClient();
     
     // Check if columns exist
     $check_assigned = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'assigned_to'");
@@ -105,18 +215,84 @@ function getReport($conn, $user_id) {
     
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
-        throw new Exception('Database error: ' . mysqli_error($conn));
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     mysqli_stmt_bind_param($stmt, 'i', $report_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     
-    if ($row = mysqli_fetch_assoc($result)) {
-        echo json_encode(['success' => true, 'report' => $row]);
-    } else {
+    if (!$row = mysqli_fetch_assoc($result)) {
         throw new Exception('Report not found');
     }
+    
+    // Access control check
+    if ($is_client) {
+        $allowed = false;
+        if ($has_assigned_to && isset($row['assigned_to']) && (int)$row['assigned_to'] === (int)$user_id) {
+            $allowed = true;
+        }
+        if (!$allowed) {
+            $rid = (int) $row['id'];
+            $rr_check = mysqli_query($conn, "SELECT 1 FROM report_recipients WHERE report_id = $rid AND user_id = " . (int)$user_id . " LIMIT 1");
+            if ($rr_check && mysqli_num_rows($rr_check) > 0) {
+                $allowed = true;
+            }
+        }
+        if (!$allowed) {
+            throw new Exception('Access denied');
+        }
+    } elseif ($is_manager && !$is_admin) {
+        // Manager: Only access reports assigned to their client accounts/users
+        if ($has_assigned_to || $has_client_account_id) {
+            // Get client accounts assigned to this manager
+            $client_accounts_sql = "SELECT id FROM users WHERE user_type = 'client' AND (password IS NULL OR password = '') AND manager_id = ?";
+            $client_accounts_stmt = mysqli_prepare($conn, $client_accounts_sql);
+            mysqli_stmt_bind_param($client_accounts_stmt, 'i', $user_id);
+            mysqli_stmt_execute($client_accounts_stmt);
+            $client_accounts_result = mysqli_stmt_get_result($client_accounts_stmt);
+            
+            $client_account_ids = [];
+            while ($account_row = mysqli_fetch_assoc($client_accounts_result)) {
+                $client_account_ids[] = $account_row['id'];
+            }
+            mysqli_stmt_close($client_accounts_stmt);
+            
+            // Get client users under those accounts
+            if (!empty($client_account_ids)) {
+                $sanitized_account_ids = array_map('intval', $client_account_ids);
+                $account_ids_string = implode(',', $sanitized_account_ids);
+                
+                $client_users_sql = "SELECT id FROM users WHERE user_type = 'client' AND manager_id IN ($account_ids_string) AND password IS NOT NULL AND password != ''";
+                $client_users_result = mysqli_query($conn, $client_users_sql);
+                
+                $client_user_ids = [];
+                while ($user_row = mysqli_fetch_assoc($client_users_result)) {
+                    $client_user_ids[] = $user_row['id'];
+                }
+                
+                $all_allowed_ids = array_unique(array_merge($client_account_ids, $client_user_ids));
+                
+                // Check if report is assigned to allowed user or belongs to allowed account
+                $has_access = false;
+                if ($has_assigned_to && isset($row['assigned_to']) && in_array($row['assigned_to'], $all_allowed_ids)) {
+                    $has_access = true;
+                }
+                if ($has_client_account_id && isset($row['client_account_id']) && in_array($row['client_account_id'], $client_account_ids)) {
+                    $has_access = true;
+                }
+                
+                if (!$has_access) {
+                    throw new Exception('Access denied');
+                }
+            } else {
+                throw new Exception('Access denied');
+            }
+        }
+    }
+    // Admin: No access control needed - can access all reports
+    
+    echo json_encode(['success' => true, 'report' => $row]);
 }
 
 function uploadReport($conn, $user_id) {
@@ -129,6 +305,11 @@ function uploadReport($conn, $user_id) {
     if (!is_array($client_user_ids)) {
         $client_user_ids = [];
     }
+    
+    // Remove duplicates and filter out invalid values
+    $client_user_ids = array_unique(array_filter(array_map('intval', $client_user_ids), function($id) {
+        return $id > 0;
+    }));
     
     if (empty($title)) {
         throw new Exception('Report title is required');
@@ -246,115 +427,102 @@ function uploadReport($conn, $user_id) {
     $check_column_account = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'client_account_id'");
     $has_client_account_id = $check_column_account && mysqli_num_rows($check_column_account) > 0;
     
-    // For admins/managers with multiple users, create one report per user
+    // For admins/managers with multiple users: upload ONCE, one report row, share with all selected users via report_recipients
     if (($is_admin || $is_manager) && !empty($client_user_ids)) {
-        $created_count = 0;
-        $first_report_id = null;
+        ensureReportRecipientsTable($conn);
         
+        if (!move_uploaded_file($file['tmp_name'], $file_path)) {
+            throw new Exception('Failed to save file');
+        }
+        $relative_path = 'uploads/reports/' . $file_name;
+        $first_user_id = $client_user_ids[0];
+        
+        if ($has_assigned_to && $has_client_account_id) {
+            $sql = "INSERT INTO reports (title, project_name, file_path, file_name, file_type, file_size, uploaded_by, assigned_to, client_account_id) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_prepare($conn, $sql);
+            if (!$stmt) {
+                @unlink($file_path);
+                error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
+            }
+            mysqli_stmt_bind_param($stmt, 'sssssiiii', 
+                $title, 
+                $project_name, 
+                $relative_path,
+                $file['name'],
+                $file_type,
+                $file_size,
+                $user_id,
+                $first_user_id,
+                $client_account_id
+            );
+        } else {
+            if (!$has_assigned_to) {
+                @mysqli_query($conn, "ALTER TABLE reports ADD COLUMN assigned_to INT NULL COMMENT 'Client user ID this report is assigned to'");
+            }
+            if (!$has_client_account_id) {
+                @mysqli_query($conn, "ALTER TABLE reports ADD COLUMN client_account_id INT NULL COMMENT 'Client account ID this report belongs to'");
+            }
+            $sql = "INSERT INTO reports (title, project_name, file_path, file_name, file_type, file_size, uploaded_by, assigned_to, client_account_id) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_prepare($conn, $sql);
+            if (!$stmt) {
+                @unlink($file_path);
+                error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
+            }
+            mysqli_stmt_bind_param($stmt, 'sssssiiii', 
+                $title, 
+                $project_name, 
+                $relative_path,
+                $file['name'],
+                $file_type,
+                $file_size,
+                $user_id,
+                $first_user_id,
+                $client_account_id
+            );
+        }
+        
+        if (!mysqli_stmt_execute($stmt)) {
+            @unlink($file_path);
+            error_log("[DB Error] Failed to save report: " . mysqli_error($conn)); throw new Exception('A database error occurred');
+        }
+        $report_id = mysqli_insert_id($conn);
+        mysqli_stmt_close($stmt);
+        
+        $recipient_stmt = mysqli_prepare($conn, "INSERT IGNORE INTO report_recipients (report_id, user_id) VALUES (?, ?)");
+        if ($recipient_stmt) {
+            foreach ($client_user_ids as $client_user_id) {
+                $uid = (int) $client_user_id;
+                if ($uid > 0) {
+                    mysqli_stmt_bind_param($recipient_stmt, 'ii', $report_id, $uid);
+                    mysqli_stmt_execute($recipient_stmt);
+                }
+            }
+            mysqli_stmt_close($recipient_stmt);
+        }
+        
+        $creator_sql = "SELECT name FROM users WHERE id = ?";
+        $creator_stmt = mysqli_prepare($conn, $creator_sql);
+        $created_by_name = 'Manager/Admin';
+        if ($creator_stmt) {
+            mysqli_stmt_bind_param($creator_stmt, 'i', $user_id);
+            mysqli_stmt_execute($creator_stmt);
+            $creator_result = mysqli_stmt_get_result($creator_stmt);
+            $creator = mysqli_fetch_assoc($creator_result);
+            if ($creator) {
+                $created_by_name = $creator['name'];
+            }
+            mysqli_stmt_close($creator_stmt);
+        }
         foreach ($client_user_ids as $client_user_id) {
-            // Copy file for each user (or use same file path - we'll use same path)
-            if ($created_count === 0) {
-                // First user - move the uploaded file
-                if (!move_uploaded_file($file['tmp_name'], $file_path)) {
-                    throw new Exception('Failed to save file');
-                }
-            } else {
-                // For subsequent users, copy the file
-                $new_file_name = uniqid() . '_' . time() . '_' . $created_count . '.' . $file_ext;
-                $new_file_path = $upload_dir . $new_file_name;
-                if (!copy($file_path, $new_file_path)) {
-                    // If copy fails, continue with same file path
-                    $new_file_name = $file_name;
-                } else {
-                    $file_name = $new_file_name;
-                    $file_path = $new_file_path;
-                }
-            }
-            
-            $relative_path = 'uploads/reports/' . $file_name;
-            
-            if ($has_assigned_to && $has_client_account_id) {
-                $sql = "INSERT INTO reports (title, project_name, file_path, file_name, file_type, file_size, uploaded_by, assigned_to, client_account_id) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                $stmt = mysqli_prepare($conn, $sql);
-                if (!$stmt) {
-                    if ($created_count === 0) @unlink($file_path);
-                    throw new Exception('Database error: ' . mysqli_error($conn));
-                }
-                mysqli_stmt_bind_param($stmt, 'sssssiiii', 
-                    $title, 
-                    $project_name, 
-                    $relative_path,
-                    $file['name'],
-                    $file_type,
-                    $file_size,
-                    $user_id,
-                    $client_user_id,
-                    $client_account_id
-                );
-            } else {
-                // Fallback: try to add columns if they don't exist
-                if (!$has_assigned_to) {
-                    @mysqli_query($conn, "ALTER TABLE reports ADD COLUMN assigned_to INT NULL COMMENT 'Client user ID this report is assigned to'");
-                }
-                if (!$has_client_account_id) {
-                    @mysqli_query($conn, "ALTER TABLE reports ADD COLUMN client_account_id INT NULL COMMENT 'Client account ID this report belongs to'");
-                }
-                
-                // Try again with the new columns
-                $sql = "INSERT INTO reports (title, project_name, file_path, file_name, file_type, file_size, uploaded_by, assigned_to, client_account_id) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                $stmt = mysqli_prepare($conn, $sql);
-                if (!$stmt) {
-                    // If still fails, insert without these columns
-                    $sql = "INSERT INTO reports (title, project_name, file_path, file_name, file_type, file_size, uploaded_by) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?)";
-                    $stmt = mysqli_prepare($conn, $sql);
-                    if (!$stmt) {
-                        if ($created_count === 0) @unlink($file_path);
-                        throw new Exception('Database error: ' . mysqli_error($conn));
-                    }
-                    mysqli_stmt_bind_param($stmt, 'sssssii', 
-                        $title, 
-                        $project_name, 
-                        $relative_path,
-                        $file['name'],
-                        $file_type,
-                        $file_size,
-                        $user_id
-                    );
-                } else {
-                    mysqli_stmt_bind_param($stmt, 'sssssiiii', 
-                        $title, 
-                        $project_name, 
-                        $relative_path,
-                        $file['name'],
-                        $file_type,
-                        $file_size,
-                        $user_id,
-                        $client_user_id,
-                        $client_account_id
-                    );
-                }
-            }
-            
-            if (!mysqli_stmt_execute($stmt)) {
-                if ($created_count === 0) @unlink($file_path);
-                throw new Exception('Failed to save report: ' . mysqli_error($conn));
-            }
-            
-            if ($first_report_id === null) {
-                $first_report_id = mysqli_insert_id($conn);
-            }
-            
-            mysqli_stmt_close($stmt);
-            $created_count++;
+            triggerClientReportNotification($conn, $report_id, (int) $client_user_id, $title, $created_by_name);
         }
         
         echo json_encode([
             'success' => true, 
-            'message' => $created_count . ' report(s) uploaded successfully',
-            'created_count' => $created_count
+            'message' => 'Report uploaded successfully',
+            'created_count' => 1
         ]);
     } else {
         // Single report upload (for clients or if no users selected)
@@ -372,7 +540,7 @@ function uploadReport($conn, $user_id) {
             $stmt = mysqli_prepare($conn, $sql);
             if (!$stmt) {
                 @unlink($file_path);
-                throw new Exception('Database error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             mysqli_stmt_bind_param($stmt, 'sssssiiii', 
                 $title, 
@@ -391,7 +559,7 @@ function uploadReport($conn, $user_id) {
             $stmt = mysqli_prepare($conn, $sql);
             if (!$stmt) {
                 @unlink($file_path);
-                throw new Exception('Database error: ' . mysqli_error($conn));
+                error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
             }
             mysqli_stmt_bind_param($stmt, 'sssssii', 
                 $title, 
@@ -406,7 +574,7 @@ function uploadReport($conn, $user_id) {
         
         if (!mysqli_stmt_execute($stmt)) {
             @unlink($file_path);
-            throw new Exception('Failed to save report: ' . mysqli_error($conn));
+            error_log("[DB Error] Failed to save report: " . mysqli_error($conn)); throw new Exception('A database error occurred');
         }
         
         echo json_encode(['success' => true, 'message' => 'Report uploaded successfully']);
@@ -503,10 +671,131 @@ function updateReport($conn, $user_id) {
     }
     
     if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('Failed to update report: ' . mysqli_error($conn));
+        error_log("[DB Error] Failed to update report: " . mysqli_error($conn)); throw new Exception('A database error occurred');
     }
     
     echo json_encode(['success' => true, 'message' => 'Report updated successfully']);
+}
+
+function deleteReport($conn, $user_id) {
+    $report_id = intval($_POST['report_id'] ?? 0);
+    
+    if ($report_id <= 0) {
+        throw new Exception('Invalid report ID');
+    }
+    
+    $is_admin = isAdmin();
+    $is_manager = isManager();
+    
+    // Check if columns exist
+    $check_assigned = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'assigned_to'");
+    $check_account = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'client_account_id'");
+    $has_assigned_to = $check_assigned && mysqli_num_rows($check_assigned) > 0;
+    $has_client_account_id = $check_account && mysqli_num_rows($check_account) > 0;
+    
+    // Get report details
+    $sql = "SELECT * FROM reports WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    if (!$stmt) {
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
+    }
+    
+    mysqli_stmt_bind_param($stmt, 'i', $report_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    
+    if (!$row = mysqli_fetch_assoc($result)) {
+        throw new Exception('Report not found');
+    }
+    
+    mysqli_stmt_close($stmt);
+    
+    // Access control check
+    if ($is_manager && !$is_admin) {
+        // Manager: Only delete reports assigned to their client accounts/users
+        if ($has_assigned_to || $has_client_account_id) {
+            // Get client accounts assigned to this manager
+            $client_accounts_sql = "SELECT id FROM users WHERE user_type = 'client' AND (password IS NULL OR password = '') AND manager_id = ?";
+            $client_accounts_stmt = mysqli_prepare($conn, $client_accounts_sql);
+            mysqli_stmt_bind_param($client_accounts_stmt, 'i', $user_id);
+            mysqli_stmt_execute($client_accounts_stmt);
+            $client_accounts_result = mysqli_stmt_get_result($client_accounts_stmt);
+            
+            $client_account_ids = [];
+            while ($account_row = mysqli_fetch_assoc($client_accounts_result)) {
+                $client_account_ids[] = $account_row['id'];
+            }
+            mysqli_stmt_close($client_accounts_stmt);
+            
+            // Get client users under those accounts
+            if (!empty($client_account_ids)) {
+                $sanitized_account_ids = array_map('intval', $client_account_ids);
+                $account_ids_string = implode(',', $sanitized_account_ids);
+                
+                $client_users_sql = "SELECT id FROM users WHERE user_type = 'client' AND manager_id IN ($account_ids_string) AND password IS NOT NULL AND password != ''";
+                $client_users_result = mysqli_query($conn, $client_users_sql);
+                
+                $client_user_ids = [];
+                while ($user_row = mysqli_fetch_assoc($client_users_result)) {
+                    $client_user_ids[] = $user_row['id'];
+                }
+                
+                $all_allowed_ids = array_unique(array_merge($client_account_ids, $client_user_ids));
+                
+                // Check if report is assigned to allowed user or belongs to allowed account
+                $has_access = false;
+                if ($has_assigned_to && isset($row['assigned_to']) && in_array($row['assigned_to'], $all_allowed_ids)) {
+                    $has_access = true;
+                }
+                if ($has_client_account_id && isset($row['client_account_id']) && in_array($row['client_account_id'], $client_account_ids)) {
+                    $has_access = true;
+                }
+                
+                // Also allow if manager uploaded the report
+                if ($row['uploaded_by'] == $user_id) {
+                    $has_access = true;
+                }
+                
+                if (!$has_access) {
+                    throw new Exception('Access denied');
+                }
+            } else {
+                // Manager with no assigned accounts can only delete their own uploads
+                if ($row['uploaded_by'] != $user_id) {
+                    throw new Exception('Access denied');
+                }
+            }
+        } else {
+            // If columns don't exist, manager can only delete their own uploads
+            if ($row['uploaded_by'] != $user_id) {
+                throw new Exception('Access denied');
+            }
+        }
+    }
+    // Admin: No access control needed - can delete all reports
+    
+    // Delete the file
+    $file_path = '../' . $row['file_path'];
+    if (file_exists($file_path)) {
+        @unlink($file_path);
+    }
+    
+    // Delete the report record
+    $delete_sql = "DELETE FROM reports WHERE id = ?";
+    $delete_stmt = mysqli_prepare($conn, $delete_sql);
+    if (!$delete_stmt) {
+        error_log("[DB Error] Database error: " . mysqli_error($conn)); throw new Exception('A database error occurred');
+    }
+    
+    mysqli_stmt_bind_param($delete_stmt, 'i', $report_id);
+    
+    if (!mysqli_stmt_execute($delete_stmt)) {
+        error_log("[DB Error] Failed to delete report: " . mysqli_error($conn)); throw new Exception('A database error occurred');
+    }
+    
+    mysqli_stmt_close($delete_stmt);
+    
+    echo json_encode(['success' => true, 'message' => 'Report deleted successfully']);
 }
 
 function viewReport($conn, $user_id) {
@@ -515,6 +804,16 @@ function viewReport($conn, $user_id) {
     if ($report_id <= 0) {
         throw new Exception('Invalid report ID');
     }
+    
+    $is_admin = isAdmin();
+    $is_manager = isManager();
+    $is_client = isClient();
+    
+    // Check if columns exist
+    $check_assigned = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'assigned_to'");
+    $check_account = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'client_account_id'");
+    $has_assigned_to = $check_assigned && mysqli_num_rows($check_assigned) > 0;
+    $has_client_account_id = $check_account && mysqli_num_rows($check_account) > 0;
     
     $sql = "SELECT * FROM reports WHERE id = ?";
     $stmt = mysqli_prepare($conn, $sql);
@@ -525,6 +824,72 @@ function viewReport($conn, $user_id) {
     if (!$row = mysqli_fetch_assoc($result)) {
         throw new Exception('Report not found');
     }
+    
+    // Access control check
+    if ($is_client) {
+        $allowed = false;
+        if ($has_assigned_to && isset($row['assigned_to']) && (int)$row['assigned_to'] === (int)$user_id) {
+            $allowed = true;
+        }
+        if (!$allowed) {
+            $rid = (int) $row['id'];
+            $rr_check = mysqli_query($conn, "SELECT 1 FROM report_recipients WHERE report_id = $rid AND user_id = " . (int)$user_id . " LIMIT 1");
+            if ($rr_check && mysqli_num_rows($rr_check) > 0) {
+                $allowed = true;
+            }
+        }
+        if (!$allowed) {
+            throw new Exception('Access denied');
+        }
+    } elseif ($is_manager && !$is_admin) {
+        // Manager: Only access reports assigned to their client accounts/users
+        if ($has_assigned_to || $has_client_account_id) {
+            // Get client accounts assigned to this manager
+            $client_accounts_sql = "SELECT id FROM users WHERE user_type = 'client' AND (password IS NULL OR password = '') AND manager_id = ?";
+            $client_accounts_stmt = mysqli_prepare($conn, $client_accounts_sql);
+            mysqli_stmt_bind_param($client_accounts_stmt, 'i', $user_id);
+            mysqli_stmt_execute($client_accounts_stmt);
+            $client_accounts_result = mysqli_stmt_get_result($client_accounts_stmt);
+            
+            $client_account_ids = [];
+            while ($account_row = mysqli_fetch_assoc($client_accounts_result)) {
+                $client_account_ids[] = $account_row['id'];
+            }
+            mysqli_stmt_close($client_accounts_stmt);
+            
+            // Get client users under those accounts
+            if (!empty($client_account_ids)) {
+                $sanitized_account_ids = array_map('intval', $client_account_ids);
+                $account_ids_string = implode(',', $sanitized_account_ids);
+                
+                $client_users_sql = "SELECT id FROM users WHERE user_type = 'client' AND manager_id IN ($account_ids_string) AND password IS NOT NULL AND password != ''";
+                $client_users_result = mysqli_query($conn, $client_users_sql);
+                
+                $client_user_ids = [];
+                while ($user_row = mysqli_fetch_assoc($client_users_result)) {
+                    $client_user_ids[] = $user_row['id'];
+                }
+                
+                $all_allowed_ids = array_unique(array_merge($client_account_ids, $client_user_ids));
+                
+                // Check if report is assigned to allowed user or belongs to allowed account
+                $has_access = false;
+                if ($has_assigned_to && isset($row['assigned_to']) && in_array($row['assigned_to'], $all_allowed_ids)) {
+                    $has_access = true;
+                }
+                if ($has_client_account_id && isset($row['client_account_id']) && in_array($row['client_account_id'], $client_account_ids)) {
+                    $has_access = true;
+                }
+                
+                if (!$has_access) {
+                    throw new Exception('Access denied');
+                }
+            } else {
+                throw new Exception('Access denied');
+            }
+        }
+    }
+    // Admin: No access control needed - can access all reports
     
     $file_path = '../' . $row['file_path'];
     
@@ -551,6 +916,16 @@ function downloadReport($conn, $user_id) {
         throw new Exception('Invalid report ID');
     }
     
+    $is_admin = isAdmin();
+    $is_manager = isManager();
+    $is_client = isClient();
+    
+    // Check if columns exist
+    $check_assigned = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'assigned_to'");
+    $check_account = mysqli_query($conn, "SHOW COLUMNS FROM reports LIKE 'client_account_id'");
+    $has_assigned_to = $check_assigned && mysqli_num_rows($check_assigned) > 0;
+    $has_client_account_id = $check_account && mysqli_num_rows($check_account) > 0;
+    
     $sql = "SELECT * FROM reports WHERE id = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, 'i', $report_id);
@@ -560,6 +935,72 @@ function downloadReport($conn, $user_id) {
     if (!$row = mysqli_fetch_assoc($result)) {
         throw new Exception('Report not found');
     }
+    
+    // Access control check
+    if ($is_client) {
+        $allowed = false;
+        if ($has_assigned_to && isset($row['assigned_to']) && (int)$row['assigned_to'] === (int)$user_id) {
+            $allowed = true;
+        }
+        if (!$allowed) {
+            $rid = (int) $row['id'];
+            $rr_check = mysqli_query($conn, "SELECT 1 FROM report_recipients WHERE report_id = $rid AND user_id = " . (int)$user_id . " LIMIT 1");
+            if ($rr_check && mysqli_num_rows($rr_check) > 0) {
+                $allowed = true;
+            }
+        }
+        if (!$allowed) {
+            throw new Exception('Access denied');
+        }
+    } elseif ($is_manager && !$is_admin) {
+        // Manager: Only access reports assigned to their client accounts/users
+        if ($has_assigned_to || $has_client_account_id) {
+            // Get client accounts assigned to this manager
+            $client_accounts_sql = "SELECT id FROM users WHERE user_type = 'client' AND (password IS NULL OR password = '') AND manager_id = ?";
+            $client_accounts_stmt = mysqli_prepare($conn, $client_accounts_sql);
+            mysqli_stmt_bind_param($client_accounts_stmt, 'i', $user_id);
+            mysqli_stmt_execute($client_accounts_stmt);
+            $client_accounts_result = mysqli_stmt_get_result($client_accounts_stmt);
+            
+            $client_account_ids = [];
+            while ($account_row = mysqli_fetch_assoc($client_accounts_result)) {
+                $client_account_ids[] = $account_row['id'];
+            }
+            mysqli_stmt_close($client_accounts_stmt);
+            
+            // Get client users under those accounts
+            if (!empty($client_account_ids)) {
+                $sanitized_account_ids = array_map('intval', $client_account_ids);
+                $account_ids_string = implode(',', $sanitized_account_ids);
+                
+                $client_users_sql = "SELECT id FROM users WHERE user_type = 'client' AND manager_id IN ($account_ids_string) AND password IS NOT NULL AND password != ''";
+                $client_users_result = mysqli_query($conn, $client_users_sql);
+                
+                $client_user_ids = [];
+                while ($user_row = mysqli_fetch_assoc($client_users_result)) {
+                    $client_user_ids[] = $user_row['id'];
+                }
+                
+                $all_allowed_ids = array_unique(array_merge($client_account_ids, $client_user_ids));
+                
+                // Check if report is assigned to allowed user or belongs to allowed account
+                $has_access = false;
+                if ($has_assigned_to && isset($row['assigned_to']) && in_array($row['assigned_to'], $all_allowed_ids)) {
+                    $has_access = true;
+                }
+                if ($has_client_account_id && isset($row['client_account_id']) && in_array($row['client_account_id'], $client_account_ids)) {
+                    $has_access = true;
+                }
+                
+                if (!$has_access) {
+                    throw new Exception('Access denied');
+                }
+            } else {
+                throw new Exception('Access denied');
+            }
+        }
+    }
+    // Admin: No access control needed - can access all reports
     
     $file_path = '../' . $row['file_path'];
     
@@ -578,3 +1019,7 @@ function downloadReport($conn, $user_id) {
     exit;
 }
 
+// Close database connection
+if (isset($conn) && $conn instanceof mysqli) {
+    mysqli_close($conn);
+}

@@ -245,3 +245,52 @@
 [23-Dec-2025 12:08:25 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
 [23-Dec-2025 12:08:25 Asia/Kolkata] Processing task update - Task ID: 71, New Status: completed, Task Type: delegation
 [23-Dec-2025 12:08:25 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"23-Dec-2025 12:08 PM","updated_delay_display_html":"<span class=\"text-danger\">00:38:25<\/span>"}
+[24-Jan-2026 16:02:20 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully. All 2 associated client user(s) have been automatically set to 'Inactive'.","user_id":32,"Status":"Inactive","affected_client_users":2}
+[24-Jan-2026 16:03:20 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully. All 2 associated client user(s) have been automatically set to 'Active'.","user_id":32,"Status":"Active","affected_client_users":2}
+[24-Jan-2026 16:15:44 Asia/Kolkata] Client account status update: Account ID 32 set to 'Inactive', 2 client user(s) updated.
+[24-Jan-2026 16:15:44 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully. All 2 associated client user(s) have been automatically set to 'Inactive'.","user_id":32,"Status":"Inactive","affected_client_users":2}
+[24-Jan-2026 16:20:25 Asia/Kolkata] Client account status update: Account ID 32 set to 'Active', 2 client user(s) updated.
+[24-Jan-2026 16:20:25 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully. All 2 associated client user(s) have been automatically set to 'Active'.","user_id":32,"Status":"Active","affected_client_users":2}
+[24-Jan-2026 16:21:22 Asia/Kolkata] Client account status update: Account ID 32 set to 'Inactive', 2 client user(s) updated.
+[24-Jan-2026 16:21:22 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully. All 2 associated client user(s) have been automatically set to 'Inactive'.","user_id":32,"Status":"Inactive","affected_client_users":2}
+[29-Jan-2026 12:00:27 Asia/Kolkata] Client account status update: Account ID 32 set to 'Active', 2 client user(s) updated.
+[29-Jan-2026 12:00:27 Asia/Kolkata] AJAX Response: {"status":"success","message":"User status updated successfully. All 2 associated client user(s) have been automatically set to 'Active'.","user_id":32,"Status":"Active","affected_client_users":2}
+[19-Feb-2026 13:49:04 Asia/Kolkata] Processing priority toggle - Task ID: 85978, Task Type: fms
+[19-Feb-2026 13:49:05 Asia/Kolkata] FMS Priority Toggle - Task ID: 85978, Current Priority (raw): 0, Normalized: 0, Attempting to set: 1
+[19-Feb-2026 13:49:05 Asia/Kolkata] FMS Priority Toggle - Task ID: 85978, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[19-Feb-2026 13:49:05 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 85978, New Priority: 1 (verified)
+[19-Feb-2026 13:49:05 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task marked as priority!","priority":1}
+[19-Feb-2026 13:49:09 Asia/Kolkata] Processing priority toggle - Task ID: 85978, Task Type: fms
+[19-Feb-2026 13:49:09 Asia/Kolkata] FMS Priority Toggle - Task ID: 85978, Current Priority (raw): 1, Normalized: 1, Attempting to set: 0
+[19-Feb-2026 13:49:10 Asia/Kolkata] FMS Priority Toggle - Task ID: 85978, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[19-Feb-2026 13:49:10 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 85978, New Priority: 0 (verified)
+[19-Feb-2026 13:49:10 Asia/Kolkata] AJAX Response: {"status":"success","message":"Priority removed from task.","priority":0}
+[19-Feb-2026 13:49:11 Asia/Kolkata] Processing priority toggle - Task ID: 85978, Task Type: fms
+[19-Feb-2026 13:49:11 Asia/Kolkata] FMS Priority Toggle - Task ID: 85978, Current Priority (raw): 0, Normalized: 0, Attempting to set: 1
+[19-Feb-2026 13:49:11 Asia/Kolkata] FMS Priority Toggle - Task ID: 85978, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[19-Feb-2026 13:49:12 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 85978, New Priority: 1 (verified)
+[19-Feb-2026 13:49:12 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task marked as priority!","priority":1}
+[19-Feb-2026 13:49:16 Asia/Kolkata] Processing priority toggle - Task ID: 85978, Task Type: fms
+[19-Feb-2026 13:49:16 Asia/Kolkata] FMS Priority Toggle - Task ID: 85978, Current Priority (raw): 1, Normalized: 1, Attempting to set: 0
+[19-Feb-2026 13:49:16 Asia/Kolkata] FMS Priority Toggle - Task ID: 85978, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[19-Feb-2026 13:49:16 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 85978, New Priority: 0 (verified)
+[19-Feb-2026 13:49:16 Asia/Kolkata] AJAX Response: {"status":"success","message":"Priority removed from task.","priority":0}
+[19-Feb-2026 13:49:39 Asia/Kolkata] Processing priority toggle - Task ID: 86553, Task Type: fms
+[19-Feb-2026 13:49:39 Asia/Kolkata] FMS Priority Toggle - Task ID: 86553, Current Priority (raw): 0, Normalized: 0, Attempting to set: 1
+[19-Feb-2026 13:49:39 Asia/Kolkata] FMS Priority Toggle - Task ID: 86553, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[19-Feb-2026 13:49:39 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 86553, New Priority: 1 (verified)
+[19-Feb-2026 13:49:39 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task marked as priority!","priority":1}
+[19-Feb-2026 13:49:39 Asia/Kolkata] Processing priority toggle - Task ID: 86553, Task Type: fms
+[19-Feb-2026 13:49:39 Asia/Kolkata] FMS Priority Toggle - Task ID: 86553, Current Priority (raw): 1, Normalized: 1, Attempting to set: 0
+[19-Feb-2026 13:49:39 Asia/Kolkata] FMS Priority Toggle - Task ID: 86553, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[19-Feb-2026 13:49:39 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 86553, New Priority: 0 (verified)
+[19-Feb-2026 13:49:39 Asia/Kolkata] AJAX Response: {"status":"success","message":"Priority removed from task.","priority":0}
+[19-Feb-2026 13:49:40 Asia/Kolkata] Processing priority toggle - Task ID: 86553, Task Type: fms
+[19-Feb-2026 13:49:40 Asia/Kolkata] FMS Priority Toggle - Task ID: 86553, Current Priority (raw): 0, Normalized: 0, Attempting to set: 1
+[19-Feb-2026 13:49:40 Asia/Kolkata] FMS Priority Toggle - Task ID: 86553, Affected Rows (stmt): 1, Affected Rows (conn): 1
+[19-Feb-2026 13:49:40 Asia/Kolkata] FMS Priority Toggle Success - Task ID: 86553, New Priority: 1 (verified)
+[19-Feb-2026 13:49:40 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task marked as priority!","priority":1}
+[26-Feb-2026 12:46:49 Asia/Kolkata] action_update_task_status.php called with POST data: {"task_id":"48","status":"completed","csrf_token":"eae420c51848ab72b0bb275948a5cd212d58f21e95a816954022966697595370"}
+[26-Feb-2026 12:46:49 Asia/Kolkata] User session info - ID: 1, Username: Admin, User Type: admin
+[26-Feb-2026 12:46:49 Asia/Kolkata] Processing task update - Task ID: 48, New Status: completed, Task Type: delegation
+[26-Feb-2026 12:46:49 Asia/Kolkata] AJAX Response: {"status":"success","message":"Task status updated to Completed.","new_status_text":"Completed","new_status_icon":"<span class=\"status-icon status-completed\" title=\"Completed\">\u2705<\/span>","updated_actual_display":"26-Feb-2026 12:46 PM","updated_delay_display_html":"<span class=\"text-danger\">86 D 23:46:49<\/span>"}
