@@ -184,12 +184,46 @@ function handleConnectionError($error) {
 }
 
 /**
+ * Write critical runtime failures to an application-owned log file.
+ * Useful on shared hosting where php.ini error_log may not be easily accessible.
+ *
+ * @param string $kind
+ * @param string $message
+ * @param array $context
+ */
+function appCriticalLog($kind, $message, $context = []) {
+    $logFile = __DIR__ . '/../logs/live_critical_errors.log';
+    $logDir = dirname($logFile);
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
+    }
+
+    $record = [
+        'time' => date('Y-m-d H:i:s'),
+        'kind' => $kind,
+        'message' => $message,
+        'uri' => $_SERVER['REQUEST_URI'] ?? '',
+        'method' => $_SERVER['REQUEST_METHOD'] ?? '',
+        'host' => $_SERVER['HTTP_HOST'] ?? '',
+        'remote_ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+        'context' => $context,
+    ];
+
+    @file_put_contents($logFile, json_encode($record, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND | LOCK_EX);
+}
+
+/**
  * Global exception handler
  * Catches any uncaught exceptions
  */
 set_exception_handler(function($e) {
     error_log("[Uncaught Exception] " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
     error_log("[Uncaught Exception] Stack trace: " . $e->getTraceAsString());
+    appCriticalLog('uncaught_exception', $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
     
     // Check if this is an AJAX request
     $isAjax = (
@@ -267,6 +301,11 @@ register_shutdown_function(function() {
     
     if ($error && in_array($error['type'], $fatalErrors)) {
         error_log("[Fatal Error] {$error['message']} in {$error['file']}:{$error['line']}");
+        appCriticalLog('fatal_error', (string)($error['message'] ?? 'Fatal error'), [
+            'type' => $error['type'] ?? null,
+            'file' => $error['file'] ?? '',
+            'line' => $error['line'] ?? 0,
+        ]);
         
         if (IS_PRODUCTION && !headers_sent()) {
             http_response_code(500);
