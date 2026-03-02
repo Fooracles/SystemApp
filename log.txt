@@ -35105,3 +35105,8 @@
 [2026-02-27 17:17:56] Filtered out 0 shifted tasks with actual time set from my task page
 [2026-02-27 17:17:56] User Kaveri (ID: 20) my task page loaded. Delegation: 0, Checklist: 0, FMS: 1. Total: 1. Filtered out: 0 completed shifted tasks.
 [2026-02-27 17:17:56] Final task count for display: 1 tasks
+[2026-03-02 12:39:20] Fetching FMS tasks from database for real-time updates.
+[2026-03-02 12:39:20] No FMS tasks found in database for doer: Admin
+[2026-03-02 12:39:20] Filtered out 2 shifted tasks with actual time set from my task page
+[2026-03-02 12:39:20] User Admin (ID: 1) my task page loaded. Delegation: 2, Checklist: 0, FMS: 0. Total: 0. Filtered out: 2 completed shifted tasks.
+[2026-03-02 12:39:20] Final task count for display: 0 tasks

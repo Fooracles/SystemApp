@@ -335,18 +335,47 @@ switch ($action) {
         if ($stepId <= 0) {
             fail('Invalid step ID');
         }
+        $isAdminUser = isAdmin();
 
+        $lookup = $conn->prepare("SELECT id, doer_id, status FROM fms_flow_run_steps WHERE id = ? LIMIT 1");
+        $lookup->bind_param("i", $stepId);
+        $lookup->execute();
+        $curr = $lookup->get_result()->fetch_assoc();
+        $lookup->close();
+        if (!$curr) {
+            fail('Step not found', 404);
+        }
+        if (!$isAdminUser && (int)$curr['doer_id'] !== $userId) {
+            fail('Step is not assigned to you', 403);
+        }
+        if ($curr['status'] === 'in_progress') {
+            ok(['started' => true, 'idempotent' => true]);
+        }
+        if ($curr['status'] !== 'pending') {
+            fail('Step is not active', 400);
+        }
+
+        $isAdminInt = $isAdminUser ? 1 : 0;
         $stmt = $conn->prepare("UPDATE fms_flow_run_steps
                                 SET status = 'in_progress', started_at = COALESCE(started_at, NOW()), updated_at = NOW()
-                                WHERE id = ? AND doer_id = ? AND status IN ('pending', 'in_progress')");
-        $stmt->bind_param("ii", $stepId, $userId);
+                                WHERE id = ? AND (doer_id = ? OR ? = 1) AND status = 'pending'");
+        $stmt->bind_param("iii", $stepId, $userId, $isAdminInt);
         $stmt->execute();
         $affected = $stmt->affected_rows;
         $stmt->close();
         if ($affected <= 0) {
-            fail('Step is not active or not assigned to you', 400);
+            // Safety for race conditions: treat already-started as success.
+            $check = $conn->prepare("SELECT status FROM fms_flow_run_steps WHERE id = ? LIMIT 1");
+            $check->bind_param("i", $stepId);
+            $check->execute();
+            $after = $check->get_result()->fetch_assoc();
+            $check->close();
+            if (($after['status'] ?? '') === 'in_progress') {
+                ok(['started' => true, 'idempotent' => true]);
+            }
+            fail('Step could not be started', 409);
         }
-        ok(['started' => true]);
+        ok(['started' => true, 'idempotent' => false]);
         break;
     }
 
@@ -375,7 +404,7 @@ switch ($action) {
             if (!$curr) {
                 throw new Exception('Step not found');
             }
-            if ((int)$curr['doer_id'] !== $userId) {
+            if (!isAdmin() && (int)$curr['doer_id'] !== $userId) {
                 throw new Exception('You are not assigned to this step');
             }
             if (!in_array($curr['status'], ['pending', 'in_progress'], true)) {
@@ -553,15 +582,27 @@ switch ($action) {
     }
 
     case 'my_tasks': {
-        $stmt = $conn->prepare(
-            "SELECT s.*, r.run_title, r.status AS run_status, r.form_data
-             FROM fms_flow_run_steps s
-             INNER JOIN fms_flow_runs r ON r.id = s.run_id
-             WHERE s.doer_id = ?
-               AND s.status IN ('pending', 'in_progress')
-             ORDER BY s.planned_at ASC, s.id ASC"
-        );
-        $stmt->bind_param("i", $userId);
+        if (isAdmin()) {
+            $stmt = $conn->prepare(
+                "SELECT s.*, r.run_title, r.status AS run_status, r.form_data, u.name AS doer_name
+                 FROM fms_flow_run_steps s
+                 INNER JOIN fms_flow_runs r ON r.id = s.run_id
+                 LEFT JOIN users u ON u.id = s.doer_id
+                 WHERE s.status IN ('pending', 'in_progress')
+                 ORDER BY s.planned_at ASC, s.id ASC"
+            );
+        } else {
+            $stmt = $conn->prepare(
+                "SELECT s.*, r.run_title, r.status AS run_status, r.form_data, u.name AS doer_name
+                 FROM fms_flow_run_steps s
+                 INNER JOIN fms_flow_runs r ON r.id = s.run_id
+                 LEFT JOIN users u ON u.id = s.doer_id
+                 WHERE s.doer_id = ?
+                   AND s.status IN ('pending', 'in_progress')
+                 ORDER BY s.planned_at ASC, s.id ASC"
+            );
+            $stmt->bind_param("i", $userId);
+        }
         $stmt->execute();
         $res = $stmt->get_result();
         $tasks = [];
@@ -578,6 +619,8 @@ switch ($action) {
                 'node_id' => $row['node_id'],
                 'step_name' => $row['step_name'],
                 'step_code' => $row['step_code'],
+                'doer_id' => (int)$row['doer_id'],
+                'doer_name' => $row['doer_name'] ?? '',
                 'status' => $row['status'],
                 'duration_minutes' => (int)$row['duration_minutes'],
                 'planned_at' => $row['planned_at'],
@@ -593,16 +636,29 @@ switch ($action) {
     }
 
     case 'my_history': {
-        $stmt = $conn->prepare(
-            "SELECT s.*, r.run_title, r.status AS run_status, r.form_data
-             FROM fms_flow_run_steps s
-             INNER JOIN fms_flow_runs r ON r.id = s.run_id
-             WHERE s.doer_id = ?
-               AND s.status IN ('completed', 'skipped')
-             ORDER BY COALESCE(s.actual_at, s.updated_at) DESC, s.id DESC
-             LIMIT 200"
-        );
-        $stmt->bind_param("i", $userId);
+        if (isAdmin()) {
+            $stmt = $conn->prepare(
+                "SELECT s.*, r.run_title, r.status AS run_status, r.form_data, u.name AS doer_name
+                 FROM fms_flow_run_steps s
+                 INNER JOIN fms_flow_runs r ON r.id = s.run_id
+                 LEFT JOIN users u ON u.id = s.doer_id
+                 WHERE s.status IN ('completed', 'skipped')
+                 ORDER BY COALESCE(s.actual_at, s.updated_at) DESC, s.id DESC
+                 LIMIT 200"
+            );
+        } else {
+            $stmt = $conn->prepare(
+                "SELECT s.*, r.run_title, r.status AS run_status, r.form_data, u.name AS doer_name
+                 FROM fms_flow_run_steps s
+                 INNER JOIN fms_flow_runs r ON r.id = s.run_id
+                 LEFT JOIN users u ON u.id = s.doer_id
+                 WHERE s.doer_id = ?
+                   AND s.status IN ('completed', 'skipped')
+                 ORDER BY COALESCE(s.actual_at, s.updated_at) DESC, s.id DESC
+                 LIMIT 200"
+            );
+            $stmt->bind_param("i", $userId);
+        }
         $stmt->execute();
         $res = $stmt->get_result();
         $tasks = [];
@@ -619,6 +675,8 @@ switch ($action) {
                 'node_id' => $row['node_id'],
                 'step_name' => $row['step_name'],
                 'step_code' => $row['step_code'],
+                'doer_id' => (int)$row['doer_id'],
+                'doer_name' => $row['doer_name'] ?? '',
                 'status' => $row['status'],
                 'duration_minutes' => (int)$row['duration_minutes'],
                 'planned_at' => $row['planned_at'],

@@ -23,14 +23,23 @@ export function MyTasksView({ onShowToast }) {
   const [history, setHistory] = useState([]);
   const [tab, setTab] = useState('active');
   const [busyId, setBusyId] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const load = () => {
+    setLoading(true);
+    setError('');
     Promise.all([getMyActiveTasks(), getMyTaskHistory()])
       .then(([a, h]) => {
         setActive(a.tasks || []);
         setHistory(h.tasks || []);
       })
-      .catch((e) => onShowToast?.('Load tasks failed: ' + e.message));
+      .catch((e) => {
+        const msg = e?.message || 'Unknown error';
+        setError(msg);
+        onShowToast?.('Load tasks failed: ' + msg);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -78,25 +87,49 @@ export function MyTasksView({ onShowToast }) {
       </div>
 
       <div style={{ display: 'grid', gap: 10 }}>
-        {rows.map((t) => (
-          <div key={t.id} style={cardStyle}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 600 }}>{t.run_title}</div>
-                <div style={{ fontSize: 12, color: '#a1a1aa' }}>{t.step_name} • {t.status}</div>
-                <div style={{ fontSize: 12, color: '#71717a', marginTop: 6 }}>
-                  Planned: {t.planned_at || '—'} | Duration: {Math.floor((t.duration_minutes || 0) / 60)}h {(t.duration_minutes || 0) % 60}m
-                </div>
-              </div>
-              {tab === 'active' && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <button disabled={busyId === t.id} onClick={() => onStart(t.id)} style={btnStyle}>Start</button>
-                  <button disabled={busyId === t.id} onClick={() => onDone(t.id)} style={{ ...btnStyle, background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', border: 'none' }}>Mark Done</button>
-                </div>
-              )}
-            </div>
+        {loading ? (
+          <div style={{ ...cardStyle, color: '#a1a1aa' }}>Loading tasks...</div>
+        ) : error ? (
+          <div style={{ ...cardStyle }}>
+            <div style={{ color: '#f87171', marginBottom: 10 }}>Could not load tasks: {error}</div>
+            <button onClick={load} style={btnStyle}>Retry</button>
           </div>
-        ))}
+        ) : rows.length === 0 ? (
+          <div style={{ ...cardStyle, color: '#a1a1aa' }}>
+            <div style={{ marginBottom: 8 }}>
+              {tab === 'active' ? 'No active tasks assigned to you.' : 'No task history yet.'}
+            </div>
+            {tab === 'active' && (
+              <div style={{ fontSize: 12, color: '#71717a', marginBottom: 10 }}>
+                Tasks appear here when a submitted form step is assigned to your user.
+              </div>
+            )}
+            <button onClick={load} style={btnStyle}>Refresh</button>
+          </div>
+        ) : (
+          rows.map((t) => (
+            <div key={t.id} style={cardStyle}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600 }}>{t.run_title}</div>
+                  <div style={{ fontSize: 12, color: '#a1a1aa' }}>{t.step_name} • {t.status}</div>
+                  {!!t.doer_name && (
+                    <div style={{ fontSize: 12, color: '#a1a1aa', marginTop: 4 }}>Assigned to: {t.doer_name}</div>
+                  )}
+                  <div style={{ fontSize: 12, color: '#71717a', marginTop: 6 }}>
+                    Planned: {t.planned_at || '—'} | Duration: {Math.floor((t.duration_minutes || 0) / 60)}h {(t.duration_minutes || 0) % 60}m
+                  </div>
+                </div>
+                {tab === 'active' && (
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <button disabled={busyId === t.id} onClick={() => onStart(t.id)} style={btnStyle}>Start</button>
+                    <button disabled={busyId === t.id} onClick={() => onDone(t.id)} style={{ ...btnStyle, background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', border: 'none' }}>Mark Done</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

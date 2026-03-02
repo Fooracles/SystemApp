@@ -110,7 +110,13 @@ switch ($action) {
     case 'list':
         $sql = "SELECT f.id, f.name, f.status, f.created_at, f.updated_at,
                        u.name AS created_by_name,
-                       (SELECT COUNT(*) FROM fms_flow_nodes WHERE flow_id = f.id) AS nodes_count
+                       (
+                           SELECT COUNT(*)
+                           FROM fms_flow_nodes n
+                           WHERE n.flow_id = f.id
+                             AND n.type NOT IN ('start', 'end')
+                             AND n.id NOT IN ('__start__', '__end__')
+                       ) AS nodes_count
                 FROM fms_flows f
                 LEFT JOIN users u ON f.created_by = u.id
                 ORDER BY f.updated_at DESC";
